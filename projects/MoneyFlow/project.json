@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "MoneyFlow",
+  "displayName": "MoneyFlow",
+  "type": "flutter",
+  "version": "1.0.0",
+  "phase": 1,
+  "status": "active",
+  "currentRole": "planner",
+  "modules": [],
+  "milestones": [],
+  "commands": {
+    "install": "",
+    "build": "",
+    "test": "",
+    "lint": ""
+  },
+  "createdAt": "2026-06-20T02:35:14.273Z",
+  "updatedAt": "2026-06-20T02:35:14.273Z"
+}

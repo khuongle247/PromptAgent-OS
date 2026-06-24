@@ -1,0 +1,23 @@
+{
+  "versions": [
+    {
+      "version": 1,
+      "createdAt": "2026-06-22T11:17:23.491Z",
+      "parentVersion": null,
+      "successRate": 0,
+      "approvalStatus": "superseded",
+      "isActive": false,
+      "note": "Initial prompt version."
+    },
+    {
+      "version": 2,
+      "createdAt": "2026-06-23T11:17:23.508Z",
+      "parentVersion": 1,
+      "successRate": 0,
+      "approvalStatus": "active",
+      "isActive": true,
+      "note": "Candidate v2 derived from v1."
+    }
+  ],
+  "activeVersion": 2
+}

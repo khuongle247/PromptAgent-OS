@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectDir": "D:\\PromptAgent\\projects\\MoneyFlow",
+  "currentAgent": "none",
+  "phase": 1,
+  "status": "approved",
+  "retryCount": 0,
+  "maxRetries": 3,
+  "lastError": null,
+  "history": [
+    {
+      "fromAgent": "none",
+      "toAgent": "planner",
+      "fromStatus": "idle",
+      "toStatus": "approved",
+      "phase": 0,
+      "timestamp": "2026-06-21T08:07:41.723Z",
+      "reason": "none completed successfully"
+    },
+    {
+      "fromAgent": "planner",
+      "toAgent": "none",
+      "fromStatus": "approved",
+      "toStatus": "approved",
+      "phase": 0,
+      "timestamp": "2026-06-21T08:07:41.727Z",
+      "reason": "none completed successfully"
+    },
+    {
+      "fromAgent": "none",
+      "toAgent": "planner",
+      "fromStatus": "approved",
+      "toStatus": "approved",
+      "phase": 0,
+      "timestamp": "2026-06-21T08:08:42.857Z",
+      "reason": "none completed successfully"
+    },
+    {
+      "fromAgent": "planner",
+      "toAgent": "planner",
+      "fromStatus": "approved",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:09:08.433Z",
+      "reason": "planner completed successfully"
+    },
+    {
+      "fromAgent": "architect",
+      "toAgent": "architect",
+      "fromStatus": "completed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:09:08.452Z",
+      "reason": "architect completed successfully"
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "completed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:09:08.469Z",
+      "reason": "coder completed successfully"
+    },
+    {
+      "fromAgent": "reviewer",
+      "toAgent": "reviewer",
+      "fromStatus": "completed",
+      "toStatus": "approved",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:09:08.483Z",
+      "reason": "reviewer completed successfully"
+    },
+    {
+      "fromAgent": "reviewer",
+      "toAgent": "none",
+      "fromStatus": "approved",
+      "toStatus": "approved",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:09:08.485Z",
+      "reason": "reviewer completed successfully"
+    },
+    {
+      "fromAgent": "planner",
+      "toAgent": "planner",
+      "fromStatus": "active",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:26:09.794Z",
+      "reason": "Autonomous planner generation failed."
+    },
+    {
+      "fromAgent": "planner",
+      "toAgent": "debugger",
+      "fromStatus": "completed",
+      "toStatus": "failed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:26:48.671Z",
+      "reason": "Execution layer mock path used for local validation."
+    },
+    {
+      "fromAgent": "debugger",
+      "toAgent": "coder",
+      "fromStatus": "failed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:26:48.711Z",
+      "reason": "Coder fix validation failed."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "completed",
+      "toStatus": "failed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:26:48.723Z",
+      "reason": "Self-healing retry requested."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "failed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:26:48.736Z",
+      "reason": "Coder fix validation failed."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "none",
+      "fromStatus": "completed",
+      "toStatus": "approved",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:26:48.746Z",
+      "reason": "Self-healing cycle approved."
+    },
+    {
+      "fromAgent": "none",
+      "toAgent": "debugger",
+      "fromStatus": "approved",
+      "toStatus": "failed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.440Z",
+      "reason": "Execution layer mock path used for local validation."
+    },
+    {
+      "fromAgent": "debugger",
+      "toAgent": "coder",
+      "fromStatus": "failed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.496Z",
+      "reason": "Coder fix validation failed."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "completed",
+      "toStatus": "failed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.506Z",
+      "reason": "Self-healing retry requested."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "failed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.517Z",
+      "reason": "Coder fix validation failed."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "completed",
+      "toStatus": "failed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.527Z",
+      "reason": "Self-healing retry requested."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "coder",
+      "fromStatus": "failed",
+      "toStatus": "completed",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.537Z",
+      "reason": "Coder fix validation failed."
+    },
+    {
+      "fromAgent": "coder",
+      "toAgent": "none",
+      "fromStatus": "completed",
+      "toStatus": "approved",
+      "phase": 1,
+      "timestamp": "2026-06-21T08:44:08.545Z",
+      "reason": "Self-healing cycle approved."
+    }
+  ],
+  "updatedAt": "2026-06-21T08:44:08.545Z"
+}

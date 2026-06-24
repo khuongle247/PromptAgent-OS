@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HealingCycleCompleted Event Schema",
+  "description": "Schema for event emitted when a self-healing cycle finishes.",
+  "type": "object",
+  "required": ["taskId", "passed", "reason", "attemptsMade", "timestamp", "schemaVersion"],
+  "properties": {
+    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
+    "passed": {"type": "boolean"},
+    "reason": {"type": "string", "minLength": 5},
+    "attemptsMade": {"type": "integer", "minimum": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+  }
+}

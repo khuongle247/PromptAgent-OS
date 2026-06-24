@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Architecture Decision Record Schema",
+  "description": "Framework-level ADR schema. Used by the Architect Agent to document architecture decisions across all project types.",
+  "type": "object",
+  "required": ["adrId", "title", "status", "context", "decision", "consequences", "date", "author"],
+  "properties": {
+    "adrId": {
+      "type": "string",
+      "pattern": "^ADR-[0-9]{3}$",
+      "description": "Unique ADR identifier"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Descriptive title of the architecture decision"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "accepted", "deprecated", "superseded", "rejected"],
+      "description": "ADR lifecycle status"
+    },
+    "context": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Context and forces that led to this decision"
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 20,
+      "description": "The architecture decision itself"
+    },
+    "consequences": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Positive and negative consequences of the decision"
+    },
+    "alternatives": {
+      "type": "array",
+      "description": "Alternative options considered",
+      "items": {
+        "type": "object",
+        "required": ["name", "pros", "cons"],
+        "properties": {
+          "name": { "type": "string", "minLength": 3 },
+          "pros": { "type": "array", "items": { "type": "string" } },
+          "cons": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the ADR was created"
+    },
+    "author": {
+      "type": "string",
+      "enum": ["planner", "architect", "coder", "reviewer", "debugger", "human", "system"],
+      "description": "Who created the ADR"
+    },
+    "supersededBy": {
+      "type": "string",
+      "pattern": "^ADR-[0-9]{3}$",
+      "description": "If status is superseded, the ADR that replaced this one"
+    },
+    "relatedTasks": {
+      "type": "array",
+      "description": "Task IDs this ADR applies to",
+      "items": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Categorization tags",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "architect:TASK-001",
+  "role": "architect",
+  "taskId": "TASK-001",
+  "path": "artifacts\\architect\\TASK-001.json",
+  "source": "mock",
+  "schemaPath": "outputs/architect-output.schema.json",
+  "createdAt": "2026-06-21T08:09:08.448Z",
+  "updatedAt": "2026-06-21T08:09:08.448Z",
+  "absolutePath": "D:\\PromptAgent\\projects\\MoneyFlow\\artifacts\\architect\\TASK-001.json"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reviewer to Coder Handoff Contract",
+  "description": "Framework-level handoff contract. Defines what Reviewer passes back to Coder.",
+  "type": "object",
+  "required": ["sourceAgent", "targetAgent", "contractVersion", "inputSchema", "outputSchema", "validationRules", "qualityGates"],
+  "properties": {
+    "sourceAgent": { "type": "string", "enum": ["reviewer"] },
+    "targetAgent": { "type": "string", "enum": ["coder"] },
+    "contractVersion": { "type": "string", "enum": ["1.0.0"] },
+    "inputSchema": { "type": "string", "enum": ["schemas/outputs/reviewer-output.schema.json"] },
+    "outputSchema": { "type": "string", "enum": ["schemas/outputs/coder-output.schema.json"] },
+    "validationRules": { "type": "array", "items": { "type": "object", "required": ["id", "description"], "properties": { "id": { "type": "string" }, "description": { "type": "string" } } } },
+    "qualityGates": { "type": "array", "items": { "type": "object", "required": ["id", "description", "passCondition"], "properties": { "id": { "type": "string" }, "description": { "type": "string" }, "passCondition": { "type": "string" } } } },
+    "errorCodes": { "type": "object" }
+  }
+}

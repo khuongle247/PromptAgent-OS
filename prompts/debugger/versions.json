@@ -1,0 +1,14 @@
+{
+  "versions": [
+    {
+      "version": 1,
+      "createdAt": "2026-06-22T11:13:50.096Z",
+      "parentVersion": null,
+      "successRate": 0,
+      "approvalStatus": "active",
+      "isActive": true,
+      "note": "Initial prompt version."
+    }
+  ],
+  "activeVersion": 1
+}

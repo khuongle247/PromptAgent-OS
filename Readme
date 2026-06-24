@@ -1,0 +1,308 @@
+# Prompt Agent
+
+Prompt Agent là bộ công cụ hỗ trợ quản lý ngữ cảnh (context) và tạo prompt tự động cho các dự án phần mềm.
+
+Mục tiêu:
+
+* Tái sử dụng cho nhiều loại dự án.
+* Giảm việc giải thích lại dự án cho AI.
+* Chuẩn hóa workflow làm việc với AI.
+* Hỗ trợ Flutter, Spring Boot, React, NextJS, NodeJS, Java Backend, Fullstack, Data Mining,...
+
+---
+
+# Cấu trúc dự án
+
+```text
+Prompt-Agent/
+│
+├── scripts/
+│   ├── init-project.js
+│   └── generate-prompt.js
+│
+└── ProjectName/
+    │
+    ├── docs/
+    │   ├── requirements.md
+    │   ├── features.md
+    │   ├── architecture.md
+    │   ├── tasks.md
+    │   ├── decisions.md
+    │   ├── changelog.md
+    │   └── memory.md
+    │
+    ├── context/
+    │   ├── tech-stack.md
+    │   ├── coding-rules.md
+    │   ├── architecture-rules.md
+    │   └── ai-rules.md
+    │
+    ├── prompts/
+    │   ├── planner.md
+    │   ├── architect.md
+    │   ├── coder.md
+    │   ├── reviewer.md
+    │   ├── debugger.md
+    │   └── memory-manager.md
+    │
+    ├── src/
+    │
+    └── prompt-output.md
+```
+
+---
+
+# Yêu cầu
+
+Cài đặt Node.js:
+
+```bash
+node -v
+npm -v
+```
+
+Khởi tạo:
+
+```bash
+npm init -y
+```
+
+---
+
+# Tạo dự án mới
+
+Ví dụ tạo dự án ExpenseTracker:
+
+```bash
+node scripts/init-project.js ExpenseTracker
+```
+
+Kết quả:
+
+```text
+ExpenseTracker/
+├── docs/
+├── context/
+├── prompts/
+└── src/
+```
+
+---
+
+# Điền tài liệu dự án
+
+## requirements.md
+
+Mô tả yêu cầu nghiệp vụ.
+
+Ví dụ:
+
+```md
+Ứng dụng quản lý chi tiêu cá nhân.
+
+Cho phép:
+- Thêm giao dịch
+- Sửa giao dịch
+- Xóa giao dịch
+- Thống kê theo tháng
+```
+
+---
+
+## features.md
+
+Danh sách tính năng.
+
+```md
+- Authentication
+- Transaction Management
+- Statistics
+- Budget Management
+```
+
+---
+
+## architecture.md
+
+Mô tả kiến trúc hệ thống.
+
+```md
+Flutter
+Riverpod
+Clean Architecture
+
+Layers:
+- Presentation
+- Domain
+- Data
+```
+
+---
+
+## tasks.md
+
+Danh sách công việc.
+
+```md
+[ ] Tạo Login Screen
+[ ] Tạo Dashboard Screen
+[ ] Tạo Statistics Screen
+```
+
+---
+
+## memory.md
+
+Lưu trạng thái dự án.
+
+```md
+Completed:
+- Splash Screen
+- Login Screen
+
+Pending:
+- Statistics Screen
+```
+
+---
+
+# Điền context
+
+## tech-stack.md
+
+```md
+Flutter 3.x
+Riverpod
+Isar
+GoRouter
+```
+
+---
+
+## coding-rules.md
+
+```md
+- Không hardcode.
+- Tuân thủ SOLID.
+- Không duplicate code.
+```
+
+---
+
+## architecture-rules.md
+
+```md
+Presentation
+↓
+Domain
+↓
+Data
+
+Không import ngược.
+```
+
+---
+
+## ai-rules.md
+
+```md
+1. Phân tích trước khi code.
+2. Chỉ sửa file liên quan.
+3. Luôn review code.
+4. Luôn cập nhật memory.md.
+```
+
+---
+
+# Tạo Prompt
+
+Sau khi hoàn thành tài liệu:
+
+```bash
+node scripts/generate-prompt.js ExpenseTracker
+```
+
+Kết quả:
+
+```text
+ExpenseTracker/
+└── prompt-output.md
+```
+
+---
+
+# Sử dụng với AI
+
+Mở file:
+
+```text
+prompt-output.md
+```
+
+Copy toàn bộ nội dung.
+
+Dán vào:
+
+* ChatGPT
+* Gemini
+* Claude
+* Cursor
+* Cline
+* Roo Code
+
+AI sẽ hiểu:
+
+* Yêu cầu dự án
+* Kiến trúc
+* Công nghệ
+* Coding Rules
+* Memory
+* Task hiện tại
+
+mà không cần giải thích lại từ đầu.
+
+---
+
+# Workflow khuyến nghị
+
+```text
+requirements.md
+        ↓
+features.md
+        ↓
+architecture.md
+        ↓
+tasks.md
+        ↓
+generate-prompt.js
+        ↓
+prompt-output.md
+        ↓
+AI Coding
+        ↓
+memory.md cập nhật
+        ↓
+generate-prompt.js
+        ↓
+Task tiếp theo
+```
+
+---
+
+# Mục tiêu dài hạn
+
+Prompt Agent sẽ được nâng cấp thành:
+
+Planner Agent
+↓
+Architect Agent
+↓
+Coder Agent
+↓
+Reviewer Agent
+↓
+Debugger Agent
+↓
+Memory Agent
+
+giúp quản lý toàn bộ vòng đời phát triển phần mềm bằng AI.

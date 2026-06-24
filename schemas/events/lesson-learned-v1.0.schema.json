@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LessonLearned Event Schema",
+  "description": "Schema for event emitted when a success or failure pattern is analyzed.",
+  "type": "object",
+  "required": ["lessonId", "type", "description", "references", "details", "timestamp", "schemaVersion"],
+  "properties": {
+    "lessonId": {"type": "string", "pattern": "^LESSON-[0-9]{3,}$"},
+    "type": {"type": "string", "enum": ["success-pattern", "failure-pattern"]},
+    "description": {"type": "string", "minLength": 10},
+    "references": {"type": "array", "items": {"type": "string"}}, 
+    "details": {"type": "object"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "experimentId": "EXP-MQQJQPF5-IE0O",
+  "role": "planner",
+  "versionA": 1,
+  "versionB": 2,
+  "status": "completed",
+  "createdAt": "2026-06-23T11:13:50.129Z",
+  "completedAt": "2026-06-23T11:13:50.144Z",
+  "sampleSize": 10,
+  "results": {
+    "versionA": {
+      "totalExecutions": 5,
+      "successfulExecutions": 5,
+      "failedExecutions": 0,
+      "retryCount": 0,
+      "reviewerApprovals": 5,
+      "reviewerRejections": 0,
+      "avgDuration": 1600,
+      "durationSum": 8000,
+      "durationCount": 5
+    },
+    "versionB": {
+      "totalExecutions": 5,
+      "successfulExecutions": 4,
+      "failedExecutions": 1,
+      "retryCount": 6,
+      "reviewerApprovals": 4,
+      "reviewerRejections": 1,
+      "avgDuration": 3400,
+      "durationSum": 17000,
+      "durationCount": 5
+    }
+  },
+  "targetSampleSize": 20,
+  "minSampleSize": 5,
+  "notes": "",
+  "metadata": {}
+}

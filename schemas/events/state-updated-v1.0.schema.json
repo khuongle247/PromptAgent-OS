@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentStateUpdated Event Schema",
+  "description": "Schema for event emitted whenever the internal state of an agent is modified.",
+  "type": "object",
+  "required": ["agent", "oldState", "newState", "timestamp", "reason", "schemaVersion"],
+  "properties": {
+    "agent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"]},
+    "oldState": {"type": "object"},
+    "newState": {"type": "object"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "reason": {"type": "string", "minLength": 5},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+  }
+}

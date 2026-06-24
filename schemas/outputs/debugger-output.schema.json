@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Debugger Output Schema",
+  "description": "Framework-level debugger agent output schema. RCA, fix description, verification steps, regression assessment.",
+  "type": "object",
+  "required": ["metadata", "rootCauseAnalysis", "fixDescription", "verificationSteps", "regressionRisk", "memoryUpdates"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["debuggerVersion", "generatedAt", "inputSource"],
+      "properties": {
+        "debuggerVersion": { "type": "string" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "inputSource": { "type": "string", "enum": ["human", "reviewer", "system", "coder"] },
+        "relatedTaskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" }
+      }
+    },
+    "rootCauseAnalysis": {
+      "type": "object",
+      "required": ["symptoms", "rootCause", "impact"],
+      "properties": {
+        "symptoms": { "type": "array", "items": { "type": "string" } },
+        "rootCause": { "type": "string", "minLength": 20 },
+        "impact": { "type": "string", "minLength": 10 }
+      }
+    },
+    "fixDescription": { "type": "string", "minLength": 20 },
+    "filesChanged": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "changeType", "summary"],
+        "properties": {
+          "path": { "type": "string" },
+          "changeType": { "type": "string", "enum": ["created", "modified", "deleted"] },
+          "summary": { "type": "string", "minLength": 10 }
+        }
+      }
+    },
+    "verificationSteps": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "regressionRisk": { "type": "string", "enum": ["low", "medium", "high"], "description": "Assessment of regression risk" },
+    "memoryUpdates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "record"],
+        "properties": {
+          "category": { "type": "string", "enum": ["bugs"] },
+          "record": { "type": "object" }
+        }
+      }
+    }
+  }
+}

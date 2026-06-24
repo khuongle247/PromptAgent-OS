@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentExecuted Event Schema",
+  "description": "Schema for event emitted after an agent completes execution.",
+  "type": "object",
+  "required": ["agent", "taskId", "ok", "output", "validation", "duration", "timestamp", "schemaVersion"],
+  "properties": {
+    "agent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger"]},
+    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
+    "ok": {"type": "boolean"},
+    "output": {"type": "object"}, 
+    "validation": {"type": "object", "required": ["valid", "errors"], "properties": {"valid": {"type": "boolean"}, "errors": {"type": "array", "items": {"type": "string"}}}},
+    "duration": {"type": "number", "minimum": 0},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$", "description": "Version of this event schema."},
+    "context": {"type": "object"}
+  }
+}

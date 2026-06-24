@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HealingAttempted Event Schema",
+  "description": "Schema for event emitted when the self-healing process is initiated.",
+  "type": "object",
+  "required": ["taskId", "attempt", "maxRetries", "rootCause", "timestamp", "schemaVersion"],
+  "properties": {
+    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
+    "attempt": {"type": "integer", "minimum": 0},
+    "maxRetries": {"type": "integer", "minimum": 1},
+    "rootCause": {"type": "string", "minLength": 10},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+  }
+}

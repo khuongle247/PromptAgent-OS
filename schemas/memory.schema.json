@@ -1,0 +1,302 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Memory V3 Schema",
+  "description": "Framework-level memory schema with item-level validation for all 6 categories. Used by all PromptAgent projects.",
+  "type": "object",
+  "required": ["schemaVersion", "decisions", "architecture", "completedTasks", "bugs", "conventions", "risks"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["3.0.0"]
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Architectural and design decisions made during the project",
+      "items": { "$ref": "#/definitions/DecisionRecord" }
+    },
+    "architecture": {
+      "type": "array",
+      "description": "Architecture Decision Records (ADRs)",
+      "items": { "$ref": "#/definitions/ArchitectureRecord" }
+    },
+    "completedTasks": {
+      "type": "array",
+      "description": "Records of completed tasks with results",
+      "items": { "$ref": "#/definitions/CompletedTaskRecord" }
+    },
+    "bugs": {
+      "type": "array",
+      "description": "Bug reports with root cause analysis",
+      "items": { "$ref": "#/definitions/BugRecord" }
+    },
+    "conventions": {
+      "type": "array",
+      "description": "Coding conventions and patterns established",
+      "items": { "$ref": "#/definitions/ConventionRecord" }
+    },
+    "risks": {
+      "type": "array",
+      "description": "Identified risks with mitigation strategies",
+      "items": { "$ref": "#/definitions/RiskRecord" }
+    }
+  },
+  "definitions": {
+    "BaseRecord": {
+      "type": "object",
+      "required": ["id", "type", "timestamp", "author", "description", "importance"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^MEM-[0-9]{3,}$",
+          "description": "Unique memory record identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["decision", "architecture", "completedTask", "bug", "convention", "risk"],
+          "description": "Record type matching the parent category"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of record creation"
+        },
+        "author": {
+          "type": "string",
+          "enum": ["planner", "architect", "coder", "reviewer", "debugger", "human", "system"],
+          "description": "Agent or person who created the record"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Human-readable description of the record"
+        },
+        "importance": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Importance score: 1=trivial, 2=minor, 3=notable, 4=important, 5=critical"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "archived", "superseded"],
+          "default": "active",
+          "description": "Lifecycle status of the record"
+        },
+        "references": {
+          "type": "array",
+          "description": "References to related task IDs, memory IDs, or external resources",
+          "items": { "type": "string" }
+        },
+        "tags": {
+          "type": "array",
+          "description": "Free-form tags for categorization and search",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "DecisionRecord": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/definitions/BaseRecord" }],
+      "required": ["rationale", "alternatives"],
+      "properties": {
+        "rationale": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Reasoning behind the decision"
+        },
+        "alternatives": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Alternative options considered",
+          "items": {
+            "type": "object",
+            "required": ["name", "pros", "cons"],
+            "properties": {
+              "name": { "type": "string", "minLength": 3 },
+              "pros": { "type": "array", "items": { "type": "string" } },
+              "cons": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "outcome": {
+          "type": "string",
+          "description": "Actual outcome after implementation (filled after task completion)"
+        }
+      }
+    },
+    "ArchitectureRecord": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/definitions/BaseRecord" }],
+      "required": ["adrId", "context", "decision", "consequences", "status"],
+      "properties": {
+        "adrId": {
+          "type": "string",
+          "pattern": "^ADR-[0-9]{3}$",
+          "description": "Architecture Decision Record identifier"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Descriptive title of the architecture decision"
+        },
+        "context": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Context and forces that led to this decision"
+        },
+        "decision": {
+          "type": "string",
+          "minLength": 20,
+          "description": "The architecture decision itself"
+        },
+        "consequences": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Positive and negative consequences of the decision"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["proposed", "accepted", "deprecated", "superseded"],
+          "description": "ADR lifecycle status"
+        },
+        "supersededBy": {
+          "type": "string",
+          "pattern": "^ADR-[0-9]{3}$",
+          "description": "If status is superseded, the ADR that replaced this one"
+        }
+      }
+    },
+    "CompletedTaskRecord": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/definitions/BaseRecord" }],
+      "required": ["taskId", "result", "filesChanged"],
+      "properties": {
+        "taskId": {
+          "type": "string",
+          "pattern": "^TASK-[0-9]{3,}$",
+          "description": "Reference to the completed task"
+        },
+        "result": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Summary of what was accomplished"
+        },
+        "filesChanged": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Files modified during task completion",
+          "items": { "type": "string" }
+        },
+        "testsRun": {
+          "type": "array",
+          "description": "Tests executed and their results",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "result": { "type": "string", "enum": ["passed", "failed", "skipped"] }
+            }
+          }
+        },
+        "decisions": {
+          "type": "array",
+          "description": "Decisions made during implementation",
+          "items": { "type": "string" }
+        },
+        "cycleTime": {
+          "type": "string",
+          "description": "Time spent on this task (e.g., 4h, 2d)"
+        }
+      }
+    },
+    "BugRecord": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/definitions/BaseRecord" }],
+      "required": ["severity", "rootCause", "fixDescription"],
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": ["P0-critical", "P1-high", "P2-medium", "P3-low"],
+          "description": "Bug severity classification"
+        },
+        "rootCause": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Root cause analysis"
+        },
+        "fixDescription": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Description of the fix applied"
+        },
+        "fixVersion": {
+          "type": "string",
+          "description": "Version or commit where the fix was applied"
+        },
+        "reproductionSteps": {
+          "type": "array",
+          "description": "Steps to reproduce the bug",
+          "items": { "type": "string" }
+        },
+        "relatedTaskId": {
+          "type": "string",
+          "pattern": "^TASK-[0-9]{3,}$",
+          "description": "Task that introduced or fixed the bug"
+        }
+      }
+    },
+    "ConventionRecord": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/definitions/BaseRecord" }],
+      "required": ["scope", "enforcement"],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": ["global", "module", "file", "pattern"],
+          "description": "Scope of the convention"
+        },
+        "enforcement": {
+          "type": "string",
+          "enum": ["automated", "manual", "guideline"],
+          "description": "How the convention is enforced"
+        },
+        "example": {
+          "type": "string",
+          "description": "Code example demonstrating the convention"
+        }
+      }
+    },
+    "RiskRecord": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/definitions/BaseRecord" }],
+      "required": ["probability", "impact", "mitigation"],
+      "properties": {
+        "probability": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "Probability of the risk occurring"
+        },
+        "impact": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"],
+          "description": "Impact if the risk materializes"
+        },
+        "mitigation": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Mitigation strategy"
+        },
+        "owner": {
+          "type": "string",
+          "enum": ["planner", "architect", "coder", "reviewer", "debugger", "human"],
+          "description": "Who is responsible for monitoring this risk"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["identified", "monitoring", "mitigated", "realized", "closed"],
+          "description": "Risk lifecycle status"
+        }
+      }
+    }
+  }
+}

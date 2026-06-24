@@ -1,0 +1,10 @@
+{"id":"AUD-E2E-001","eventType":"agent-executed","timestamp":"2026-06-23T11:17:23.477Z","actor":"planner","payload":{"agent":"planner","ok":false,"validation":{"errors":["Invalid TASK ID format: expected ^TASK-[0-9]{3,}$"]}},"correlationId":"task-TASK-001"}
+{"id":"AUD-E2E-002","eventType":"agent-executed","timestamp":"2026-06-23T11:17:23.478Z","actor":"planner","payload":{"agent":"planner","ok":false,"validation":{"errors":["Missing acceptance criteria: expected min 3 per task"]}},"correlationId":"task-TASK-001"}
+{"id":"AUD-E2E-003","eventType":"agent-executed","timestamp":"2026-06-23T11:17:23.478Z","actor":"planner","payload":{"agent":"planner","ok":false,"validation":{"errors":["Invalid TASK ID format: expected ^TASK-[0-9]{3,}$"]}},"correlationId":"task-TASK-002"}
+{"id":"AUD-E2E-004","eventType":"agent-transitioned","timestamp":"2026-06-23T11:17:23.478Z","actor":"coder","payload":{"fromAgent":"coder","action":"retry"},"correlationId":"task-TASK-001"}
+{"id":"AUD-E2E-005","eventType":"agent-transitioned","timestamp":"2026-06-23T11:17:23.478Z","actor":"coder","payload":{"fromAgent":"coder","action":"retry"},"correlationId":"task-TASK-001"}
+{"id":"AUD-E2E-006","eventType":"agent-transitioned","timestamp":"2026-06-23T11:17:23.478Z","actor":"coder","payload":{"fromAgent":"coder","action":"retry"},"correlationId":"task-TASK-001"}
+{"id":"AUD-E2E-007","eventType":"agent-executed","timestamp":"2026-06-23T11:17:23.478Z","actor":"planner","payload":{"agent":"planner","ok":true,"validation":{"errors":[]}},"correlationId":"task-TASK-003"}
+{"id":"AUD-E2E-008","eventType":"agent-executed","timestamp":"2026-06-23T11:17:23.478Z","actor":"planner","payload":{"agent":"planner","ok":true,"validation":{"errors":[]}},"correlationId":"task-TASK-004"}
+{"id":"AUD-E2E-009","eventType":"healing-cycle-completed","timestamp":"2026-06-23T11:17:23.478Z","actor":"self-healing-engine","payload":{"passed":true},"correlationId":"task-TASK-001"}
+{"id":"AUD-E2E-010","eventType":"lesson-learned","timestamp":"2026-06-23T11:17:23.478Z","actor":"learning-loop-engine","payload":{"lessonId":"LESSON-001"},"correlationId":"LESSON-001"}

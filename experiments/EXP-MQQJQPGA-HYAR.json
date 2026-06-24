@@ -1,0 +1,38 @@
+{
+  "experimentId": "EXP-MQQJQPGA-HYAR",
+  "role": "planner",
+  "versionA": 1,
+  "versionB": 2,
+  "status": "running",
+  "createdAt": "2026-06-23T11:13:50.170Z",
+  "completedAt": null,
+  "sampleSize": 0,
+  "results": {
+    "versionA": {
+      "totalExecutions": 0,
+      "successfulExecutions": 0,
+      "failedExecutions": 0,
+      "retryCount": 0,
+      "reviewerApprovals": 0,
+      "reviewerRejections": 0,
+      "avgDuration": 0,
+      "durationSum": 0,
+      "durationCount": 0
+    },
+    "versionB": {
+      "totalExecutions": 0,
+      "successfulExecutions": 0,
+      "failedExecutions": 0,
+      "retryCount": 0,
+      "reviewerApprovals": 0,
+      "reviewerRejections": 0,
+      "avgDuration": 0,
+      "durationSum": 0,
+      "durationCount": 0
+    }
+  },
+  "targetSampleSize": 3,
+  "minSampleSize": 5,
+  "notes": "Integration test experiment",
+  "metadata": {}
+}

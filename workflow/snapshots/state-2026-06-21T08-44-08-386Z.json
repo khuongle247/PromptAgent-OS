@@ -1,0 +1,1137 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Create Login Screen",
+      "module": "AUTH",
+      "priority": "P1",
+      "status": "done",
+      "dependencies": [],
+      "estimate": "4h",
+      "assignee": "coder",
+      "acceptanceCriteria": [
+        "Create Login Screen"
+      ],
+      "definitionOfDone": [
+        "Lint pass",
+        "Review pass"
+      ],
+      "source": "human",
+      "createdAt": "2026-06-20T04:14:03.016Z",
+      "updatedAt": "2026-06-20T04:43:34.210Z",
+      "artifactStatus": "done",
+      "latestArtifactRole": "reviewer",
+      "latestArtifactUpdatedAt": "2026-06-21T08:26:48.743Z"
+    }
+  ],
+  "memory": {
+    "raw": {
+      "schemaVersion": "1.0.0",
+      "decisions": [],
+      "architecture": [],
+      "completedTasks": [],
+      "bugs": [],
+      "conventions": [],
+      "risks": []
+    },
+    "summary": {
+      "schemaVersion": "1.0.0",
+      "stats": {
+        "totalRecords": 0,
+        "decisions": 0,
+        "architecture": 0,
+        "completedTasks": 0,
+        "bugs": 0,
+        "conventions": 0,
+        "risks": 0
+      },
+      "importantDecisions": [],
+      "importantConventions": [],
+      "recentTasks": [],
+      "knownBugs": [],
+      "risks": [],
+      "generatedAt": "2026-06-20T04:46:38.225Z"
+    },
+    "appendOnly": true
+  },
+  "artifacts": [
+    {
+      "id": "reviewer:TASK-001",
+      "role": "reviewer",
+      "taskId": "TASK-001",
+      "path": "artifacts\\reviewer\\TASK-001.json",
+      "source": "llmClient",
+      "schemaPath": "outputs/reviewer-output.schema.json",
+      "createdAt": "2026-06-21T08:09:08.479Z",
+      "updatedAt": "2026-06-21T08:26:48.743Z",
+      "output": {
+        "metadata": {
+          "reviewerVersion": "healing-cycle",
+          "generatedAt": "2026-06-21T08:26:48.738Z",
+          "taskId": "TASK-001"
+        },
+        "taskId": "TASK-001",
+        "decision": "approved",
+        "reviewItems": [
+          {
+            "category": "correctness",
+            "severity": "P4-suggestion",
+            "description": "Auto-healing fix passes schema and cycle checks.",
+            "location": "workflow/self-healing-engine.js",
+            "actionable": false,
+            "suggestion": "No changes required."
+          }
+        ],
+        "summary": "Auto-healing cycle approved after validation.",
+        "acceptanceVerification": [],
+        "memoryUpdates": []
+      }
+    },
+    {
+      "id": "coder:TASK-001",
+      "role": "coder",
+      "taskId": "TASK-001",
+      "path": "artifacts\\coder\\TASK-001.json",
+      "source": "llmClient",
+      "schemaPath": "outputs/coder-output.schema.json",
+      "createdAt": "2026-06-21T08:09:08.465Z",
+      "updatedAt": "2026-06-21T08:26:48.733Z",
+      "output": {
+        "metadata": {
+          "coderVersion": "healing-cycle",
+          "generatedAt": "2026-06-21T08:26:48.725Z",
+          "taskId": "TASK-001"
+        },
+        "taskId": "TASK-001",
+        "filesChanged": [
+          {
+            "path": "src/healing-fix.js",
+            "changeType": "modified",
+            "summary": "Auto-healing fix attempt 2/2 derived from: Execution layer mock path used for local validation."
+          }
+        ],
+        "testResults": {
+          "total": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "details": [
+            {
+              "name": "healing-cycle-smoke-test",
+              "result": "passed",
+              "duration": "0s"
+            }
+          ]
+        },
+        "lintResults": {
+          "passed": true,
+          "errors": 0,
+          "warnings": 0
+        },
+        "memoryUpdates": [
+          {
+            "category": "bugs",
+            "record": {
+              "description": "Auto-healing attempt 2 for TASK-001",
+              "rootCause": "Execution layer mock path used for local validation.",
+              "fixDescription": "Generated an automatic fix pass from debugger output.",
+              "severity": "P2-medium"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "debugger:TASK-001",
+      "role": "debugger",
+      "taskId": "TASK-001",
+      "path": "artifacts\\debugger\\TASK-001.json",
+      "source": "mock",
+      "schemaPath": "outputs/debugger-output.schema.json",
+      "createdAt": "2026-06-21T08:26:33.286Z",
+      "updatedAt": "2026-06-21T08:26:33.286Z",
+      "output": {
+        "metadata": {
+          "debuggerVersion": "mock-1.0.0",
+          "generatedAt": "2026-06-21T08:26:33.250Z",
+          "inputSource": "system",
+          "relatedTaskId": "TASK-001"
+        },
+        "rootCauseAnalysis": {
+          "symptoms": [
+            "Mock debugger path executed."
+          ],
+          "rootCause": "Execution layer mock path used for local validation.",
+          "impact": "No production code is affected."
+        },
+        "fixDescription": "No fix required in the mock execution path.",
+        "verificationSteps": [
+          "Validate the output against the debugger schema."
+        ],
+        "regressionRisk": "low",
+        "memoryUpdates": []
+      }
+    },
+    {
+      "id": "planner:TASK-002",
+      "role": "planner",
+      "taskId": "TASK-002",
+      "path": "artifacts\\planner\\TASK-002.json",
+      "source": "llmClient",
+      "schemaPath": "outputs/planner-output.schema.json",
+      "createdAt": "2026-06-21T08:26:09.789Z",
+      "updatedAt": "2026-06-21T08:26:09.789Z",
+      "output": {
+        "metadata": {
+          "plannerVersion": "autonomous-task-generator",
+          "generatedAt": "2026-06-21T08:26:09.731Z",
+          "source": "system",
+          "taskCount": 5,
+          "assumptions": [
+            "Generated automatically from requirements, architecture, and memory signals."
+          ]
+        },
+        "tasks": [
+          {
+            "id": "TASK-002",
+            "title": "# Product Requirements",
+            "module": "ui",
+            "priority": "P1",
+            "status": "todo",
+            "dependencies": [
+              "TASK-001"
+            ],
+            "acceptanceCriteria": [
+              "Implement # Product Requirements.",
+              "Validate # Product Requirements against existing project constraints.",
+              "Persist the result through the existing planner flow."
+            ],
+            "definitionOfDone": [
+              "The task output is schema-compliant for the planner stage.",
+              "The task is ready for downstream architecture review."
+            ],
+            "estimate": "4h",
+            "assignee": "coder",
+            "description": "Generated from legacy memory, requirements, and architecture signals: # Product Requirements."
+          },
+          {
+            "id": "TASK-003",
+            "title": "## Product Name",
+            "module": "general",
+            "priority": "P2",
+            "status": "todo",
+            "dependencies": [
+              "TASK-002"
+            ],
+            "acceptanceCriteria": [
+              "Implement ## Product Name.",
+              "Validate ## Product Name against existing project constraints.",
+              "Persist the result through the existing planner flow."
+            ],
+            "definitionOfDone": [
+              "The task output is schema-compliant for the planner stage.",
+              "The task is ready for downstream architecture review."
+            ],
+            "estimate": "2h",
+            "assignee": "coder",
+            "description": "Generated from legacy memory, requirements, and architecture signals: ## Product Name."
+          },
+          {
+            "id": "TASK-004",
+            "title": "## Problem Statement",
+            "module": "workflow",
+            "priority": "P2",
+            "status": "todo",
+            "dependencies": [
+              "TASK-003"
+            ],
+            "acceptanceCriteria": [
+              "Implement ## Problem Statement.",
+              "Validate ## Problem Statement against existing project constraints.",
+              "Persist the result through the existing planner flow."
+            ],
+            "definitionOfDone": [
+              "The task output is schema-compliant for the planner stage.",
+              "The task is ready for downstream architecture review."
+            ],
+            "estimate": "2h",
+            "assignee": "architect",
+            "description": "Generated from legacy memory, requirements, and architecture signals: ## Problem Statement."
+          },
+          {
+            "id": "TASK-005",
+            "title": "## Target Users",
+            "module": "auth",
+            "priority": "P2",
+            "status": "todo",
+            "dependencies": [
+              "TASK-004"
+            ],
+            "acceptanceCriteria": [
+              "Implement ## Target Users.",
+              "Validate ## Target Users against existing project constraints.",
+              "Persist the result through the existing planner flow."
+            ],
+            "definitionOfDone": [
+              "The task output is schema-compliant for the planner stage.",
+              "The task is ready for downstream architecture review."
+            ],
+            "estimate": "4h",
+            "assignee": "coder",
+            "description": "Generated from legacy memory, requirements, and architecture signals: ## Target Users."
+          },
+          {
+            "id": "TASK-006",
+            "title": "## Non Goals",
+            "module": "general",
+            "priority": "P2",
+            "status": "todo",
+            "dependencies": [
+              "TASK-005"
+            ],
+            "acceptanceCriteria": [
+              "Implement ## Non Goals.",
+              "Validate ## Non Goals against existing project constraints.",
+              "Persist the result through the existing planner flow."
+            ],
+            "definitionOfDone": [
+              "The task output is schema-compliant for the planner stage.",
+              "The task is ready for downstream architecture review."
+            ],
+            "estimate": "2h",
+            "assignee": "coder",
+            "description": "Generated from legacy memory, requirements, and architecture signals: ## Non Goals."
+          }
+        ],
+        "milestones": [
+          {
+            "id": "MS-001",
+            "title": "Autonomous Planning Wave 1",
+            "description": "Task bundle generated from project requirements and architecture signals for wave 1.",
+            "tasks": [
+              "TASK-002",
+              "TASK-003",
+              "TASK-004",
+              "TASK-005"
+            ],
+            "targetDate": "2026-06-28",
+            "status": "planned"
+          },
+          {
+            "id": "MS-002",
+            "title": "Autonomous Planning Wave 2",
+            "description": "Task bundle generated from project requirements and architecture signals for wave 2.",
+            "tasks": [
+              "TASK-006"
+            ],
+            "targetDate": "2026-07-05",
+            "status": "planned"
+          }
+        ],
+        "risks": []
+      }
+    },
+    {
+      "id": "architect:TASK-001",
+      "role": "architect",
+      "taskId": "TASK-001",
+      "path": "artifacts\\architect\\TASK-001.json",
+      "source": "mock",
+      "schemaPath": "outputs/architect-output.schema.json",
+      "createdAt": "2026-06-21T08:09:08.448Z",
+      "updatedAt": "2026-06-21T08:09:08.452Z",
+      "output": {
+        "id": "architect:TASK-001",
+        "role": "architect",
+        "taskId": "TASK-001",
+        "path": "artifacts\\architect\\TASK-001.json",
+        "source": "mock",
+        "schemaPath": "outputs/architect-output.schema.json",
+        "createdAt": "2026-06-21T08:09:08.448Z",
+        "updatedAt": "2026-06-21T08:09:08.448Z",
+        "absolutePath": "D:\\PromptAgent\\projects\\MoneyFlow\\artifacts\\architect\\TASK-001.json"
+      }
+    },
+    {
+      "id": "planner:TASK-001",
+      "role": "planner",
+      "taskId": "TASK-001",
+      "path": "artifacts\\planner\\TASK-001.json",
+      "source": "mock",
+      "schemaPath": "outputs/planner-output.schema.json",
+      "createdAt": "2026-06-21T08:02:03.147Z",
+      "updatedAt": "2026-06-21T08:09:08.434Z",
+      "output": {
+        "id": "planner:TASK-001",
+        "role": "planner",
+        "taskId": "TASK-001",
+        "path": "artifacts\\planner\\TASK-001.json",
+        "source": "mock",
+        "schemaPath": "outputs/planner-output.schema.json",
+        "createdAt": "2026-06-21T08:02:03.147Z",
+        "updatedAt": "2026-06-21T08:09:08.429Z",
+        "absolutePath": "D:\\PromptAgent\\projects\\MoneyFlow\\artifacts\\planner\\TASK-001.json"
+      }
+    }
+  ],
+  "agents": {
+    "current": {
+      "currentAgent": null,
+      "status": "approved",
+      "phase": 1,
+      "retryCount": 0,
+      "maxRetries": 3,
+      "lastError": "Global state reconciliation detected unsafe conflicts.",
+      "history": [
+        {
+          "fromAgent": "none",
+          "toAgent": "planner",
+          "fromStatus": "idle",
+          "toStatus": "approved",
+          "phase": 0,
+          "timestamp": "2026-06-21T08:07:41.723Z",
+          "reason": "none completed successfully"
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "none",
+          "fromStatus": "approved",
+          "toStatus": "approved",
+          "phase": 0,
+          "timestamp": "2026-06-21T08:07:41.727Z",
+          "reason": "none completed successfully"
+        },
+        {
+          "fromAgent": "none",
+          "toAgent": "planner",
+          "fromStatus": "approved",
+          "toStatus": "approved",
+          "phase": 0,
+          "timestamp": "2026-06-21T08:08:42.857Z",
+          "reason": "none completed successfully"
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "planner",
+          "fromStatus": "approved",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.433Z",
+          "reason": "planner completed successfully"
+        },
+        {
+          "fromAgent": "architect",
+          "toAgent": "architect",
+          "fromStatus": "completed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.452Z",
+          "reason": "architect completed successfully"
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "coder",
+          "fromStatus": "completed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.469Z",
+          "reason": "coder completed successfully"
+        },
+        {
+          "fromAgent": "reviewer",
+          "toAgent": "reviewer",
+          "fromStatus": "completed",
+          "toStatus": "approved",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.483Z",
+          "reason": "reviewer completed successfully"
+        },
+        {
+          "fromAgent": "reviewer",
+          "toAgent": "none",
+          "fromStatus": "approved",
+          "toStatus": "approved",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.485Z",
+          "reason": "reviewer completed successfully"
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "planner",
+          "fromStatus": "active",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:09.794Z",
+          "reason": "Autonomous planner generation failed."
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "debugger",
+          "fromStatus": "completed",
+          "toStatus": "failed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.671Z",
+          "reason": "Execution layer mock path used for local validation."
+        },
+        {
+          "fromAgent": "debugger",
+          "toAgent": "coder",
+          "fromStatus": "failed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.711Z",
+          "reason": "Coder fix validation failed."
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "coder",
+          "fromStatus": "completed",
+          "toStatus": "failed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.723Z",
+          "reason": "Self-healing retry requested."
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "coder",
+          "fromStatus": "failed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.736Z",
+          "reason": "Coder fix validation failed."
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "none",
+          "fromStatus": "completed",
+          "toStatus": "approved",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.746Z",
+          "reason": "Self-healing cycle approved."
+        }
+      ],
+      "updatedAt": "2026-06-21T08:26:48.746Z"
+    },
+    "execution": [
+      {
+        "role": "reviewer",
+        "taskId": "TASK-001",
+        "artifactStatus": "done",
+        "source": "llmClient",
+        "schemaPath": "outputs/reviewer-output.schema.json",
+        "updatedAt": "2026-06-21T08:26:48.743Z"
+      },
+      {
+        "role": "coder",
+        "taskId": "TASK-001",
+        "artifactStatus": "done",
+        "source": "llmClient",
+        "schemaPath": "outputs/coder-output.schema.json",
+        "updatedAt": "2026-06-21T08:26:48.733Z"
+      },
+      {
+        "role": "debugger",
+        "taskId": "TASK-001",
+        "artifactStatus": "blocked",
+        "source": "mock",
+        "schemaPath": "outputs/debugger-output.schema.json",
+        "updatedAt": "2026-06-21T08:26:33.286Z"
+      },
+      {
+        "role": "planner",
+        "taskId": "TASK-002",
+        "artifactStatus": "todo",
+        "source": "llmClient",
+        "schemaPath": "outputs/planner-output.schema.json",
+        "updatedAt": "2026-06-21T08:26:09.789Z"
+      },
+      {
+        "role": "architect",
+        "taskId": "TASK-001",
+        "artifactStatus": "review",
+        "source": "mock",
+        "schemaPath": "outputs/architect-output.schema.json",
+        "updatedAt": "2026-06-21T08:09:08.452Z"
+      },
+      {
+        "role": "planner",
+        "taskId": "TASK-001",
+        "artifactStatus": "todo",
+        "source": "mock",
+        "schemaPath": "outputs/planner-output.schema.json",
+        "updatedAt": "2026-06-21T08:09:08.434Z"
+      }
+    ],
+    "latestArtifact": {
+      "id": "reviewer:TASK-001",
+      "role": "reviewer",
+      "taskId": "TASK-001",
+      "path": "artifacts\\reviewer\\TASK-001.json",
+      "source": "llmClient",
+      "schemaPath": "outputs/reviewer-output.schema.json",
+      "createdAt": "2026-06-21T08:09:08.479Z",
+      "updatedAt": "2026-06-21T08:26:48.743Z",
+      "output": {
+        "metadata": {
+          "reviewerVersion": "healing-cycle",
+          "generatedAt": "2026-06-21T08:26:48.738Z",
+          "taskId": "TASK-001"
+        },
+        "taskId": "TASK-001",
+        "decision": "approved",
+        "reviewItems": [
+          {
+            "category": "correctness",
+            "severity": "P4-suggestion",
+            "description": "Auto-healing fix passes schema and cycle checks.",
+            "location": "workflow/self-healing-engine.js",
+            "actionable": false,
+            "suggestion": "No changes required."
+          }
+        ],
+        "summary": "Auto-healing cycle approved after validation.",
+        "acceptanceVerification": [],
+        "memoryUpdates": []
+      }
+    },
+    "stateFile": {
+      "schemaVersion": "1.0.0",
+      "projectDir": "D:\\PromptAgent\\projects\\MoneyFlow",
+      "currentAgent": "none",
+      "phase": 1,
+      "status": "approved",
+      "retryCount": 0,
+      "maxRetries": 3,
+      "lastError": null,
+      "history": [
+        {
+          "fromAgent": "none",
+          "toAgent": "planner",
+          "fromStatus": "idle",
+          "toStatus": "approved",
+          "phase": 0,
+          "timestamp": "2026-06-21T08:07:41.723Z",
+          "reason": "none completed successfully"
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "none",
+          "fromStatus": "approved",
+          "toStatus": "approved",
+          "phase": 0,
+          "timestamp": "2026-06-21T08:07:41.727Z",
+          "reason": "none completed successfully"
+        },
+        {
+          "fromAgent": "none",
+          "toAgent": "planner",
+          "fromStatus": "approved",
+          "toStatus": "approved",
+          "phase": 0,
+          "timestamp": "2026-06-21T08:08:42.857Z",
+          "reason": "none completed successfully"
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "planner",
+          "fromStatus": "approved",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.433Z",
+          "reason": "planner completed successfully"
+        },
+        {
+          "fromAgent": "architect",
+          "toAgent": "architect",
+          "fromStatus": "completed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.452Z",
+          "reason": "architect completed successfully"
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "coder",
+          "fromStatus": "completed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.469Z",
+          "reason": "coder completed successfully"
+        },
+        {
+          "fromAgent": "reviewer",
+          "toAgent": "reviewer",
+          "fromStatus": "completed",
+          "toStatus": "approved",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.483Z",
+          "reason": "reviewer completed successfully"
+        },
+        {
+          "fromAgent": "reviewer",
+          "toAgent": "none",
+          "fromStatus": "approved",
+          "toStatus": "approved",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:09:08.485Z",
+          "reason": "reviewer completed successfully"
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "planner",
+          "fromStatus": "active",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:09.794Z",
+          "reason": "Autonomous planner generation failed."
+        },
+        {
+          "fromAgent": "planner",
+          "toAgent": "debugger",
+          "fromStatus": "completed",
+          "toStatus": "failed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.671Z",
+          "reason": "Execution layer mock path used for local validation."
+        },
+        {
+          "fromAgent": "debugger",
+          "toAgent": "coder",
+          "fromStatus": "failed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.711Z",
+          "reason": "Coder fix validation failed."
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "coder",
+          "fromStatus": "completed",
+          "toStatus": "failed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.723Z",
+          "reason": "Self-healing retry requested."
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "coder",
+          "fromStatus": "failed",
+          "toStatus": "completed",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.736Z",
+          "reason": "Coder fix validation failed."
+        },
+        {
+          "fromAgent": "coder",
+          "toAgent": "none",
+          "fromStatus": "completed",
+          "toStatus": "approved",
+          "phase": 1,
+          "timestamp": "2026-06-21T08:26:48.746Z",
+          "reason": "Self-healing cycle approved."
+        }
+      ],
+      "updatedAt": "2026-06-21T08:26:48.746Z"
+    }
+  },
+  "timestamp": "2026-06-21T08:44:08.386Z",
+  "projectName": "MoneyFlow",
+  "projectDir": "D:\\PromptAgent\\projects\\MoneyFlow",
+  "conflicts": [
+    {
+      "type": "task-artifact-status",
+      "entityId": "TASK-001",
+      "severity": "low",
+      "description": "Task status done does not match artifact status blocked for role debugger.",
+      "safe": true,
+      "sourceRole": "debugger",
+      "artifactStatus": "blocked",
+      "taskStatus": "done"
+    },
+    {
+      "type": "task-artifact-status",
+      "entityId": "TASK-001",
+      "severity": "low",
+      "description": "Task status done does not match artifact status review for role architect.",
+      "safe": true,
+      "sourceRole": "architect",
+      "artifactStatus": "review",
+      "taskStatus": "done"
+    },
+    {
+      "type": "task-artifact-status",
+      "entityId": "TASK-001",
+      "severity": "high",
+      "description": "Task status done does not match artifact status todo for role planner.",
+      "safe": false,
+      "sourceRole": "planner",
+      "artifactStatus": "todo",
+      "taskStatus": "done"
+    }
+  ],
+  "drift": {
+    "score": 0,
+    "threshold": 0.25,
+    "triggered": false,
+    "reason": "Drift within acceptable range",
+    "lastSnapshotPath": "D:\\PromptAgent\\workflow\\snapshots\\state-2026-06-21T08-44-08-383Z.json",
+    "currentSummary": {
+      "tasks": [
+        {
+          "id": "TASK-001",
+          "status": "done",
+          "artifactStatus": "done"
+        }
+      ],
+      "artifacts": [
+        {
+          "role": "reviewer",
+          "taskId": "TASK-001",
+          "status": "done"
+        },
+        {
+          "role": "coder",
+          "taskId": "TASK-001",
+          "status": "done"
+        },
+        {
+          "role": "debugger",
+          "taskId": "TASK-001",
+          "status": "blocked"
+        },
+        {
+          "role": "planner",
+          "taskId": "TASK-002",
+          "status": "todo"
+        },
+        {
+          "role": "architect",
+          "taskId": "TASK-001",
+          "status": "review"
+        },
+        {
+          "role": "planner",
+          "taskId": "TASK-001",
+          "status": "todo"
+        }
+      ],
+      "agent": {
+        "currentAgent": null,
+        "status": "approved",
+        "phase": 1,
+        "retryCount": 0,
+        "maxRetries": 3,
+        "lastError": null,
+        "history": [
+          {
+            "fromAgent": "none",
+            "toAgent": "planner",
+            "fromStatus": "idle",
+            "toStatus": "approved",
+            "phase": 0,
+            "timestamp": "2026-06-21T08:07:41.723Z",
+            "reason": "none completed successfully"
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "none",
+            "fromStatus": "approved",
+            "toStatus": "approved",
+            "phase": 0,
+            "timestamp": "2026-06-21T08:07:41.727Z",
+            "reason": "none completed successfully"
+          },
+          {
+            "fromAgent": "none",
+            "toAgent": "planner",
+            "fromStatus": "approved",
+            "toStatus": "approved",
+            "phase": 0,
+            "timestamp": "2026-06-21T08:08:42.857Z",
+            "reason": "none completed successfully"
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "planner",
+            "fromStatus": "approved",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.433Z",
+            "reason": "planner completed successfully"
+          },
+          {
+            "fromAgent": "architect",
+            "toAgent": "architect",
+            "fromStatus": "completed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.452Z",
+            "reason": "architect completed successfully"
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "coder",
+            "fromStatus": "completed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.469Z",
+            "reason": "coder completed successfully"
+          },
+          {
+            "fromAgent": "reviewer",
+            "toAgent": "reviewer",
+            "fromStatus": "completed",
+            "toStatus": "approved",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.483Z",
+            "reason": "reviewer completed successfully"
+          },
+          {
+            "fromAgent": "reviewer",
+            "toAgent": "none",
+            "fromStatus": "approved",
+            "toStatus": "approved",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.485Z",
+            "reason": "reviewer completed successfully"
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "planner",
+            "fromStatus": "active",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:09.794Z",
+            "reason": "Autonomous planner generation failed."
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "debugger",
+            "fromStatus": "completed",
+            "toStatus": "failed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.671Z",
+            "reason": "Execution layer mock path used for local validation."
+          },
+          {
+            "fromAgent": "debugger",
+            "toAgent": "coder",
+            "fromStatus": "failed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.711Z",
+            "reason": "Coder fix validation failed."
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "coder",
+            "fromStatus": "completed",
+            "toStatus": "failed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.723Z",
+            "reason": "Self-healing retry requested."
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "coder",
+            "fromStatus": "failed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.736Z",
+            "reason": "Coder fix validation failed."
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "none",
+            "fromStatus": "completed",
+            "toStatus": "approved",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.746Z",
+            "reason": "Self-healing cycle approved."
+          }
+        ],
+        "updatedAt": "2026-06-21T08:26:48.746Z"
+      },
+      "timestamp": "2026-06-21T08:44:08.383Z"
+    },
+    "baselineSummary": {
+      "tasks": [
+        {
+          "id": "TASK-001",
+          "status": "done",
+          "artifactStatus": "done"
+        }
+      ],
+      "artifacts": [
+        {
+          "role": "reviewer",
+          "taskId": "TASK-001",
+          "status": "done"
+        },
+        {
+          "role": "coder",
+          "taskId": "TASK-001",
+          "status": "done"
+        },
+        {
+          "role": "debugger",
+          "taskId": "TASK-001",
+          "status": "blocked"
+        },
+        {
+          "role": "planner",
+          "taskId": "TASK-002",
+          "status": "todo"
+        },
+        {
+          "role": "architect",
+          "taskId": "TASK-001",
+          "status": "review"
+        },
+        {
+          "role": "planner",
+          "taskId": "TASK-001",
+          "status": "todo"
+        }
+      ],
+      "agent": {
+        "currentAgent": null,
+        "status": "approved",
+        "phase": 1,
+        "retryCount": 0,
+        "maxRetries": 3,
+        "lastError": null,
+        "history": [
+          {
+            "fromAgent": "none",
+            "toAgent": "planner",
+            "fromStatus": "idle",
+            "toStatus": "approved",
+            "phase": 0,
+            "timestamp": "2026-06-21T08:07:41.723Z",
+            "reason": "none completed successfully"
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "none",
+            "fromStatus": "approved",
+            "toStatus": "approved",
+            "phase": 0,
+            "timestamp": "2026-06-21T08:07:41.727Z",
+            "reason": "none completed successfully"
+          },
+          {
+            "fromAgent": "none",
+            "toAgent": "planner",
+            "fromStatus": "approved",
+            "toStatus": "approved",
+            "phase": 0,
+            "timestamp": "2026-06-21T08:08:42.857Z",
+            "reason": "none completed successfully"
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "planner",
+            "fromStatus": "approved",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.433Z",
+            "reason": "planner completed successfully"
+          },
+          {
+            "fromAgent": "architect",
+            "toAgent": "architect",
+            "fromStatus": "completed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.452Z",
+            "reason": "architect completed successfully"
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "coder",
+            "fromStatus": "completed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.469Z",
+            "reason": "coder completed successfully"
+          },
+          {
+            "fromAgent": "reviewer",
+            "toAgent": "reviewer",
+            "fromStatus": "completed",
+            "toStatus": "approved",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.483Z",
+            "reason": "reviewer completed successfully"
+          },
+          {
+            "fromAgent": "reviewer",
+            "toAgent": "none",
+            "fromStatus": "approved",
+            "toStatus": "approved",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:09:08.485Z",
+            "reason": "reviewer completed successfully"
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "planner",
+            "fromStatus": "active",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:09.794Z",
+            "reason": "Autonomous planner generation failed."
+          },
+          {
+            "fromAgent": "planner",
+            "toAgent": "debugger",
+            "fromStatus": "completed",
+            "toStatus": "failed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.671Z",
+            "reason": "Execution layer mock path used for local validation."
+          },
+          {
+            "fromAgent": "debugger",
+            "toAgent": "coder",
+            "fromStatus": "failed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.711Z",
+            "reason": "Coder fix validation failed."
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "coder",
+            "fromStatus": "completed",
+            "toStatus": "failed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.723Z",
+            "reason": "Self-healing retry requested."
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "coder",
+            "fromStatus": "failed",
+            "toStatus": "completed",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.736Z",
+            "reason": "Coder fix validation failed."
+          },
+          {
+            "fromAgent": "coder",
+            "toAgent": "none",
+            "fromStatus": "completed",
+            "toStatus": "approved",
+            "phase": 1,
+            "timestamp": "2026-06-21T08:26:48.746Z",
+            "reason": "Self-healing cycle approved."
+          }
+        ],
+        "updatedAt": "2026-06-21T08:26:48.746Z"
+      },
+      "timestamp": "2026-06-21T08:44:08.383Z"
+    }
+  }
+}

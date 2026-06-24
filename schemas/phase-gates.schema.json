@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Phase Gates Schema",
+  "description": "Framework-level phase gate definitions. Defines entry and exit criteria for all 8 phases across all project types.",
+  "type": "object",
+  "required": ["schemaVersion", "phases"],
+  "properties": {
+    "schemaVersion": { "type": "string", "enum": ["1.0.0"] },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["phase", "name", "description", "entryCriteria", "exitCriteria"],
+        "properties": {
+          "phase": { "type": "integer", "minimum": 1, "maximum": 10 },
+          "name": { "type": "string", "minLength": 3 },
+          "description": { "type": "string", "minLength": 10 },
+          "entryCriteria": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "description", "validationType"],
+              "properties": {
+                "id": { "type": "string" },
+                "description": { "type": "string", "minLength": 10 },
+                "validationType": {
+                  "type": "string",
+                  "enum": ["file-exists", "schema-valid", "content-quality", "count-min", "custom"]
+                },
+                "params": { "type": "object" }
+              }
+            }
+          },
+          "exitCriteria": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "description", "validationType"],
+              "properties": {
+                "id": { "type": "string" },
+                "description": { "type": "string", "minLength": 10 },
+                "validationType": {
+                  "type": "string",
+                  "enum": ["file-exists", "schema-valid", "content-quality", "count-min", "custom"]
+                },
+                "params": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

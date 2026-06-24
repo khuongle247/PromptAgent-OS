@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "debuggerVersion": "mock-1.0.0",
+    "generatedAt": "2026-06-21T08:26:33.250Z",
+    "inputSource": "system",
+    "relatedTaskId": "TASK-001"
+  },
+  "rootCauseAnalysis": {
+    "symptoms": [
+      "Mock debugger path executed."
+    ],
+    "rootCause": "Execution layer mock path used for local validation.",
+    "impact": "No production code is affected."
+  },
+  "fixDescription": "No fix required in the mock execution path.",
+  "verificationSteps": [
+    "Validate the output against the debugger schema."
+  ],
+  "regressionRisk": "low",
+  "memoryUpdates": []
+}

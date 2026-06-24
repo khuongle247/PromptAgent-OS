@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent State Schema",
+  "description": "Framework-level agent state machine schema. Tracks lifecycle state for all agent roles across all projects.",
+  "type": "object",
+  "required": ["schemaVersion", "projectDir", "currentAgent", "status", "history"],
+  "properties": {
+    "schemaVersion": { "type": "string", "enum": ["1.0.0"] },
+    "projectDir": {
+      "type": "string",
+      "description": "Path to the project directory this state applies to"
+    },
+    "currentAgent": {
+      "type": "string",
+      "enum": ["planner", "architect", "coder", "reviewer", "debugger", "none"],
+      "description": "Currently active agent role"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated"],
+      "description": "Current state in the agent lifecycle"
+    },
+    "retryCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 0,
+      "description": "Number of retries attempted for current agent"
+    },
+    "maxRetries": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 3,
+      "description": "Maximum retries before escalation"
+    },
+    "lastError": {
+      "type": "string",
+      "description": "Last error message if status is failed or blocked"
+    },
+    "history": {
+      "type": "array",
+      "description": "Append-only log of state transitions",
+      "items": {
+        "type": "object",
+        "required": ["fromStatus", "toStatus", "agent", "timestamp", "reason"],
+        "properties": {
+          "fromStatus": { "type": "string", "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated", "none"] },
+          "toStatus": { "type": "string", "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated"] },
+          "agent": { "type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"] },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string", "minLength": 5 }
+        }
+      }
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last state change"
+    }
+  }
+}

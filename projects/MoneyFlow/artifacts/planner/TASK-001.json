@@ -1,0 +1,11 @@
+{
+  "id": "planner:TASK-001",
+  "role": "planner",
+  "taskId": "TASK-001",
+  "path": "artifacts\\planner\\TASK-001.json",
+  "source": "mock",
+  "schemaPath": "outputs/planner-output.schema.json",
+  "createdAt": "2026-06-21T08:02:03.147Z",
+  "updatedAt": "2026-06-21T08:09:08.429Z",
+  "absolutePath": "D:\\PromptAgent\\projects\\MoneyFlow\\artifacts\\planner\\TASK-001.json"
+}

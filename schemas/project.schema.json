@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Schema",
+  "type": "object",
+  "required": [
+    "name",
+    "type",
+    "phase",
+    "status",
+    "schemaVersion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "type": {
+      "type": "string",
+      "enum": [
+        "flutter",
+        "react",
+        "nextjs",
+        "nodejs",
+        "spring-boot",
+        "java-backend",
+        "fullstack"
+      ]
+    },
+
+    "phase": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "archived"
+      ]
+    },
+
+    "currentRole": {
+      "type": "string",
+      "enum": [
+        "planner",
+        "coder",
+        "reviewer"
+      ]
+    },
+
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "commands": {
+      "type": "object",
+      "properties": {
+        "install": {
+          "type": "string"
+        },
+        "build": {
+          "type": "string"
+        },
+        "test": {
+          "type": "string"
+        },
+        "lint": {
+          "type": "string"
+        }
+      }
+    },
+
+    "createdAt": {
+      "type": "string"
+    },
+
+    "updatedAt": {
+      "type": "string"
+    }
+  }
+}

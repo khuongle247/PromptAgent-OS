@@ -1,0 +1,149 @@
+{
+  "metadata": {
+    "plannerVersion": "autonomous-task-generator",
+    "generatedAt": "2026-06-21T08:26:09.731Z",
+    "source": "system",
+    "taskCount": 5,
+    "assumptions": [
+      "Generated automatically from requirements, architecture, and memory signals."
+    ]
+  },
+  "tasks": [
+    {
+      "id": "TASK-002",
+      "title": "# Product Requirements",
+      "module": "ui",
+      "priority": "P1",
+      "status": "todo",
+      "dependencies": [
+        "TASK-001"
+      ],
+      "acceptanceCriteria": [
+        "Implement # Product Requirements.",
+        "Validate # Product Requirements against existing project constraints.",
+        "Persist the result through the existing planner flow."
+      ],
+      "definitionOfDone": [
+        "The task output is schema-compliant for the planner stage.",
+        "The task is ready for downstream architecture review."
+      ],
+      "estimate": "4h",
+      "assignee": "coder",
+      "description": "Generated from legacy memory, requirements, and architecture signals: # Product Requirements."
+    },
+    {
+      "id": "TASK-003",
+      "title": "## Product Name",
+      "module": "general",
+      "priority": "P2",
+      "status": "todo",
+      "dependencies": [
+        "TASK-002"
+      ],
+      "acceptanceCriteria": [
+        "Implement ## Product Name.",
+        "Validate ## Product Name against existing project constraints.",
+        "Persist the result through the existing planner flow."
+      ],
+      "definitionOfDone": [
+        "The task output is schema-compliant for the planner stage.",
+        "The task is ready for downstream architecture review."
+      ],
+      "estimate": "2h",
+      "assignee": "coder",
+      "description": "Generated from legacy memory, requirements, and architecture signals: ## Product Name."
+    },
+    {
+      "id": "TASK-004",
+      "title": "## Problem Statement",
+      "module": "workflow",
+      "priority": "P2",
+      "status": "todo",
+      "dependencies": [
+        "TASK-003"
+      ],
+      "acceptanceCriteria": [
+        "Implement ## Problem Statement.",
+        "Validate ## Problem Statement against existing project constraints.",
+        "Persist the result through the existing planner flow."
+      ],
+      "definitionOfDone": [
+        "The task output is schema-compliant for the planner stage.",
+        "The task is ready for downstream architecture review."
+      ],
+      "estimate": "2h",
+      "assignee": "architect",
+      "description": "Generated from legacy memory, requirements, and architecture signals: ## Problem Statement."
+    },
+    {
+      "id": "TASK-005",
+      "title": "## Target Users",
+      "module": "auth",
+      "priority": "P2",
+      "status": "todo",
+      "dependencies": [
+        "TASK-004"
+      ],
+      "acceptanceCriteria": [
+        "Implement ## Target Users.",
+        "Validate ## Target Users against existing project constraints.",
+        "Persist the result through the existing planner flow."
+      ],
+      "definitionOfDone": [
+        "The task output is schema-compliant for the planner stage.",
+        "The task is ready for downstream architecture review."
+      ],
+      "estimate": "4h",
+      "assignee": "coder",
+      "description": "Generated from legacy memory, requirements, and architecture signals: ## Target Users."
+    },
+    {
+      "id": "TASK-006",
+      "title": "## Non Goals",
+      "module": "general",
+      "priority": "P2",
+      "status": "todo",
+      "dependencies": [
+        "TASK-005"
+      ],
+      "acceptanceCriteria": [
+        "Implement ## Non Goals.",
+        "Validate ## Non Goals against existing project constraints.",
+        "Persist the result through the existing planner flow."
+      ],
+      "definitionOfDone": [
+        "The task output is schema-compliant for the planner stage.",
+        "The task is ready for downstream architecture review."
+      ],
+      "estimate": "2h",
+      "assignee": "coder",
+      "description": "Generated from legacy memory, requirements, and architecture signals: ## Non Goals."
+    }
+  ],
+  "milestones": [
+    {
+      "id": "MS-001",
+      "title": "Autonomous Planning Wave 1",
+      "description": "Task bundle generated from project requirements and architecture signals for wave 1.",
+      "tasks": [
+        "TASK-002",
+        "TASK-003",
+        "TASK-004",
+        "TASK-005"
+      ],
+      "targetDate": "2026-06-28",
+      "status": "planned"
+    },
+    {
+      "id": "MS-002",
+      "title": "Autonomous Planning Wave 2",
+      "description": "Task bundle generated from project requirements and architecture signals for wave 2.",
+      "tasks": [
+        "TASK-006"
+      ],
+      "targetDate": "2026-07-05",
+      "status": "planned"
+    }
+  ],
+  "risks": []
+}

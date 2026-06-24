@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProjectPhaseBumped Event Schema",
+  "description": "Schema for event emitted when the project advances to a new phase.",
+  "type": "object",
+  "required": ["projectId", "oldPhase", "newPhase", "timestamp", "schemaVersion"],
+  "properties": {
+    "projectId": {"type": "string", "minLength": 1},
+    "oldPhase": {"type": "integer", "minimum": 0},
+    "newPhase": {"type": "integer", "minimum": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TaskStatusUpdated Event Schema",
+  "description": "Schema for event emitted when a task's status is updated within the orchestration flow.",
+  "type": "object",
+  "required": ["taskId", "oldStatus", "newStatus", "agent", "timestamp", "schemaVersion"],
+  "properties": {
+    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
+    "oldStatus": {"type": "string", "enum": ["todo", "in_progress", "blocked", "review", "done", "cancelled"]},
+    "newStatus": {"type": "string", "enum": ["todo", "in_progress", "blocked", "review", "done", "cancelled"]},
+    "agent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"]},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+  }
+}
