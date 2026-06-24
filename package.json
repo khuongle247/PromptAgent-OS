@@ -8,7 +8,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "evolve-prompts": "node scripts/run-prompt-evolution.js"
   },
   "dependencies": {
     "ajv": "^8.17.1",

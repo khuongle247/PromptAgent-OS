@@ -2,22 +2,31 @@
   "versions": [
     {
       "version": 1,
-      "createdAt": "2026-06-22T11:17:23.492Z",
+      "createdAt": "2026-06-23T07:30:42.585Z",
       "parentVersion": null,
       "successRate": 0,
-      "approvalStatus": "superseded",
-      "isActive": false,
+      "approvalStatus": "active",
+      "isActive": true,
       "note": "Initial prompt version."
     },
     {
       "version": 2,
-      "createdAt": "2026-06-23T11:17:23.510Z",
+      "createdAt": "2026-06-24T07:30:42.609Z",
       "parentVersion": 1,
       "successRate": 0,
-      "approvalStatus": "active",
-      "isActive": true,
+      "approvalStatus": "candidate",
+      "isActive": false,
       "note": "Candidate v2 derived from v1."
+    },
+    {
+      "version": 3,
+      "createdAt": "2026-06-24T07:30:42.651Z",
+      "parentVersion": 1,
+      "successRate": 0,
+      "approvalStatus": "candidate",
+      "isActive": false,
+      "note": "Candidate v3 derived from v1."
     }
   ],
-  "activeVersion": 2
+  "activeVersion": 1
 }

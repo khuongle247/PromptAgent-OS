@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "intervalHours": 24,
+  "healthThreshold": 80,
+  "retryRateThreshold": 0.2,
+  "failureRateThreshold": 0.1,
+  "autoPromote": false
+}

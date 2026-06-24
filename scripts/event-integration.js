@@ -12,6 +12,7 @@
 
 const AuditEngine = require("../workflow/audit-engine");
 const MetricsEngine = require("../workflow/metrics-engine");
+const PromptEvolutionScheduler = require("../workflow/prompt-evolution-scheduler");
 
 let enginesInitialized = false;
 
@@ -26,6 +27,7 @@ function initializeEngines(eventBus) {
 
   AuditEngine.initialize(eventBus);
   MetricsEngine.initialize(eventBus);
+  PromptEvolutionScheduler.startScheduler();
 
   enginesInitialized = true;
   console.log("[EventIntegration] AuditEngine + MetricsEngine initialized.");

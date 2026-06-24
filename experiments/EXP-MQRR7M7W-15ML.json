@@ -1,11 +1,11 @@
 {
-  "experimentId": "EXP-MQQJQPF5-IE0O",
+  "experimentId": "EXP-MQRR7M7W-15ML",
   "role": "planner",
   "versionA": 1,
   "versionB": 2,
   "status": "completed",
-  "createdAt": "2026-06-23T11:13:50.129Z",
-  "completedAt": "2026-06-23T11:13:50.144Z",
+  "createdAt": "2026-06-24T07:30:42.620Z",
+  "completedAt": "2026-06-24T07:30:42.638Z",
   "sampleSize": 10,
   "results": {
     "versionA": {

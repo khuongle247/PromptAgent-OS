@@ -1,28 +1,72 @@
 {
-  "score": 83,
-  "status": "healthy",
-  "generatedAt": "2026-06-23T11:17:23.534Z",
+  "score": 24,
+  "status": "critical",
+  "generatedAt": "2026-06-24T07:29:39.908Z",
   "summary": {
-    "totalExecutions": 20,
+    "totalExecutions": 10,
     "totalTasks": 6,
-    "successRate": 95,
-    "failureRate": 5,
-    "retryRate": 10,
-    "avgDuration": 3000,
+    "successRate": 40,
+    "failureRate": 40,
+    "retryRate": 40,
+    "avgDuration": 6000,
     "lessonsLearned": 5,
     "reusablePatterns": 3,
-    "bottlenecksFound": 0,
-    "risksFound": 0
+    "bottlenecksFound": 1,
+    "risksFound": 2
   },
-  "bottlenecks": [],
-  "risks": [],
+  "bottlenecks": [
+    {
+      "type": "high-retry-rate",
+      "severity": "warning",
+      "detail": "Agent retry rate is 40.0% (4/10)",
+      "value": 0.4,
+      "threshold": 0.2
+    }
+  ],
+  "risks": [
+    {
+      "type": "high-failure-rate",
+      "severity": "warning",
+      "detail": "Agent failure rate is 40.0% (4/10)",
+      "value": 0.4,
+      "threshold": 0.2
+    },
+    {
+      "type": "prompt-degradation",
+      "severity": "warning",
+      "detail": "High retry rate (40.0%) may indicate prompt degradation",
+      "value": 0.4,
+      "threshold": 0.3
+    }
+  ],
   "recommendations": [
     {
-      "id": "REC-NO-ISSUES",
-      "priority": "low",
-      "category": "general",
-      "description": "No issues detected. Continue monitoring framework health.",
-      "action": "Maintain current configuration and monitoring."
+      "id": "REC-OPTIMIZE-PROMPT",
+      "priority": "medium",
+      "category": "prompt-engineering",
+      "description": "High retry rate detected. Review and optimize agent prompts to improve first-pass success rate.",
+      "action": "Improve Planner prompt with clearer instructions and stricter output format requirements."
+    },
+    {
+      "id": "REC-ADD-VALIDATION",
+      "priority": "medium",
+      "category": "validation",
+      "description": "Add pre-execution validation for Architect outputs to catch errors before coder execution.",
+      "action": "Add validation for Architect outputs"
+    },
+    {
+      "id": "REC-ESCALATE-ERRORS",
+      "priority": "medium",
+      "category": "error-handling",
+      "description": "Agent failure rate is 40.0% (4/10). High failure rates may indicate systemic issues requiring manual intervention.",
+      "action": "Escalate repeated failures to human review. Consider increasing memory importance threshold for recurring failures."
+    },
+    {
+      "id": "REC-REVIEW-PROMPTS",
+      "priority": "medium",
+      "category": "prompt-engineering",
+      "description": "High retry rate (40.0%) may indicate prompt degradation. Prompts may need updating to maintain effectiveness.",
+      "action": "Review all agent prompts for clarity, completeness, and alignment with current task complexity."
     }
   ]
 }
