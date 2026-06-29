@@ -1,15 +1,24 @@
 {
   "name": "promptagent",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.0-beta",
+  "description": "Modular AI Prompt Engineering and Workflow Automation Framework",
+  "main": "run.js",
   "directories": {
     "doc": "docs",
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "evolve-prompts": "node scripts/run-prompt-evolution.js"
+    "start": "node run.js",
+    "init-project": "node scripts/init-project-v2.js",
+    "generate-prompt": "node scripts/generate-prompt-v3.js",
+    "validate-project": "node scripts/validate-project-v2.js",
+    "evolve-prompts": "node scripts/run-prompt-evolution.js",
+    "test": "node tests/phase9-prompt-evolution-test.js",
+    "test:all": "node tests/phase9-prompt-evolution-test.js && node tests/phase7-integration-test.js && node tests/phase8-health-test.js && node tests/phase10-scheduler-test.js && node tests/phase95-automation-test.js && node tests/event-validation-test.js",
+    "lint": "eslint workflow/ scripts/ agents/ adapters/ validation/ run.js --max-warnings=0",
+    "lint:fix": "eslint workflow/ scripts/ agents/ adapters/ validation/ run.js --fix",
+    "format": "prettier --write \"**/*.js\" \"!node_modules/**\" \"!archive/**\" \"!templates/**\" \"!projects/**\"",
+    "format:check": "prettier --check \"**/*.js\" \"!node_modules/**\" \"!archive/**\" \"!templates/**\" \"!projects/**\""
   },
   "dependencies": {
     "ajv": "^8.17.1",
@@ -18,5 +27,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.5"
+  }
 }

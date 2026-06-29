@@ -2,40 +2,31 @@
   "versions": [
     {
       "version": 1,
-      "createdAt": "2026-06-23T07:30:42.577Z",
+      "createdAt": "2026-06-26T03:25:48.288Z",
       "parentVersion": null,
       "successRate": 0,
-      "approvalStatus": "superseded",
-      "isActive": false,
+      "approvalStatus": "active",
+      "isActive": true,
       "note": "Initial prompt version."
     },
     {
       "version": 2,
-      "createdAt": "2026-06-24T07:30:42.581Z",
+      "createdAt": "2026-06-27T03:25:48.315Z",
       "parentVersion": 1,
-      "successRate": 85,
-      "approvalStatus": "active",
-      "isActive": true,
-      "note": "Updated after testing"
+      "successRate": 0,
+      "approvalStatus": "candidate",
+      "isActive": false,
+      "note": "Candidate v2 derived from v1."
     },
     {
       "version": 3,
-      "createdAt": "2026-06-24T07:30:42.604Z",
-      "parentVersion": 2,
+      "createdAt": "2026-06-27T03:26:01.292Z",
+      "parentVersion": 1,
       "successRate": 0,
       "approvalStatus": "candidate",
       "isActive": false,
-      "note": "Candidate v3 derived from v2."
-    },
-    {
-      "version": 4,
-      "createdAt": "2026-06-24T07:30:42.647Z",
-      "parentVersion": 2,
-      "successRate": 0,
-      "approvalStatus": "candidate",
-      "isActive": false,
-      "note": "Candidate v4 derived from v2."
+      "note": "Candidate v3 derived from v1."
     }
   ],
-  "activeVersion": 2
+  "activeVersion": 1
 }

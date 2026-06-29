@@ -1,0 +1,21 @@
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,8 +1,16 @@
+ node_modules/
+ logs/
+ metrics/
+ health/
+ experiments/
+ prompts/*/v*.md
+ workflow/snapshots/
+ .DS_Store
+ npm-debug.log
++
++# Generated artifacts - auto-generated during testing and runtime
++experiments/*.json
++workflow/snapshots/*.json
++logs/*.jsonl
++logs/*.log
++metrics/*.json
++history/*.json
++health/*.json

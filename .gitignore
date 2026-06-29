@@ -1,0 +1,9 @@
+node_modules/
+logs/
+metrics/
+health/
+experiments/
+prompts/*/v*.md
+workflow/snapshots/
+.DS_Store
+npm-debug.log

@@ -1,16 +1,16 @@
 {
-  "score": 24,
+  "score": 20,
   "status": "critical",
-  "generatedAt": "2026-06-24T07:29:39.908Z",
+  "generatedAt": "2026-06-27T03:26:01.266Z",
   "summary": {
     "totalExecutions": 10,
-    "totalTasks": 6,
+    "totalTasks": 5,
     "successRate": 40,
     "failureRate": 40,
     "retryRate": 40,
     "avgDuration": 6000,
-    "lessonsLearned": 5,
-    "reusablePatterns": 3,
+    "lessonsLearned": 3,
+    "reusablePatterns": 2,
     "bottlenecksFound": 1,
     "risksFound": 2
   },

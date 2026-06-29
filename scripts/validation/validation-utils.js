@@ -33,6 +33,14 @@ function readJson(filePath) {
   );
 }
 
+function readJsonSafe(filePath) {
+  try {
+    return fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, "utf8")) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 function writeJson(filePath, data) {
   fs.writeFileSync(
     filePath,
@@ -49,6 +57,14 @@ function readText(filePath) {
     filePath,
     "utf8"
   );
+}
+
+function readTextSafe(filePath) {
+  try {
+    return fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "";
+  } catch (error) {
+    return "";
+  }
 }
 
 // ======================================
@@ -352,8 +368,10 @@ function finalizeReport(
 module.exports = {
   exists,
   readJson,
+  readJsonSafe,
   writeJson,
   readText,
+  readTextSafe,
 
   createReport,
   addError,

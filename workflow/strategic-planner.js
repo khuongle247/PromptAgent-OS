@@ -3,22 +3,8 @@ const path = require("path");
 
 const { listArtifacts, readArtifact } = require("./artifact-store");
 const { loadState } = require("./state-manager");
+const { readJsonSafe, readTextSafe } = require("../scripts/validation/validation-utils");
 
-function readJsonSafe(filePath) {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8"));
-  } catch (error) {
-    return null;
-  }
-}
-
-function readTextSafe(filePath) {
-  try {
-    return fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "";
-  } catch (error) {
-    return "";
-  }
-}
 
 function getProjectDir(rootDir, projectName) {
   return path.join(rootDir, "projects", projectName);

@@ -162,6 +162,7 @@ function buildMilestones(tasks) {
 
 const { analyzeExecutionResults } = require("./learning-loop-engine");
 const { retrieveMemories } = require("./memory-retrieval-engine");
+const { readJsonSafe, readTextSafe } = require("../scripts/validation/validation-utils");
 
 function collectSignals(rootDir, projectDir) {
   const requirements = readTextSafe(path.join(projectDir, "docs", "requirements.md"));

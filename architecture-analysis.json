@@ -1,0 +1,1422 @@
+{
+  "metadata": {
+    "analysis_timestamp": "2026-06-25",
+    "project": "PromptAgent",
+    "scope": "Complete architecture analysis with dependency maps",
+    "files_analyzed": 27
+  },
+  "runtime_graph": {
+    "entry_points": [
+      {
+        "file": "workflow/pipeline-runner.js",
+        "description": "Main pipeline entry point - runs validation and agent sequencing",
+        "function": "runPipeline(rootDir, projectName)",
+        "dependencies": [
+          {
+            "module": "./unified-validation-pipeline",
+            "purpose": "Validates project state before agent execution",
+            "used_by": ["pipeline-runner.js"]
+          },
+          {
+            "module": "./phase-controller",
+            "purpose": "Determines current workflow phase and role configuration",
+            "used_by": ["pipeline-runner.js", "agent-runner.js", "unified-validation-pipeline.js"]
+          },
+          {
+            "module": "./agent-runner",
+            "purpose": "Prepares and validates agent context",
+            "used_by": ["pipeline-runner.js", "unified-validation-pipeline.js"]
+          },
+          {
+            "module": "../scripts/event-integration",
+            "purpose": "Initializes audit engine and metrics engine on first run",
+            "used_by": ["pipeline-runner.js"]
+          },
+          {
+            "module": "./event-bus",
+            "purpose": "Publishes pipeline-level events for observability",
+            "used_by": [
+              "pipeline-runner.js",
+              "agent-executor.js",
+              "agent-orchestrator.js",
+              "state-manager.js",
+              "learning-loop-engine.js",
+              "self-healing-engine.js"
+            ]
+          }
+        ]
+      }
+    ],
+    "execution_flow": [
+      {
+        "step": 1,
+        "flow": "pipeline-runner.runPipeline()",
+        "actions": [
+          "initializeEngines(eventBus) - starts audit/metrics",
+          "getCurrentWorkflowState() - reads project.currentRole",
+          "runUnifiedValidationPipeline() - validates artifacts",
+          "runAgent() - validates agent output"
+        ]
+      },
+      {
+        "step": 2,
+        "flow": "agent-runner.runAgent() → prepareAgentRun() → buildAgentContext()",
+        "actions": [
+          "getRoleConfig(role) - gets prompt/schema paths",
+          "buildAgentContext() - gathers project context",
+          "retrieveMemories() - pulls relevant memory entries",
+          "validateAgentOutput() - checks schema compliance"
+        ]
+      },
+      {
+        "step": 3,
+        "flow": "agent-executor.executeAgent()",
+        "actions": [
+          "buildAgentContext() - constructs input",
+          "loadProjectBundle() - gathers all inputs",
+          "retrieveMemories() - context retrieval",
+          "loadPrompt() via prompt-version-manager - gets evolved prompts",
+          "writeArtifact() - stores output",
+          "eventBus.publish('agent-executed')"
+        ]
+      }
+    ],
+    "call_chains": [
+      {
+        "chain": "pipeline-runner → unified-validation → agent-runner → phase-controller",
+        "purpose": "Validate readiness before execution",
+        "risk": "MEDIUM - multiple validation paths could diverge"
+      },
+      {
+        "chain": "agent-executor → prompt-version-manager → prompt-analyzer/prompt-evolution-engine",
+        "purpose": "Load evolved prompt versions",
+        "risk": "LOW - reads only, no side effects"
+      },
+      {
+        "chain": "agent-executor → artifact-store → memory-retrieval-engine",
+        "purpose": "Store output and retrieve context",
+        "risk": "MEDIUM - artifact storage is critical path"
+      }
+    ]
+  },
+  "workflow_graph": {
+    "all_files": [
+      "agent-executor.js",
+      "agent-orchestrator.js",
+      "agent-runner.js",
+      "artifact-store.js",
+      "audit-engine.js",
+      "autonomous-task-generator.js",
+      "event-bus.js",
+      "event-schema-registry.js",
+      "event-validation-middleware.js",
+      "framework-health.js",
+      "global-state-engine.js",
+      "knowledge-indexer.js",
+      "learning-loop-engine.js",
+      "memory-retrieval-engine.js",
+      "metrics-engine.js",
+      "phase-controller.js",
+      "pipeline-runner.js",
+      "prompt-analyzer.js",
+      "prompt-evolution-engine.js",
+      "prompt-evolution-scheduler.js",
+      "prompt-experiment-engine.js",
+      "prompt-version-manager.js",
+      "self-healing-engine.js",
+      "state-manager.js",
+      "state-recovery-engine.js",
+      "strategic-planner.js",
+      "transition-engine.js",
+      "unified-validation-pipeline.js"
+    ],
+    "dependency_matrix": [
+      {
+        "file": "agent-executor.js",
+        "imports": [
+          "../scripts/validation/validation-utils",
+          "./agent-runner",
+          "./artifact-store",
+          "../adapters/legacy-adapter",
+          "./memory-retrieval-engine",
+          "./prompt-version-manager",
+          "./event-bus"
+        ],
+        "exports": ["executeAgent", "buildAgentContext"],
+        "callers": [
+          "agent-orchestrator.js",
+          "autonomous-task-generator.js",
+          "self-healing-engine.js"
+        ]
+      },
+      {
+        "file": "agent-orchestrator.js",
+        "imports": [
+          "./agent-executor",
+          "./artifact-store",
+          "./state-manager",
+          "./transition-engine",
+          "./learning-loop-engine",
+          "./event-bus"
+        ],
+        "exports": ["orchestrate", "runStep"],
+        "callers": [
+          "state-recovery-engine.js"
+        ]
+      },
+      {
+        "file": "agent-runner.js",
+        "imports": [
+          "../scripts/validation/validation-utils",
+          "./phase-controller",
+          "./memory-retrieval-engine"
+        ],
+        "exports": [
+          "buildAgentContext",
+          "prepareAgentRun",
+          "validateAgentOutput",
+          "runAgent"
+        ],
+        "callers": [
+          "agent-executor.js",
+          "pipeline-runner.js"
+        ]
+      },
+      {
+        "file": "artifact-store.js",
+        "imports": [],
+        "exports": [
+          "writeArtifact",
+          "readArtifact",
+          "listArtifacts"
+        ],
+        "callers": [
+          "agent-executor.js",
+          "agent-orchestrator.js",
+          "autonomous-task-generator.js",
+          "global-state-engine.js",
+          "knowledge-indexer.js",
+          "learning-loop-engine.js",
+          "state-recovery-engine.js",
+          "strategic-planner.js"
+        ]
+      },
+      {
+        "file": "state-manager.js",
+        "imports": ["./event-bus"],
+        "exports": [
+          "loadState",
+          "saveState",
+          "setCurrentAgent",
+          "setAgentStatus",
+          "bumpPhase",
+          "getStatus",
+          "incrementRetry"
+        ],
+        "callers": [
+          "agent-orchestrator.js",
+          "autonomous-task-generator.js",
+          "global-state-engine.js",
+          "self-healing-engine.js",
+          "state-recovery-engine.js",
+          "strategic-planner.js"
+        ],
+        "events_published": ["state-updated"]
+      },
+      {
+        "file": "prompt-version-manager.js",
+        "imports": [],
+        "exports": [
+          "getActiveVersion",
+          "getVersion",
+          "listVersions",
+          "createCandidate",
+          "promoteVersion",
+          "getAllActiveVersions"
+        ],
+        "callers": [
+          "agent-executor.js",
+          "prompt-evolution-engine.js"
+        ]
+      },
+      {
+        "file": "prompt-analyzer.js",
+        "imports": [],
+        "exports": [
+          "analyzePrompts",
+          "getWeaknessReport",
+          "detectCommonErrors",
+          "detectRetryHotspots"
+        ],
+        "callers": [
+          "prompt-evolution-engine.js"
+        ]
+      },
+      {
+        "file": "prompt-evolution-engine.js",
+        "imports": [
+          "./prompt-analyzer",
+          "./prompt-version-manager"
+        ],
+        "exports": [
+          "runEvolutionCycle",
+          "getEvolutionReport"
+        ],
+        "callers": [
+          "prompt-evolution-scheduler.js",
+          "scripts/run-prompt-evolution.js"
+        ]
+      },
+      {
+        "file": "prompt-evolution-scheduler.js",
+        "imports": [
+          "./prompt-evolution-engine",
+          "./framework-health",
+          "./metrics-engine"
+        ],
+        "exports": [
+          "runSchedulerOnce",
+          "startScheduler",
+          "stopScheduler"
+        ],
+        "initialization": "Initialized via event-integration.js"
+      },
+      {
+        "file": "transition-engine.js",
+        "imports": [],
+        "exports": [
+          "evaluateTransition",
+          "getNextAgent",
+          "shouldRetry"
+        ],
+        "callers": [
+          "agent-orchestrator.js",
+          "self-healing-engine.js",
+          "state-recovery-engine.js"
+        ]
+      },
+      {
+        "file": "learning-loop-engine.js",
+        "imports": [
+          "../scripts/validation/validation-utils",
+          "../scripts/task-utils-v2",
+          "./artifact-store",
+          "./event-bus"
+        ],
+        "exports": ["analyzeExecutionResults"],
+        "callers": [
+          "agent-orchestrator.js",
+          "autonomous-task-generator.js",
+          "self-healing-engine.js"
+        ],
+        "events_published": [
+          "lesson-learned",
+          "memory-importance-updated",
+          "reusable-pattern-identified"
+        ]
+      },
+      {
+        "file": "self-healing-engine.js",
+        "imports": [
+          "./agent-executor",
+          "./artifact-store",
+          "./state-manager",
+          "./transition-engine",
+          "./learning-loop-engine",
+          "./event-bus"
+        ],
+        "exports": ["runHealing"],
+        "callers": ["global-state-engine.js"],
+        "events_published": [
+          "healing-attempted",
+          "healing-cycle-completed",
+          "bug-pattern-recorded"
+        ]
+      },
+      {
+        "file": "event-bus.js",
+        "imports": [
+          "./event-schema-registry",
+          "./event-validation-middleware"
+        ],
+        "exports": ["singleton EventBus instance"],
+        "pattern": "Middleware-based event validation with schema registry",
+        "subscribers": [
+          {
+            "event": "*",
+            "subscriber": "audit-engine.js",
+            "purpose": "Log all events for auditability"
+          },
+          {
+            "event": "agent-executed, agent-transitioned, healing-cycle-completed, lesson-learned, memory-importance-updated, reusable-pattern-identified",
+            "subscriber": "metrics-engine.js",
+            "purpose": "Collect performance metrics"
+          }
+        ]
+      },
+      {
+        "file": "audit-engine.js",
+        "imports": [],
+        "exports": ["initialize", "logEvent", "getAuditLog"],
+        "activation": "Initialized by event-integration.js",
+        "side_effects": "Writes to logs/audit.jsonl"
+      },
+      {
+        "file": "metrics-engine.js",
+        "imports": [],
+        "exports": [
+          "initialize",
+          "recordAgentExecution",
+          "recordTaskExecution",
+          "recordLesson",
+          "getAgentMetrics"
+        ],
+        "activation": "Initialized by event-integration.js",
+        "side_effects": "Writes to metrics/*.json"
+      },
+      {
+        "file": "framework-health.js",
+        "imports": [],
+        "exports": [
+          "generateHealthReport",
+          "getFrameworkStatus"
+        ],
+        "purpose": "Consumes audit and metrics to generate health scores",
+        "callers": ["prompt-evolution-scheduler.js"]
+      },
+      {
+        "file": "memory-retrieval-engine.js",
+        "imports": ["../scripts/validation/validation-utils"],
+        "exports": ["retrieveMemories", "loadMemory", "rankMemories"],
+        "callers": [
+          "agent-runner.js",
+          "agent-executor.js",
+          "autonomous-task-generator.js",
+          "strategic-planner.js"
+        ]
+      },
+      {
+        "file": "strategic-planner.js",
+        "imports": [
+          "./artifact-store",
+          "./state-manager",
+          "./memory-retrieval-engine",
+          "./knowledge-indexer"
+        ],
+        "exports": [
+          "planStrategically",
+          "decomposeGoal",
+          "computePriorityScores"
+        ],
+        "callers": [
+          "autonomous-task-generator.js (potential integration point)"
+        ]
+      },
+      {
+        "file": "autonomous-task-generator.js",
+        "imports": [
+          "./agent-executor",
+          "./artifact-store",
+          "./state-manager",
+          "./learning-loop-engine",
+          "./memory-retrieval-engine"
+        ],
+        "exports": ["generateTasks"],
+        "integration_point": "Optional: could use strategic-planner.planStrategically()"
+      },
+      {
+        "file": "unified-validation-pipeline.js",
+        "imports": [
+          "../scripts/validation/validation-utils",
+          "./phase-controller"
+        ],
+        "exports": ["runUnifiedValidationPipeline"]
+      },
+      {
+        "file": "global-state-engine.js",
+        "imports": [
+          "./state-manager",
+          "./artifact-store",
+          "./self-healing-engine"
+        ],
+        "exports": ["captureState", "restoreState"],
+        "purpose": "Global state snapshots and recovery"
+      },
+      {
+        "file": "state-recovery-engine.js",
+        "imports": [
+          "./state-manager",
+          "./artifact-store",
+          "./transition-engine",
+          "./agent-orchestrator"
+        ],
+        "exports": [
+          "captureExecutionState",
+          "loadExecutionState",
+          "resumeExecution"
+        ]
+      },
+      {
+        "file": "knowledge-indexer.js",
+        "imports": [
+          "../scripts/validation/validation-utils",
+          "./artifact-store"
+        ],
+        "exports": ["indexArtifacts", "searchKnowledge"]
+      },
+      {
+        "file": "phase-controller.js",
+        "imports": [],
+        "exports": [
+          "getRoleConfig",
+          "getCurrentWorkflowState",
+          "getNextRole",
+          "advancePhase"
+        ],
+        "callers": [
+          "agent-runner.js",
+          "pipeline-runner.js",
+          "unified-validation-pipeline.js"
+        ]
+      }
+    ],
+    "circular_dependencies": [
+      {
+        "detected": false,
+        "note": "No circular dependencies found in core workflow"
+      }
+    ],
+    "redundant_imports": [
+      {
+        "pattern": "Multiple files import artifact-store independently",
+        "count": 8,
+        "severity": "LOW",
+        "note": "This is expected - artifact-store is a core utility"
+      },
+      {
+        "pattern": "Multiple files import event-bus independently",
+        "count": 7,
+        "severity": "LOW",
+        "note": "Event-bus is the central messaging hub"
+      }
+    ]
+  },
+  "event_graph": {
+    "event_types": [
+      {
+        "event": "artifact-written",
+        "publishers": ["agent-executor.js"],
+        "subscribers": [],
+        "audit_logged": true,
+        "metrics_tracked": false,
+        "purpose": "Notify when artifacts are persisted"
+      },
+      {
+        "event": "agent-executed",
+        "publishers": ["agent-executor.js"],
+        "subscribers": ["metrics-engine.js"],
+        "audit_logged": true,
+        "metrics_tracked": true,
+        "purpose": "Track agent execution completion"
+      },
+      {
+        "event": "agent-transitioned",
+        "publishers": ["agent-orchestrator.js"],
+        "subscribers": ["metrics-engine.js"],
+        "audit_logged": true,
+        "metrics_tracked": true,
+        "purpose": "Track agent role transitions"
+      },
+      {
+        "event": "task-status-updated",
+        "publishers": ["agent-orchestrator.js"],
+        "subscribers": [],
+        "audit_logged": true,
+        "metrics_tracked": false,
+        "purpose": "Notify of task status changes"
+      },
+      {
+        "event": "project-phase-bumped",
+        "publishers": ["agent-orchestrator.js"],
+        "subscribers": [],
+        "audit_logged": true,
+        "metrics_tracked": false,
+        "purpose": "Notify of phase progression"
+      },
+      {
+        "event": "state-updated",
+        "publishers": ["state-manager.js"],
+        "subscribers": [],
+        "audit_logged": true,
+        "metrics_tracked": false,
+        "purpose": "Track all state mutations"
+      },
+      {
+        "event": "healing-attempted",
+        "publishers": ["self-healing-engine.js"],
+        "subscribers": [],
+        "audit_logged": true,
+        "metrics_tracked": false,
+        "purpose": "Record healing attempt initiation"
+      },
+      {
+        "event": "healing-cycle-completed",
+        "publishers": ["self-healing-engine.js"],
+        "subscribers": ["metrics-engine.js"],
+        "audit_logged": true,
+        "metrics_tracked": true,
+        "purpose": "Track healing cycle outcomes"
+      },
+      {
+        "event": "bug-pattern-recorded",
+        "publishers": ["self-healing-engine.js"],
+        "subscribers": [],
+        "audit_logged": true,
+        "metrics_tracked": false,
+        "purpose": "Record detected bug patterns"
+      },
+      {
+        "event": "lesson-learned",
+        "publishers": ["learning-loop-engine.js"],
+        "subscribers": ["metrics-engine.js"],
+        "audit_logged": true,
+        "metrics_tracked": true,
+        "purpose": "Capture success patterns and lessons"
+      },
+      {
+        "event": "memory-importance-updated",
+        "publishers": ["learning-loop-engine.js"],
+        "subscribers": ["metrics-engine.js"],
+        "audit_logged": true,
+        "metrics_tracked": true,
+        "purpose": "Track memory importance score changes"
+      },
+      {
+        "event": "reusable-pattern-identified",
+        "publishers": ["learning-loop-engine.js"],
+        "subscribers": ["metrics-engine.js"],
+        "audit_logged": true,
+        "metrics_tracked": true,
+        "purpose": "Identify and track reusable patterns"
+      }
+    ],
+    "event_flow_diagram": {
+      "execution_flow": "agent-executor → agent-orchestrator → transition-engine → learning-loop-engine",
+      "event_emissions": [
+        "agent-executed (agent-executor)",
+        "agent-transitioned (agent-orchestrator)",
+        "task-status-updated (agent-orchestrator)",
+        "lesson-learned (learning-loop-engine)",
+        "memory-importance-updated (learning-loop-engine)"
+      ],
+      "observability_collection": [
+        "All events → audit-engine (logs to audit.jsonl)",
+        "agent-executed, agent-transitioned, healing-cycle-completed, lesson-learned, memory-importance-updated, reusable-pattern-identified → metrics-engine (tracks metrics)"
+      ]
+    },
+    "event_validation": {
+      "schema_registry": "event-schema-registry.js loads schema definitions",
+      "validation_middleware": "event-validation-middleware.js validates against schema before publication",
+      "invalid_event_log": "logs/invalid-events.jsonl captures schema violations",
+      "quarantine": "Invalid events are stopped from propagation by middleware"
+    }
+  },
+  "evolution_graph": {
+    "system_overview": "Prompt Self-Improving System - Evolution Cycle orchestrated by scheduler based on health/metrics",
+    "components": [
+      {
+        "module": "prompt-evolution-engine.js",
+        "purpose": "Orchestrates evolution cycle: analyze → improve → store → promote",
+        "inputs": [
+          "Current prompts (from prompt-version-manager)",
+          "Audit logs (analyzed via prompt-analyzer)"
+        ],
+        "outputs": [
+          "Improved prompt candidates (stored via prompt-version-manager)",
+          "Evolution reports"
+        ],
+        "promotion_rules": [
+          "successRate increase > 10%",
+          "retryRate decreases",
+          "ratings improve"
+        ],
+        "safety": "Never auto-replaces broken prompts; requires manual review flag unless all rules pass"
+      },
+      {
+        "module": "prompt-analyzer.js",
+        "purpose": "Analyzes audit logs to detect prompt weaknesses",
+        "inputs": ["logs/audit.jsonl (from AuditEngine)"],
+        "outputs": [
+          "Weakness reports: common-errors, retry-hotspots, phantom-patterns, missing-artifacts, healing-dependencies"
+        ],
+        "analysis_methods": [
+          "detectCommonErrors() - identifies error patterns",
+          "detectRetryHotspots() - finds tasks needing more clarity",
+          "detectPhantomPatterns() - finds reported but unexecuted steps",
+          "detectMissingArtifactPatterns() - finds incomplete outputs",
+          "detectHealingDependency() - finds patterns requiring healing"
+        ]
+      },
+      {
+        "module": "prompt-version-manager.js",
+        "purpose": "Manages prompt version lifecycle and active versions",
+        "functions": [
+          "getActiveVersion(role) - returns active prompt content",
+          "createCandidate(role, content) - creates new candidate version",
+          "promoteVersion(role, version) - makes version active",
+          "listVersions(role) - lists all versions for a role",
+          "getAllActiveVersions() - returns all active prompts"
+        ],
+        "storage": "prompts/{role}/versions.json + prompts/{role}/v{N}.md files",
+        "versioning_strategy": "Semantic: active, candidate, archived"
+      },
+      {
+        "module": "prompt-experiment-engine.js",
+        "purpose": "A/B test prompt versions to validate improvements",
+        "functions": [
+          "createExperiment(role, versionA, versionB) - creates test",
+          "recordExecution(experimentId, version, result) - records outcome",
+          "compareVersions(experimentId) - computes stats",
+          "getWinner(experimentId) - identifies better version"
+        ],
+        "integration": "Optional - can validate evolution before promotion"
+      },
+      {
+        "module": "prompt-evolution-scheduler.js",
+        "purpose": "Schedules evolution cycles based on health/metrics triggers",
+        "triggers": [
+          "Health score drop > threshold",
+          "Metric anomalies detected",
+          "Periodic interval (e.g., hourly)",
+          "Manual invocation via startScheduler()"
+        ],
+        "inputs": [
+          "framework-health.generateHealthReport()",
+          "metrics-engine metrics",
+          "Configuration thresholds"
+        ],
+        "outputs": [
+          "Logs evolution cycle results",
+          "Triggers prompt-evolution-engine if conditions met"
+        ],
+        "initialization": "Started by event-integration.initializeEngines()"
+      }
+    ],
+    "evolution_call_chain": {
+      "trigger": "prompt-evolution-scheduler.startScheduler() OR manual invocation",
+      "flow": [
+        "1. prompt-evolution-scheduler.runSchedulerOnce()",
+        "2. → getHealthAndMetrics() reads framework health + metrics",
+        "3. → shouldRunEvolution() evaluates triggers",
+        "4. → prompt-evolution-engine.runEvolutionCycle()",
+        "5.   → prompt-analyzer.analyzePrompts() detects weaknesses",
+        "6.   → prompt-analyzer.getWeaknessReport() returns findings",
+        "7.   → buildImprovedPrompt{Role}(weaknesses) generates improvements",
+        "8.   → prompt-version-manager.createCandidate() stores version",
+        "9.   → evaluateAutoPromotion() checks promotion rules",
+        "10.  → prompt-version-manager.promoteVersion() if rules pass",
+        "11. ← Returns evolution report with promotions/candidates"
+      ]
+    },
+    "integration_with_execution": {
+      "load_point": "agent-executor.loadPrompt(role)",
+      "strategy": "Try prompt-version-manager.getActiveVersion() first, fallback to legacy prompts/{role}.md",
+      "frequency": "Every agent execution loads latest active version",
+      "feedback_loop": [
+        "Execution results → learning-loop-engine.analyzeExecutionResults()",
+        "Lessons learned → metrics-engine.recordLesson()",
+        "Metrics updated → prompt-evolution-scheduler checks triggers",
+        "If triggered → new evolution cycle"
+      ]
+    }
+  },
+  "file_classification": [
+    {
+      "file": "workflow/pipeline-runner.js",
+      "category": "A-Core Runtime",
+      "purpose": "Main entry point for pipeline execution; orchestrates validation and agent sequencing",
+      "primary_callers": ["CLI/external scripts"],
+      "primary_callees": [
+        "unified-validation-pipeline",
+        "phase-controller",
+        "agent-runner",
+        "event-integration",
+        "event-bus"
+      ],
+      "can_remove": "NO",
+      "removal_reason": "Critical entry point; removing would break pipeline execution",
+      "risk_level": "HIGH",
+      "dependencies": 5
+    },
+    {
+      "file": "workflow/agent-executor.js",
+      "category": "A-Core Runtime",
+      "purpose": "Executes individual agent roles; loads prompts, runs validation, writes artifacts",
+      "primary_callers": [
+        "agent-orchestrator.js",
+        "autonomous-task-generator.js",
+        "self-healing-engine.js"
+      ],
+      "primary_callees": [
+        "agent-runner",
+        "artifact-store",
+        "memory-retrieval-engine",
+        "prompt-version-manager",
+        "event-bus"
+      ],
+      "can_remove": "NO",
+      "removal_reason": "Core agent execution engine; all agent runs depend on it",
+      "risk_level": "HIGH",
+      "dependencies": 7
+    },
+    {
+      "file": "workflow/agent-orchestrator.js",
+      "category": "A-Core Runtime",
+      "purpose": "Orchestrates agent workflow; manages transitions, state, learning, and events",
+      "primary_callers": [
+        "state-recovery-engine.js"
+      ],
+      "primary_callees": [
+        "agent-executor",
+        "artifact-store",
+        "state-manager",
+        "transition-engine",
+        "learning-loop-engine",
+        "event-bus"
+      ],
+      "can_remove": "NO",
+      "removal_reason": "Central orchestrator; coordinates multi-agent execution",
+      "risk_level": "HIGH",
+      "dependencies": 6
+    },
+    {
+      "file": "workflow/event-bus.js",
+      "category": "A-Core Runtime",
+      "purpose": "Central event messaging system with schema validation; enables event-driven architecture",
+      "primary_callers": [
+        "8 workflow modules",
+        "1 script (event-integration)"
+      ],
+      "primary_callees": [
+        "event-schema-registry",
+        "event-validation-middleware"
+      ],
+      "can_remove": "NO",
+      "removal_reason": "Essential for observability and event-driven systems; used by audit/metrics/learning",
+      "risk_level": "HIGH",
+      "dependencies": 2,
+      "implementation_notes": "Singleton pattern; middleware-based validation layer added in Phase 7"
+    },
+    {
+      "file": "workflow/phase-controller.js",
+      "category": "A-Core Runtime",
+      "purpose": "Defines role sequence and configuration; maps phases to agent roles",
+      "primary_callers": [
+        "agent-runner.js",
+        "pipeline-runner.js",
+        "unified-validation-pipeline.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "NO",
+      "removal_reason": "Defines workflow structure; all role-based logic depends on this config",
+      "risk_level": "MEDIUM",
+      "dependencies": 0,
+      "implementation_notes": "Contains ROLE_SEQUENCE and ROLE_CONFIG constants"
+    },
+    {
+      "file": "workflow/agent-runner.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Prepares agent execution context; builds project context and validates readiness",
+      "primary_callers": [
+        "agent-executor.js",
+        "pipeline-runner.js"
+      ],
+      "primary_callees": [
+        "phase-controller",
+        "memory-retrieval-engine"
+      ],
+      "can_remove": "NO",
+      "removal_reason": "Required for agent context building; without it agents lack project context",
+      "risk_level": "HIGH",
+      "dependencies": 2
+    },
+    {
+      "file": "workflow/artifact-store.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Persistent storage for agent outputs; manifest-based artifact management",
+      "primary_callers": [
+        "agent-executor.js",
+        "agent-orchestrator.js",
+        "autonomous-task-generator.js",
+        "global-state-engine.js",
+        "knowledge-indexer.js",
+        "learning-loop-engine.js",
+        "state-recovery-engine.js",
+        "strategic-planner.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "NO",
+      "removal_reason": "Core storage layer; all outputs depend on this",
+      "risk_level": "HIGH",
+      "dependencies": 0
+    },
+    {
+      "file": "workflow/state-manager.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Manages project and agent state; publishes state change events",
+      "primary_callers": [
+        "agent-orchestrator.js",
+        "autonomous-task-generator.js",
+        "global-state-engine.js",
+        "self-healing-engine.js",
+        "state-recovery-engine.js",
+        "strategic-planner.js"
+      ],
+      "primary_callees": ["event-bus"],
+      "can_remove": "NO",
+      "removal_reason": "Central state management; all workflow state depends on this",
+      "risk_level": "HIGH",
+      "dependencies": 1,
+      "events_published": ["state-updated"]
+    },
+    {
+      "file": "workflow/memory-retrieval-engine.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Retrieves relevant memories for agent context; semantic ranking of memory entries",
+      "primary_callers": [
+        "agent-runner.js",
+        "agent-executor.js",
+        "autonomous-task-generator.js",
+        "strategic-planner.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Improves agent context but not critical; agents could work without retrieval ranking",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "note": "Could be removed if memory context not needed; fallback to all memories"
+    },
+    {
+      "file": "workflow/unified-validation-pipeline.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Validates project workspace before execution; ensures artifact and file completeness",
+      "primary_callers": [
+        "pipeline-runner.js"
+      ],
+      "primary_callees": [
+        "phase-controller"
+      ],
+      "can_remove": "NO",
+      "removal_reason": "Critical pre-execution validation; prevents invalid state propagation",
+      "risk_level": "MEDIUM",
+      "dependencies": 1
+    },
+    {
+      "file": "workflow/transition-engine.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Evaluates state transitions and determines next agent based on execution results",
+      "primary_callers": [
+        "agent-orchestrator.js",
+        "self-healing-engine.js",
+        "state-recovery-engine.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "NO",
+      "removal_reason": "Defines workflow transitions; without it, no multi-agent sequencing",
+      "risk_level": "HIGH",
+      "dependencies": 0,
+      "implementation_notes": "Contains TRANSITIONS map and retry logic"
+    },
+    {
+      "file": "workflow/prompt-evolution-engine.js",
+      "category": "C-Evolution System",
+      "purpose": "Orchestrates prompt improvement cycle: analyze weaknesses → generate improvements → promote versions",
+      "primary_callers": [
+        "prompt-evolution-scheduler.js",
+        "scripts/run-prompt-evolution.js"
+      ],
+      "primary_callees": [
+        "prompt-analyzer",
+        "prompt-version-manager"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional feature for continuous prompt improvement; system works without evolution",
+      "risk_level": "LOW",
+      "dependencies": 2,
+      "implementation_notes": "Safety: never auto-replaces broken prompts; all candidates require manual review unless promotion rules pass"
+    },
+    {
+      "file": "workflow/prompt-analyzer.js",
+      "category": "C-Evolution System",
+      "purpose": "Analyzes audit logs to detect prompt weaknesses and improvement opportunities",
+      "primary_callers": [
+        "prompt-evolution-engine.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional; used only by evolution engine which is itself optional",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "analysis_types": [
+        "common-errors",
+        "retry-hotspots",
+        "phantom-patterns",
+        "missing-artifacts",
+        "healing-dependency"
+      ]
+    },
+    {
+      "file": "workflow/prompt-version-manager.js",
+      "category": "C-Evolution System",
+      "purpose": "Manages prompt version lifecycle: active, candidate, archived; supports evolution",
+      "primary_callers": [
+        "agent-executor.js",
+        "prompt-evolution-engine.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional; system falls back to legacy prompts/{role}.md if not used",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "notes": "Used by agent-executor to load evolved prompts; fallback to legacy prompts if unavailable"
+    },
+    {
+      "file": "workflow/prompt-experiment-engine.js",
+      "category": "C-Evolution System",
+      "purpose": "A/B testing framework for prompt versions; validates improvements before promotion",
+      "primary_callers": [],
+      "primary_callees": [],
+      "can_remove": "YES",
+      "removal_reason": "Optional feature; no callers in production; only used for validation in evolution pipeline",
+      "risk_level": "NONE",
+      "dependencies": 0,
+      "implementation_notes": "Standalone utility; can be used manually if needed but not integrated"
+    },
+    {
+      "file": "workflow/prompt-evolution-scheduler.js",
+      "category": "C-Evolution System",
+      "purpose": "Schedules evolution cycles based on health/metrics; triggers prompt improvement",
+      "primary_callers": [
+        "scripts/event-integration.js"
+      ],
+      "primary_callees": [
+        "prompt-evolution-engine",
+        "framework-health",
+        "metrics-engine"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional; evolution is continuous improvement feature, not essential to core workflow",
+      "risk_level": "LOW",
+      "dependencies": 3,
+      "activation": "Initialized by event-integration.initializeEngines()"
+    },
+    {
+      "file": "workflow/learning-loop-engine.js",
+      "category": "D-Learning System",
+      "purpose": "Captures lessons learned from executions; analyzes success patterns and failures",
+      "primary_callers": [
+        "agent-orchestrator.js",
+        "autonomous-task-generator.js",
+        "self-healing-engine.js"
+      ],
+      "primary_callees": [
+        "artifact-store",
+        "event-bus"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional continuous learning feature; system functions without it but loses learning",
+      "risk_level": "LOW",
+      "dependencies": 2,
+      "events_published": [
+        "lesson-learned",
+        "memory-importance-updated",
+        "reusable-pattern-identified"
+      ]
+    },
+    {
+      "file": "workflow/self-healing-engine.js",
+      "category": "D-Learning System",
+      "purpose": "Detects failures and auto-recovers; runs debugger and re-executes failing agents",
+      "primary_callers": [
+        "global-state-engine.js"
+      ],
+      "primary_callees": [
+        "agent-executor",
+        "artifact-store",
+        "state-manager",
+        "transition-engine",
+        "learning-loop-engine",
+        "event-bus"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Improves resilience but not required; system degrades to manual retry without it",
+      "risk_level": "MEDIUM",
+      "dependencies": 6,
+      "events_published": [
+        "healing-attempted",
+        "healing-cycle-completed",
+        "bug-pattern-recorded"
+      ]
+    },
+    {
+      "file": "workflow/autonomous-task-generator.js",
+      "category": "D-Learning System",
+      "purpose": "Generates task lists from project signals; derives tasks from memory and artifacts",
+      "primary_callers": [],
+      "primary_callees": [
+        "agent-executor",
+        "artifact-store",
+        "state-manager",
+        "learning-loop-engine",
+        "memory-retrieval-engine"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional automation; tasks can be created manually if not used",
+      "risk_level": "LOW",
+      "dependencies": 5,
+      "integration_point": "Could integrate strategic-planner for prioritized task generation"
+    },
+    {
+      "file": "workflow/strategic-planner.js",
+      "category": "D-Learning System",
+      "purpose": "Strategic goal decomposition and task planning; prioritization and risk analysis",
+      "primary_callers": [],
+      "primary_callees": [
+        "artifact-store",
+        "state-manager",
+        "memory-retrieval-engine",
+        "knowledge-indexer"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional planning feature; not integrated in current architecture but available for use",
+      "risk_level": "LOW",
+      "dependencies": 4,
+      "integration_point": "Could be used by autonomous-task-generator.feedPlanner() for prioritization"
+    },
+    {
+      "file": "workflow/audit-engine.js",
+      "category": "E-Observability",
+      "purpose": "Event audit logging; captures all events for compliance and debugging",
+      "primary_callers": [
+        "scripts/event-integration.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional observability feature; system works without audit trail but loses compliance",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "activation": "Initialized by event-integration.initializeEngines()",
+      "side_effects": "Writes to logs/audit.jsonl"
+    },
+    {
+      "file": "workflow/metrics-engine.js",
+      "category": "E-Observability",
+      "purpose": "Performance metrics collection; tracks agent execution, learning, and healing",
+      "primary_callers": [
+        "scripts/event-integration.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional observability feature; system works without metrics but loses visibility",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "activation": "Initialized by event-integration.initializeEngines()",
+      "side_effects": "Writes to metrics/*.json",
+      "subscriptions": [
+        "agent-executed",
+        "agent-transitioned",
+        "healing-cycle-completed",
+        "lesson-learned",
+        "memory-importance-updated",
+        "reusable-pattern-identified"
+      ]
+    },
+    {
+      "file": "workflow/framework-health.js",
+      "category": "E-Observability",
+      "purpose": "Generates health reports from audit/metrics; detects bottlenecks and risks",
+      "primary_callers": [
+        "prompt-evolution-scheduler.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional observability; evolution scheduler would skip checks without it but evolution still runs",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "reads": [
+        "metrics/agent-performance.json",
+        "metrics/task-metrics.json",
+        "metrics/learning-metrics.json",
+        "logs/audit.jsonl"
+      ]
+    },
+    {
+      "file": "workflow/event-schema-registry.js",
+      "category": "E-Observability",
+      "purpose": "Loads and manages event schemas; validates event payload structure",
+      "primary_callers": [
+        "event-bus.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional validation layer; event-bus works without it but loses schema validation",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "implementation_notes": "Integrated into event-bus in Phase 7"
+    },
+    {
+      "file": "workflow/event-validation-middleware.js",
+      "category": "E-Observability",
+      "purpose": "Middleware that validates events against schema; quarantines invalid events",
+      "primary_callers": [
+        "event-bus.js"
+      ],
+      "primary_callees": [],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional validation layer; events propagate without it but no schema enforcement",
+      "risk_level": "LOW",
+      "dependencies": 0,
+      "implementation_notes": "Integrated into event-bus in Phase 7"
+    },
+    {
+      "file": "workflow/knowledge-indexer.js",
+      "category": "E-Observability",
+      "purpose": "Indexes artifacts for search; enables knowledge discovery",
+      "primary_callers": [
+        "strategic-planner.js"
+      ],
+      "primary_callees": [
+        "artifact-store"
+      ],
+      "can_remove": "YES",
+      "removal_reason": "Optional enhancement; only called by strategic-planner which is itself optional",
+      "risk_level": "NONE",
+      "dependencies": 1
+    },
+    {
+      "file": "workflow/global-state-engine.js",
+      "category": "D-Learning System",
+      "purpose": "Captures global state snapshots; enables drift detection and recovery",
+      "primary_callers": [],
+      "primary_callees": [
+        "state-manager",
+        "artifact-store",
+        "self-healing-engine"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional resilience feature; system works without drift detection but loses recovery capability",
+      "risk_level": "LOW",
+      "dependencies": 3
+    },
+    {
+      "file": "workflow/state-recovery-engine.js",
+      "category": "B-Required Infrastructure",
+      "purpose": "Recovers from execution failures; persists and resumes execution state",
+      "primary_callers": [],
+      "primary_callees": [
+        "state-manager",
+        "artifact-store",
+        "transition-engine",
+        "agent-orchestrator"
+      ],
+      "can_remove": "MAYBE",
+      "removal_reason": "Optional but valuable; enables resumable executions after failures",
+      "risk_level": "LOW",
+      "dependencies": 4,
+      "implementation_notes": "Exports resumeExecution() for manual use"
+    }
+  ],
+  "complexity_issues": [
+    {
+      "issue": "Duplicate State Management",
+      "severity": "MEDIUM",
+      "affected_modules": [
+        "state-manager.js (primary)",
+        "global-state-engine.js (snapshots)",
+        "state-recovery-engine.js (recovery)"
+      ],
+      "description": "Three separate modules manage state with overlapping responsibilities",
+      "recommendation": "Consolidate into single state management system with optional snapshot/recovery layers",
+      "impact": "If changed, must coordinate updates across three modules"
+    },
+    {
+      "issue": "Multiple Health Check Systems",
+      "severity": "LOW",
+      "affected_modules": [
+        "framework-health.js (reads metrics/audit)",
+        "unified-validation-pipeline.js (validates files)",
+        "metrics-engine.js (tracks metrics)"
+      ],
+      "description": "Three separate health/validation paths running in parallel",
+      "recommendation": "Could consolidate validation into single pipeline with separate observability",
+      "impact": "Inconsistent health signals possible if systems disagree"
+    },
+    {
+      "issue": "Event Bus Observability Coupling",
+      "severity": "MEDIUM",
+      "affected_modules": [
+        "event-bus.js (core)",
+        "audit-engine.js (subscriber)",
+        "metrics-engine.js (subscriber)"
+      ],
+      "description": "Event-bus has hard dependency on audit/metrics via event-integration initialization",
+      "recommendation": "Make audit/metrics optional by decoupling initialization",
+      "impact": "Cannot disable audit/metrics without modifying event-integration startup"
+    },
+    {
+      "issue": "Optional Features Scattered Throughout",
+      "severity": "LOW",
+      "affected_modules": [
+        "prompt-evolution system (5 files)",
+        "learning-loop-engine.js",
+        "self-healing-engine.js",
+        "autonomous-task-generator.js",
+        "strategic-planner.js"
+      ],
+      "description": "Multiple optional subsystems (evolution, learning, healing) not clearly marked as optional",
+      "recommendation": "Create feature flags or separate optional/ directory for clarity",
+      "impact": "Unclear which features are core vs. optional; makes maintenance harder"
+    },
+    {
+      "issue": "Redundant Abstraction Layers",
+      "severity": "LOW",
+      "affected_modules": [
+        "agent-executor.js",
+        "agent-runner.js",
+        "agent-orchestrator.js"
+      ],
+      "description": "Three agent-related modules with overlapping naming and functionality",
+      "recommendation": "Clarify: agent-runner (prepare), agent-executor (run), agent-orchestrator (sequence)",
+      "impact": "Naming confusion; developers unclear which to use"
+    },
+    {
+      "issue": "No Circular Dependencies Detected",
+      "severity": "NONE",
+      "description": "Workflow is acyclic; clean dependency flow",
+      "impact": "Positive finding - no architectural cycles"
+    },
+    {
+      "issue": "Evolution System Not Integrated by Default",
+      "severity": "LOW",
+      "affected_modules": [
+        "prompt-evolution-scheduler.js",
+        "autonomous-task-generator.js",
+        "strategic-planner.js"
+      ],
+      "description": "Three sophisticated systems exist but are not integrated into main workflow",
+      "recommendation": "Document integration points or make integration explicit/optional",
+      "impact": "Features exist but are hard to discover and use"
+    },
+    {
+      "issue": "Dead Code - prompt-experiment-engine.js",
+      "severity": "LOW",
+      "affected_modules": [
+        "prompt-experiment-engine.js"
+      ],
+      "description": "A/B testing framework exists but has zero callers in production code",
+      "recommendation": "Either integrate into evolution pipeline or move to examples/",
+      "impact": "Dead code clutters codebase; increases maintenance burden"
+    },
+    {
+      "issue": "No Caller for autonomous-task-generator",
+      "severity": "LOW",
+      "affected_modules": [
+        "autonomous-task-generator.js"
+      ],
+      "description": "Sophisticated task generation engine exists but is not called by any module",
+      "recommendation": "Integrate into workflow or document as optional utility",
+      "impact": "Feature is available but discovery/usage is unclear"
+    },
+    {
+      "issue": "Strategic Planner Not Integrated",
+      "severity": "LOW",
+      "affected_modules": [
+        "strategic-planner.js"
+      ],
+      "description": "Planning engine exists but only called from autonomous-task-generator which itself is not integrated",
+      "recommendation": "Integrate strategic-planner → autonomous-task-generator → workflow or mark as optional",
+      "impact": "Advanced feature exists but cannot be easily used"
+    },
+    {
+      "issue": "Multiple Callers to artifact-store",
+      "severity": "LOW",
+      "affected_modules": [
+        "artifact-store.js is called by 8 modules"
+      ],
+      "description": "Heavy use of artifact-store creates central bottleneck",
+      "recommendation": "Consider artifact caching or local storage patterns for high-volume access",
+      "impact": "Artifact-store is performance-critical; ensure efficient implementation"
+    },
+    {
+      "issue": "Script Files Lack Architecture Documentation",
+      "severity": "LOW",
+      "affected_modules": [
+        "scripts/*.js (27 files)"
+      ],
+      "description": "27 scripts exist with unclear purposes and dependencies",
+      "recommendation": "Categorize scripts (init, deploy, admin, etc.) and document purposes",
+      "impact": "Hard to understand script ecosystem; maintenance unclear"
+    }
+  ],
+  "key_findings": {
+    "summary": "PromptAgent is a well-structured agent orchestration system with clear separation of concerns",
+    "strengths": [
+      "No circular dependencies - acyclic dependency graph",
+      "Clear core runtime path: pipeline-runner → agent-executor → artifact-store",
+      "Event-driven architecture enables observability decoupling",
+      "Solid evolution system for continuous prompt improvement",
+      "Strong learning loop and self-healing capabilities"
+    ],
+    "weaknesses": [
+      "Multiple optional subsystems (evolution, learning, healing) not clearly marked as optional",
+      "Dead code exists (prompt-experiment-engine.js unused)",
+      "Some sophisticated features (strategic-planner, autonomous-task-generator) not integrated",
+      "State management spread across three modules (possible consolidation)",
+      "Script ecosystem (27 files) lacks clear categorization"
+    ],
+    "critical_path": [
+      "pipeline-runner.js",
+      "unified-validation-pipeline.js",
+      "agent-runner.js",
+      "agent-executor.js",
+      "artifact-store.js",
+      "state-manager.js",
+      "event-bus.js"
+    ],
+    "optional_but_valuable": [
+      "Evolution system (prompt-evolution-*)",
+      "Learning loop (learning-loop-engine.js)",
+      "Self-healing (self-healing-engine.js)",
+      "Autonomous generation (autonomous-task-generator.js)",
+      "Strategic planning (strategic-planner.js)"
+    ],
+    "removable_without_impact": [
+      "prompt-experiment-engine.js (A/B testing, unused)"
+    ],
+    "removable_with_feature_loss": [
+      "audit-engine.js (loses audit trail)",
+      "metrics-engine.js (loses performance visibility)",
+      "framework-health.js (loses health scoring)",
+      "knowledge-indexer.js (loses knowledge discovery)"
+    ],
+    "recommendations": {
+      "immediate": [
+        "1. Remove prompt-experiment-engine.js or integrate it",
+        "2. Document which modules are optional vs. required",
+        "3. Add feature flags for optional subsystems"
+      ],
+      "medium_term": [
+        "1. Consolidate state management (state-manager + snapshot + recovery)",
+        "2. Integrate strategic-planner and autonomous-task-generator if valuable",
+        "3. Categorize and document 27 script files",
+        "4. Decouple audit/metrics initialization from event-bus"
+      ],
+      "long_term": [
+        "1. Consider optional features directory structure",
+        "2. Add comprehensive integration documentation",
+        "3. Performance optimization of artifact-store hot path",
+        "4. Event schema documentation and versioning"
+      ]
+    }
+  }
+}

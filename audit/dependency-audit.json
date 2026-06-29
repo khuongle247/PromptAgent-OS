@@ -1,0 +1,122 @@
+{
+  "generated": "2026-06-25T10:05:00Z",
+  "files": [
+    {
+      "file": "scripts/append-memory.js",
+      "status": "UNUSED",
+      "importedBy": [],
+      "requiredBy": [],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": false,
+      "recommendation": "CONSIDER REMOVING - No external references found"
+    },
+    {
+      "file": "scripts/generate-prompt.js",
+      "status": "LEGACY",
+      "importedBy": ["package.json"],
+      "requiredBy": [],
+      "alternatives": ["generate-prompt-v3.js"],
+      "testCoverage": false,
+      "productionUse": false,
+      "recommendation": "REVIEW - Newer version exists; check if can migrate or remove"
+    },
+    {
+      "file": "scripts/generate-prompt-v3.js",
+      "status": "LEGACY",
+      "importedBy": [],
+      "requiredBy": [],
+      "alternatives": ["generate-prompt.js"],
+      "testCoverage": false,
+      "productionUse": false,
+      "recommendation": "REVIEW - Newer version exists; check if can migrate or remove"
+    },
+    {
+      "file": "scripts/init-project.js",
+      "status": "LEGACY",
+      "importedBy": ["package.json"],
+      "requiredBy": [],
+      "alternatives": ["init-project-v2.js"],
+      "testCoverage": false,
+      "productionUse": false,
+      "recommendation": "REVIEW - Newer version exists; check if can migrate or remove"
+    },
+    {
+      "file": "scripts/task-utils-v2.js",
+      "status": "ACTIVE",
+      "importedBy": [],
+      "requiredBy": ["complete-task.js", "create-task.js", "generate-prompt-v3.js", "memory-manager-v2.js", "rollback-task.js", "select-task.js", "learning-loop-engine.js"],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": true,
+      "recommendation": "KEEP - Production use detected"
+    },
+    {
+      "file": "scripts/validate-project.js",
+      "status": "LEGACY",
+      "importedBy": ["package.json"],
+      "requiredBy": [],
+      "alternatives": ["validate-project-v2.js"],
+      "testCoverage": false,
+      "productionUse": false,
+      "recommendation": "REVIEW - Newer version exists; check if can migrate or remove"
+    },
+    {
+      "file": "scripts/validation/dependency-validator.js",
+      "status": "ACTIVE",
+      "importedBy": [],
+      "requiredBy": ["validate-project-v2.js"],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": true,
+      "recommendation": "KEEP - Production use detected"
+    },
+    {
+      "file": "scripts/validation/memory-validator.js",
+      "status": "ACTIVE",
+      "importedBy": [],
+      "requiredBy": ["validate-project-v2.js"],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": true,
+      "recommendation": "KEEP - Production use detected"
+    },
+    {
+      "file": "scripts/validation/project-validator.js",
+      "status": "ACTIVE",
+      "importedBy": [],
+      "requiredBy": ["validate-project-v2.js"],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": true,
+      "recommendation": "KEEP - Production use detected"
+    },
+    {
+      "file": "scripts/validation/summary-validator.js",
+      "status": "ACTIVE",
+      "importedBy": [],
+      "requiredBy": ["validate-project-v2.js"],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": true,
+      "recommendation": "KEEP - Production use detected"
+    },
+    {
+      "file": "scripts/validation/task-validator.js",
+      "status": "ACTIVE",
+      "importedBy": [],
+      "requiredBy": ["validate-project-v2.js"],
+      "alternatives": [],
+      "testCoverage": false,
+      "productionUse": true,
+      "recommendation": "KEEP - Production use detected"
+    }
+  ],
+  "summary": {
+    "total_files": 11,
+    "active": 5,
+    "legacy": 4,
+    "unused": 1,
+    "test_only": 1
+  }
+}

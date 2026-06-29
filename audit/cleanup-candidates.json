@@ -1,0 +1,64 @@
+{
+  "generated": "2026-06-25T10:05:00Z",
+  "cleanup_candidates": {
+    "runtime_generated": [
+      {
+        "file": "workflow/snapshots/state-2026-06-21T08-44-08-383Z.json",
+        "type": "state-snapshot",
+        "pattern": "state-YYYY-MM-DDTHH-mm-ss-sssZ.json"
+      },
+      {
+        "file": "workflow/snapshots/state-2026-06-21T08-44-08-386Z.json",
+        "type": "state-snapshot",
+        "pattern": "state-YYYY-MM-DDTHH-mm-ss-sssZ.json"
+      }
+    ],
+    "test_generated": [
+      {
+        "file": "experiments/EXP-MQTA3JFD-VMIY.json",
+        "type": "experiment-artifact",
+        "size": 886,
+        "mtime": "2026-06-25T09:07:11.278Z"
+      },
+      {
+        "file": "experiments/EXP-MQTA3JGT-C91O.json",
+        "type": "experiment-artifact",
+        "size": 874,
+        "mtime": "2026-06-25T09:07:11.311Z"
+      }
+    ],
+    "manual_artifacts": [
+      {
+        "file": "prompts/architect/v3.md",
+        "type": "generated-prompt-draft",
+        "size": 4563
+      },
+      {
+        "file": "prompts/coder/v3.md",
+        "type": "generated-prompt-draft",
+        "size": 879
+      },
+      {
+        "file": "prompts/planner/v3.md",
+        "type": "generated-prompt-draft",
+        "size": 624
+      },
+      {
+        "file": "prompts/planner/v4.md",
+        "type": "generated-prompt-draft",
+        "size": 624
+      },
+      {
+        "file": "prompts/reviewer/v3.md",
+        "type": "generated-prompt-draft",
+        "size": 1114
+      }
+    ]
+  },
+  "summary": {
+    "runtime_generated": 2,
+    "test_generated": 2,
+    "manual_artifacts": 5,
+    "total_cleanup_candidates": 9
+  }
+}

@@ -1,23 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 
-const { loadState } = require("./state-manager");
+const { loadState, saveState, getStatus } = require("./state-manager");
 const { listArtifacts, readArtifact } = require("./artifact-store");
+const { readJsonSafe, readTextSafe } = require("../scripts/validation/validation-utils");
 
 const SNAPSHOT_DIR_NAME = path.join("workflow", "snapshots");
 const DEFAULT_DRIFT_THRESHOLD = 0.25;
-
-function readJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
-}
-
-function readJsonSafe(filePath) {
-  try {
-    return fs.existsSync(filePath) ? readJson(filePath) : null;
-  } catch (error) {
-    return null;
-  }
-}
 
 function writeJson(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));

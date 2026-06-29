@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "stats": {
+    "totalRecords": 0,
+    "decisions": 0,
+    "architecture": 0,
+    "completedTasks": 0,
+    "bugs": 0,
+    "conventions": 0,
+    "risks": 0
+  },
+  "importantDecisions": [],
+  "importantConventions": [],
+  "recentTasks": [],
+  "knownBugs": [],
+  "risks": []
+}
