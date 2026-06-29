@@ -15,8 +15,8 @@
     "evolve-prompts": "node scripts/run-prompt-evolution.js",
     "test": "node tests/phase9-prompt-evolution-test.js",
     "test:all": "node tests/phase9-prompt-evolution-test.js && node tests/phase7-integration-test.js && node tests/phase8-health-test.js && node tests/phase10-scheduler-test.js && node tests/phase95-automation-test.js && node tests/event-validation-test.js",
-    "lint": "eslint workflow/ scripts/ agents/ adapters/ validation/ run.js --max-warnings=0",
-    "lint:fix": "eslint workflow/ scripts/ agents/ adapters/ validation/ run.js --fix",
+    "lint": "eslint --max-warnings=0",
+    "lint:fix": "eslint --fix",
     "format": "prettier --write \"**/*.js\" \"!node_modules/**\" \"!archive/**\" \"!templates/**\" \"!projects/**\"",
     "format:check": "prettier --check \"**/*.js\" \"!node_modules/**\" \"!archive/**\" \"!templates/**\" \"!projects/**\""
   },
@@ -29,8 +29,10 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.7.0",
     "prettier": "^3.8.5"
   }
 }
