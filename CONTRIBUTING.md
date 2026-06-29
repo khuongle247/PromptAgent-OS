@@ -31,17 +31,20 @@ PromptAgent/
 **`run.js` is the ONLY canonical entrypoint.** It must never be bypassed for production execution. Internal workflow modules (`workflow/pipeline-runner.js`, etc.) must not be invoked directly for system startup.
 
 For debugging specific components, use individual CLI scripts:
+
 - `node scripts/init-project-v2.js <name> <type>`
 - `node workflow/agent-executor.js <project> <role>`
 
 ## Coding Standards
 
 ### JavaScript
+
 - **Style:** CommonJS (required by `package.json` `"type": "commonjs"`)
 - **Linting:** ESLint with recommended rules + Prettier integration
 - **Formatting:** Prettier with project `.prettierrc` configuration
 
 ### Requirements
+
 - All new files must pass `npm run lint`
 - All new files must pass `npm run format:check`
 - All tests must pass (`npm test` and `npm run test:all`)
@@ -57,6 +60,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 ### Types
+
 - `feat` — New feature
 - `fix` — Bug fix
 - `refactor` — Code change that neither fixes a bug nor adds a feature
@@ -67,6 +71,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `perf` — Performance improvements
 
 ### Examples
+
 ```
 feat(evolution): add cross-role dependency tracking
 fix(executor): handle null prompt in mock mode
@@ -83,6 +88,7 @@ chore(deps): update ajv to 8.17.1
 - `release/<version>` — Release preparation (branch from `develop`)
 
 ### Workflow
+
 1. Create a feature/fix branch from `develop`
 2. Make changes with tests
 3. Run `npm run lint` and `npm test`
@@ -109,6 +115,7 @@ Before submitting a PR:
 ## Testing Requirements
 
 ### Running Tests
+
 ```bash
 # Quick test (Phase 9 evolution tests)
 npm test
@@ -118,17 +125,19 @@ npm run test:all
 ```
 
 ### Test Suites
-| Suite | File | Coverage |
-|-------|------|----------|
-| Event validation | `tests/event-validation-test.js` | Event bus + schema validation |
-| Phase 7 integration | `tests/phase7-integration-test.js` | Audit + Metrics engines |
-| Phase 8 health | `tests/phase8-health-test.js` | Framework health engine |
-| Phase 9 evolution | `tests/phase9-prompt-evolution-test.js` | (70 tests) Full evolution pipeline |
-| Phase 9 E2E | `tests/phase9-e2e-learning-cycle.js` | End-to-end learning demo |
-| Phase 10 scheduler | `tests/phase10-scheduler-test.js` | Scheduler automation |
-| Phase 95 automation | `tests/phase95-automation-test.js` | Automation validation |
+
+| Suite               | File                                    | Coverage                           |
+| ------------------- | --------------------------------------- | ---------------------------------- |
+| Event validation    | `tests/event-validation-test.js`        | Event bus + schema validation      |
+| Phase 7 integration | `tests/phase7-integration-test.js`      | Audit + Metrics engines            |
+| Phase 8 health      | `tests/phase8-health-test.js`           | Framework health engine            |
+| Phase 9 evolution   | `tests/phase9-prompt-evolution-test.js` | (70 tests) Full evolution pipeline |
+| Phase 9 E2E         | `tests/phase9-e2e-learning-cycle.js`    | End-to-end learning demo           |
+| Phase 10 scheduler  | `tests/phase10-scheduler-test.js`       | Scheduler automation               |
+| Phase 95 automation | `tests/phase95-automation-test.js`      | Automation validation              |
 
 ### Adding Tests
+
 - Place new test files in `tests/`
 - Follow existing naming: `phase<number>-<description>-test.js`
 - Test files must not require external network access
@@ -137,6 +146,7 @@ npm run test:all
 ## Architecture Constraints
 
 ### DO NOT
+
 - Modify `run.js` entrypoint logic
 - Bypass the pipeline-runner for production startup
 - Delete files without proof of zero `require()` references
@@ -145,6 +155,7 @@ npm run test:all
 - Remove legacy scripts without updating `package.json` first
 
 ### DO
+
 - Add new workflow modules by extending `workflow/pipeline-runner.js`
 - Communicate between modules via the Event Bus
 - Add event types following existing schema patterns

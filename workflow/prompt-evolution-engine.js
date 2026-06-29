@@ -30,8 +30,8 @@ const { analyzePrompts, getWeaknessReport } = require("./prompt-analyzer");
 const pvm = require("./prompt-version-manager");
 
 // Thresholds for auto-promotion
-const MIN_SUCCESS_RATE_INCREASE = 0.10;  // 10% minimum improvement
-const MIN_RETRY_RATE_DECREASE = 0.01;     // 1% minimum decrease
+const MIN_SUCCESS_RATE_INCREASE = 0.1; // 10% minimum improvement
+const MIN_RETRY_RATE_DECREASE = 0.01; // 1% minimum decrease
 
 // ---- Improved Prompt Templates ----
 
@@ -65,9 +65,10 @@ function buildImprovedPromptPlanner(weaknesses) {
   return {
     improvements,
     additionalSections,
-    rationale: weaknesses.length > 0
-      ? `Improved based on ${weaknesses.length} detected weaknesses: ${weaknesses.map(w => w.type).join(", ")}`
-      : "Proactive improvement based on execution patterns."
+    rationale:
+      weaknesses.length > 0
+        ? `Improved based on ${weaknesses.length} detected weaknesses: ${weaknesses.map(w => w.type).join(", ")}`
+        : "Proactive improvement based on execution patterns."
   };
 }
 
@@ -104,9 +105,10 @@ function buildImprovedPromptArchitect(weaknesses) {
   return {
     improvements,
     additionalSections,
-    rationale: weaknesses.length > 0
-      ? `Improved based on ${weaknesses.length} detected weaknesses`
-      : "Proactive improvement for architecture quality."
+    rationale:
+      weaknesses.length > 0
+        ? `Improved based on ${weaknesses.length} detected weaknesses`
+        : "Proactive improvement for architecture quality."
   };
 }
 
@@ -142,9 +144,10 @@ function buildImprovedPromptCoder(weaknesses) {
   return {
     improvements,
     additionalSections,
-    rationale: weaknesses.length > 0
-      ? `Improved based on ${weaknesses.length} detected weaknesses`
-      : "Proactive improvement for code quality."
+    rationale:
+      weaknesses.length > 0
+        ? `Improved based on ${weaknesses.length} detected weaknesses`
+        : "Proactive improvement for code quality."
   };
 }
 
@@ -174,9 +177,10 @@ function buildImprovedPromptReviewer(weaknesses) {
   return {
     improvements,
     additionalSections,
-    rationale: weaknesses.length > 0
-      ? `Improved based on ${weaknesses.length} detected weaknesses`
-      : "Proactive improvement for review quality."
+    rationale:
+      weaknesses.length > 0
+        ? `Improved based on ${weaknesses.length} detected weaknesses`
+        : "Proactive improvement for review quality."
   };
 }
 
@@ -185,7 +189,7 @@ const PROMPT_BUILDERS = {
   architect: buildImprovedPromptArchitect,
   coder: buildImprovedPromptCoder,
   reviewer: buildImprovedPromptReviewer,
-  debugger: null  // Debugger prompt is typically auto-generated; not evolved here
+  debugger: null // Debugger prompt is typically auto-generated; not evolved here
 };
 
 // ---- Improvement Generation ----
@@ -207,7 +211,9 @@ function generateImprovedPrompt(role, weaknesses = []) {
   if (!builder) return null;
 
   const analysis = builder(weaknesses);
-  const relevantWeaknesses = weaknesses.filter(w => w.agent === role || w.agent === "coder" || w.agent.includes(","));
+  const relevantWeaknesses = weaknesses.filter(
+    w => w.agent === role || w.agent === "coder" || w.agent.includes(",")
+  );
 
   let improvedContent = currentContent;
 
@@ -257,7 +263,9 @@ function runEvolutionCycle(options = {}) {
     try {
       const active = pvm.getActiveVersion(role);
       parentVersion = active.version;
-    } catch (e) { /* fallback */ }
+    } catch (e) {
+      /* fallback */
+    }
 
     // Create candidate version
     const candidate = pvm.createCandidate(role, improvedContent, parentVersion);
@@ -315,44 +323,52 @@ function evaluatePromotionRules(role, oldMetrics, newMetrics) {
   let passes = true;
 
   // Check success rate improvement
-  const oldSuccessRate = oldMetrics.totalExecutions > 0
-    ? oldMetrics.successfulExecutions / oldMetrics.totalExecutions
-    : 0;
-  const newSuccessRate = newMetrics.totalExecutions > 0
-    ? newMetrics.successfulExecutions / newMetrics.totalExecutions
-    : 0;
+  const oldSuccessRate =
+    oldMetrics.totalExecutions > 0
+      ? oldMetrics.successfulExecutions / oldMetrics.totalExecutions
+      : 0;
+  const newSuccessRate =
+    newMetrics.totalExecutions > 0
+      ? newMetrics.successfulExecutions / newMetrics.totalExecutions
+      : 0;
   const successRateIncrease = newSuccessRate - oldSuccessRate;
 
   // Check retry rate decrease
-  const oldRetryRate = oldMetrics.totalExecutions > 0
-    ? oldMetrics.retryCount / oldMetrics.totalExecutions
-    : 0;
-  const newRetryRate = newMetrics.totalExecutions > 0
-    ? newMetrics.retryCount / newMetrics.totalExecutions
-    : 0;
+  const oldRetryRate =
+    oldMetrics.totalExecutions > 0 ? oldMetrics.retryCount / oldMetrics.totalExecutions : 0;
+  const newRetryRate =
+    newMetrics.totalExecutions > 0 ? newMetrics.retryCount / newMetrics.totalExecutions : 0;
   const retryRateDecrease = oldRetryRate - newRetryRate;
 
   // Check ratings (approval rate proxy)
-  const oldApprovalRate = oldMetrics.totalExecutions > 0
-    ? oldMetrics.successfulExecutions / oldMetrics.totalExecutions
-    : 0;
-  const newApprovalRate = newMetrics.totalExecutions > 0
-    ? newMetrics.successfulExecutions / newMetrics.totalExecutions
-    : 0;
+  const oldApprovalRate =
+    oldMetrics.totalExecutions > 0
+      ? oldMetrics.successfulExecutions / oldMetrics.totalExecutions
+      : 0;
+  const newApprovalRate =
+    newMetrics.totalExecutions > 0
+      ? newMetrics.successfulExecutions / newMetrics.totalExecutions
+      : 0;
   const ratingImprovement = newApprovalRate - oldApprovalRate;
 
   if (successRateIncrease < MIN_SUCCESS_RATE_INCREASE) {
-    errors.push(`Success rate increase (${(successRateIncrease * 100).toFixed(1)}%) < ${(MIN_SUCCESS_RATE_INCREASE * 100)}% threshold`);
+    errors.push(
+      `Success rate increase (${(successRateIncrease * 100).toFixed(1)}%) < ${MIN_SUCCESS_RATE_INCREASE * 100}% threshold`
+    );
     passes = false;
   }
 
   if (retryRateDecrease <= 0) {
-    errors.push(`Retry rate did not decrease (old: ${(oldRetryRate * 100).toFixed(1)}%, new: ${(newRetryRate * 100).toFixed(1)}%)`);
+    errors.push(
+      `Retry rate did not decrease (old: ${(oldRetryRate * 100).toFixed(1)}%, new: ${(newRetryRate * 100).toFixed(1)}%)`
+    );
     passes = false;
   }
 
   if (ratingImprovement <= 0) {
-    errors.push(`Ratings did not improve (old: ${(oldApprovalRate * 100).toFixed(1)}%, new: ${(newApprovalRate * 100).toFixed(1)}%)`);
+    errors.push(
+      `Ratings did not improve (old: ${(oldApprovalRate * 100).toFixed(1)}%, new: ${(newApprovalRate * 100).toFixed(1)}%)`
+    );
     passes = false;
   }
 
@@ -376,7 +392,9 @@ function getEvolutionReport() {
     const reportPath = path.join(process.cwd(), "reports", "evolution-report.json");
     if (fs.existsSync(reportPath)) return JSON.parse(fs.readFileSync(reportPath, "utf8"));
     return null;
-  } catch (e) { return null; }
+  } catch (e) {
+    return null;
+  }
 }
 
 module.exports = {

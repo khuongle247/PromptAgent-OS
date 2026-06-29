@@ -2,13 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Project Schema",
   "type": "object",
-  "required": [
-    "name",
-    "type",
-    "phase",
-    "status",
-    "schemaVersion"
-  ],
+  "required": ["name", "type", "phase", "status", "schemaVersion"],
   "properties": {
     "schemaVersion": {
       "type": "string"
@@ -21,15 +15,7 @@
 
     "type": {
       "type": "string",
-      "enum": [
-        "flutter",
-        "react",
-        "nextjs",
-        "nodejs",
-        "spring-boot",
-        "java-backend",
-        "fullstack"
-      ]
+      "enum": ["flutter", "react", "nextjs", "nodejs", "spring-boot", "java-backend", "fullstack"]
     },
 
     "phase": {
@@ -40,20 +26,12 @@
 
     "status": {
       "type": "string",
-      "enum": [
-        "active",
-        "completed",
-        "archived"
-      ]
+      "enum": ["active", "completed", "archived"]
     },
 
     "currentRole": {
       "type": "string",
-      "enum": [
-        "planner",
-        "coder",
-        "reviewer"
-      ]
+      "enum": ["planner", "coder", "reviewer"]
     },
 
     "modules": {

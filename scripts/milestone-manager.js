@@ -8,50 +8,23 @@ const {
   addError
 } = require("./validation/validation-utils");
 
-function validateMilestones(
-  rootDir,
-  projectDir,
-  report
-) {
-
-  const file =
-    path.join(
-      projectDir,
-      "tasks",
-      "milestones.json"
-    );
+function validateMilestones(rootDir, projectDir, report) {
+  const file = path.join(projectDir, "tasks", "milestones.json");
 
   if (!require("fs").existsSync(file)) {
-    addError(
-      report,
-      "Missing milestones.json"
-    );
+    addError(report, "Missing milestones.json");
     return;
   }
 
-  const data =
-    readJson(file);
+  const data = readJson(file);
 
-  const schema =
-    loadSchema(
-      rootDir,
-      "milestone.schema.json"
-    );
+  const schema = loadSchema(rootDir, "milestone.schema.json");
 
-  const result =
-    validateSchema(
-      data,
-      schema
-    );
+  const result = validateSchema(data, schema);
 
   if (!result.valid) {
-
     result.errors.forEach(e => {
-
-      addError(
-        report,
-        `milestones.json: ${e.instancePath} ${e.message}`
-      );
+      addError(report, `milestones.json: ${e.instancePath} ${e.message}`);
     });
   }
 }

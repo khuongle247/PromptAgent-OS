@@ -8,9 +8,7 @@ const path = require("path");
 const projectName = process.argv[2];
 
 if (!projectName) {
-  console.log(
-    "Usage: node scripts/validate-project.js ProjectName"
-  );
+  console.log("Usage: node scripts/validate-project.js ProjectName");
   process.exit(1);
 }
 
@@ -20,16 +18,10 @@ if (!projectName) {
 
 const ROOT_DIR = process.cwd();
 
-const PROJECT_DIR = path.join(
-  ROOT_DIR,
-  "projects",
-  projectName
-);
+const PROJECT_DIR = path.join(ROOT_DIR, "projects", projectName);
 
 if (!fs.existsSync(PROJECT_DIR)) {
-  console.log(
-    `Project not found: ${projectName}`
-  );
+  console.log(`Project not found: ${projectName}`);
   process.exit(1);
 }
 
@@ -58,11 +50,7 @@ function fileExists(filePath) {
 
 function loadJson(filePath) {
   try {
-    const content =
-      fs.readFileSync(
-        filePath,
-        "utf8"
-      );
+    const content = fs.readFileSync(filePath, "utf8");
 
     return JSON.parse(content);
   } catch (error) {
@@ -100,21 +88,13 @@ const REQUIRED_FILES = [
 // FILE EXISTENCE CHECK
 // =====================================
 
-console.log(
-  `\nVALIDATING PROJECT: ${projectName}\n`
-);
+console.log(`\nVALIDATING PROJECT: ${projectName}\n`);
 
 for (const file of REQUIRED_FILES) {
-  const fullPath =
-    path.join(
-      PROJECT_DIR,
-      file
-    );
+  const fullPath = path.join(PROJECT_DIR, file);
 
   if (!fileExists(fullPath)) {
-    addError(
-      `Missing file: ${file}`
-    );
+    addError(`Missing file: ${file}`);
   } else {
     console.log(`✓ ${file}`);
   }
@@ -124,36 +104,18 @@ for (const file of REQUIRED_FILES) {
 // PROJECT.JSON
 // =====================================
 
-const projectPath =
-  path.join(
-    PROJECT_DIR,
-    "project.json"
-  );
+const projectPath = path.join(PROJECT_DIR, "project.json");
 
-const project =
-  loadJson(projectPath);
+const project = loadJson(projectPath);
 
 if (!project) {
-  addError(
-    "Invalid JSON: project.json"
-  );
+  addError("Invalid JSON: project.json");
 } else {
-  const requiredFields = [
-    "name",
-    "type",
-    "phase",
-    "status",
-    "currentRole"
-  ];
+  const requiredFields = ["name", "type", "phase", "status", "currentRole"];
 
   requiredFields.forEach(field => {
-    if (
-      project[field] === undefined ||
-      project[field] === null
-    ) {
-      addError(
-        `project.json missing field: ${field}`
-      );
+    if (project[field] === undefined || project[field] === null) {
+      addError(`project.json missing field: ${field}`);
     }
   });
 }
@@ -162,71 +124,41 @@ if (!project) {
 // TASKS.JSON
 // =====================================
 
-const tasksPath =
-  path.join(
-    PROJECT_DIR,
-    "tasks",
-    "tasks.json"
-  );
+const tasksPath = path.join(PROJECT_DIR, "tasks", "tasks.json");
 
-const tasksData =
-  loadJson(tasksPath);
+const tasksData = loadJson(tasksPath);
 
 if (!tasksData) {
-  addError(
-    "Invalid JSON: tasks.json"
-  );
+  addError("Invalid JSON: tasks.json");
 } else {
-  if (
-    !Array.isArray(
-      tasksData.tasks
-    )
-  ) {
-    addError(
-      "tasks.json must contain tasks array"
-    );
+  if (!Array.isArray(tasksData.tasks)) {
+    addError("tasks.json must contain tasks array");
   } else {
     const ids = new Set();
 
     for (const task of tasksData.tasks) {
       if (!task.id) {
-        addError(
-          "Task missing id"
-        );
+        addError("Task missing id");
         continue;
       }
 
       if (ids.has(task.id)) {
-        addError(
-          `Duplicate task ID: ${task.id}`
-        );
+        addError(`Duplicate task ID: ${task.id}`);
       }
 
       ids.add(task.id);
 
-      const requiredTaskFields = [
-        "title",
-        "status",
-        "priority"
-      ];
+      const requiredTaskFields = ["title", "status", "priority"];
 
       requiredTaskFields.forEach(field => {
-        if (
-          task[field] === undefined
-        ) {
-          addWarning(
-            `Task ${task.id} missing field: ${field}`
-          );
+        if (task[field] === undefined) {
+          addWarning(`Task ${task.id} missing field: ${field}`);
         }
       });
     }
 
-    if (
-      tasksData.tasks.length === 0
-    ) {
-      addWarning(
-        "No tasks found"
-      );
+    if (tasksData.tasks.length === 0) {
+      addWarning("No tasks found");
     }
   }
 }
@@ -235,42 +167,21 @@ if (!tasksData) {
 // CURRENT TASK
 // =====================================
 
-const currentTaskPath =
-  path.join(
-    PROJECT_DIR,
-    "tasks",
-    "current-task.json"
-  );
+const currentTaskPath = path.join(PROJECT_DIR, "tasks", "current-task.json");
 
-const currentTask =
-  loadJson(
-    currentTaskPath
-  );
+const currentTask = loadJson(currentTaskPath);
 
 if (!currentTask) {
-  addError(
-    "Invalid JSON: current-task.json"
-  );
+  addError("Invalid JSON: current-task.json");
 } else {
-  if (
-    currentTask.taskId
-  ) {
-    const exists =
-      tasksData?.tasks?.some(
-        task =>
-          task.id ===
-          currentTask.taskId
-      );
+  if (currentTask.taskId) {
+    const exists = tasksData?.tasks?.some(task => task.id === currentTask.taskId);
 
     if (!exists) {
-      addError(
-        `Current task not found: ${currentTask.taskId}`
-      );
+      addError(`Current task not found: ${currentTask.taskId}`);
     }
   } else {
-    addWarning(
-      "No current task selected"
-    );
+    addWarning("No current task selected");
   }
 }
 
@@ -278,38 +189,20 @@ if (!currentTask) {
 // MEMORY
 // =====================================
 
-const memoryPath =
-  path.join(
-    PROJECT_DIR,
-    "memory",
-    "memory.json"
-  );
+const memoryPath = path.join(PROJECT_DIR, "memory", "memory.json");
 
-const memorySummaryPath =
-  path.join(
-    PROJECT_DIR,
-    "memory",
-    "memory-summary.json"
-  );
+const memorySummaryPath = path.join(PROJECT_DIR, "memory", "memory-summary.json");
 
-const memory =
-  loadJson(memoryPath);
+const memory = loadJson(memoryPath);
 
-const memorySummary =
-  loadJson(
-    memorySummaryPath
-  );
+const memorySummary = loadJson(memorySummaryPath);
 
 if (!memory) {
-  addError(
-    "Invalid JSON: memory.json"
-  );
+  addError("Invalid JSON: memory.json");
 }
 
 if (!memorySummary) {
-  addError(
-    "Invalid JSON: memory-summary.json"
-  );
+  addError("Invalid JSON: memory-summary.json");
 }
 
 // =====================================
@@ -328,9 +221,7 @@ let status = "ok";
 
 if (errors.length > 0) {
   status = "error";
-} else if (
-  warnings.length > 0
-) {
+} else if (warnings.length > 0) {
   status = "warning";
 }
 
@@ -343,21 +234,10 @@ const report = {
   score,
   errors,
   warnings,
-  checkedAt:
-    new Date().toISOString()
+  checkedAt: new Date().toISOString()
 };
 
-fs.writeFileSync(
-  path.join(
-    PROJECT_DIR,
-    "validation-report.json"
-  ),
-  JSON.stringify(
-    report,
-    null,
-    2
-  )
-);
+fs.writeFileSync(path.join(PROJECT_DIR, "validation-report.json"), JSON.stringify(report, null, 2));
 
 // =====================================
 // OUTPUT
@@ -365,44 +245,28 @@ fs.writeFileSync(
 
 console.log("\n");
 
-console.log(
-  `Status   : ${status.toUpperCase()}`
-);
+console.log(`Status   : ${status.toUpperCase()}`);
 
-console.log(
-  `Score    : ${score}`
-);
+console.log(`Score    : ${score}`);
 
-console.log(
-  `Errors   : ${errors.length}`
-);
+console.log(`Errors   : ${errors.length}`);
 
-console.log(
-  `Warnings : ${warnings.length}`
-);
+console.log(`Warnings : ${warnings.length}`);
 
 if (errors.length) {
   console.log("\nERRORS:");
 
   errors.forEach(error => {
-    console.log(
-      `- ${error}`
-    );
+    console.log(`- ${error}`);
   });
 }
 
 if (warnings.length) {
-  console.log(
-    "\nWARNINGS:"
-  );
+  console.log("\nWARNINGS:");
 
   warnings.forEach(warning => {
-    console.log(
-      `- ${warning}`
-    );
+    console.log(`- ${warning}`);
   });
 }
 
-console.log(
-  "\nValidation report updated.\n"
-);
+console.log("\nValidation report updated.\n");

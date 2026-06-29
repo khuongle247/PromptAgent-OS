@@ -17,7 +17,9 @@ function summarize(result) {
     const roleResult = result.evolutionResults[role];
     if (!roleResult) return;
     if (roleResult.evolved) {
-      console.log(`  - ${role}: evolved v${roleResult.version} (parent v${roleResult.parentVersion})`);
+      console.log(
+        `  - ${role}: evolved v${roleResult.version} (parent v${roleResult.parentVersion})`
+      );
     } else {
       console.log(`  - ${role}: no evolution (${roleResult.reason || "no change detected"})`);
     }

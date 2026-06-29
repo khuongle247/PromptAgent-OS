@@ -2,18 +2,11 @@ const fs = require("fs");
 const path = require("path");
 
 function getTasksPath(projectName) {
-  return path.join(
-    projectName,
-    "docs",
-    "tasks.md"
-  );
+  return path.join(projectName, "docs", "tasks.md");
 }
 
 function getCurrentTaskPath(projectName) {
-  return path.join(
-    projectName,
-    "current-task.md"
-  );
+  return path.join(projectName, "current-task.md");
 }
 
 function readTasks(projectName) {
@@ -23,10 +16,7 @@ function readTasks(projectName) {
     throw new Error("tasks.md not found");
   }
 
-  const content = fs.readFileSync(
-    tasksPath,
-    "utf8"
-  );
+  const content = fs.readFileSync(tasksPath, "utf8");
 
   return content
     .split("\n")
@@ -37,25 +27,13 @@ function readTasks(projectName) {
 function writeTasks(projectName, tasks) {
   const tasksPath = getTasksPath(projectName);
 
-  fs.writeFileSync(
-    tasksPath,
-    tasks.join("\n"),
-    "utf8"
-  );
+  fs.writeFileSync(tasksPath, tasks.join("\n"), "utf8");
 }
 
-function writeCurrentTask(
-  projectName,
-  task
-) {
-  const currentTaskPath =
-    getCurrentTaskPath(projectName);
+function writeCurrentTask(projectName, task) {
+  const currentTaskPath = getCurrentTaskPath(projectName);
 
-  fs.writeFileSync(
-    currentTaskPath,
-    task,
-    "utf8"
-  );
+  fs.writeFileSync(currentTaskPath, task, "utf8");
 }
 
 module.exports = {

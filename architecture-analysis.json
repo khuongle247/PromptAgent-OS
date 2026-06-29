@@ -160,9 +160,7 @@
           "./event-bus"
         ],
         "exports": ["orchestrate", "runStep"],
-        "callers": [
-          "state-recovery-engine.js"
-        ]
+        "callers": ["state-recovery-engine.js"]
       },
       {
         "file": "agent-runner.js",
@@ -171,25 +169,13 @@
           "./phase-controller",
           "./memory-retrieval-engine"
         ],
-        "exports": [
-          "buildAgentContext",
-          "prepareAgentRun",
-          "validateAgentOutput",
-          "runAgent"
-        ],
-        "callers": [
-          "agent-executor.js",
-          "pipeline-runner.js"
-        ]
+        "exports": ["buildAgentContext", "prepareAgentRun", "validateAgentOutput", "runAgent"],
+        "callers": ["agent-executor.js", "pipeline-runner.js"]
       },
       {
         "file": "artifact-store.js",
         "imports": [],
-        "exports": [
-          "writeArtifact",
-          "readArtifact",
-          "listArtifacts"
-        ],
+        "exports": ["writeArtifact", "readArtifact", "listArtifacts"],
         "callers": [
           "agent-executor.js",
           "agent-orchestrator.js",
@@ -234,10 +220,7 @@
           "promoteVersion",
           "getAllActiveVersions"
         ],
-        "callers": [
-          "agent-executor.js",
-          "prompt-evolution-engine.js"
-        ]
+        "callers": ["agent-executor.js", "prompt-evolution-engine.js"]
       },
       {
         "file": "prompt-analyzer.js",
@@ -248,52 +231,25 @@
           "detectCommonErrors",
           "detectRetryHotspots"
         ],
-        "callers": [
-          "prompt-evolution-engine.js"
-        ]
+        "callers": ["prompt-evolution-engine.js"]
       },
       {
         "file": "prompt-evolution-engine.js",
-        "imports": [
-          "./prompt-analyzer",
-          "./prompt-version-manager"
-        ],
-        "exports": [
-          "runEvolutionCycle",
-          "getEvolutionReport"
-        ],
-        "callers": [
-          "prompt-evolution-scheduler.js",
-          "scripts/run-prompt-evolution.js"
-        ]
+        "imports": ["./prompt-analyzer", "./prompt-version-manager"],
+        "exports": ["runEvolutionCycle", "getEvolutionReport"],
+        "callers": ["prompt-evolution-scheduler.js", "scripts/run-prompt-evolution.js"]
       },
       {
         "file": "prompt-evolution-scheduler.js",
-        "imports": [
-          "./prompt-evolution-engine",
-          "./framework-health",
-          "./metrics-engine"
-        ],
-        "exports": [
-          "runSchedulerOnce",
-          "startScheduler",
-          "stopScheduler"
-        ],
+        "imports": ["./prompt-evolution-engine", "./framework-health", "./metrics-engine"],
+        "exports": ["runSchedulerOnce", "startScheduler", "stopScheduler"],
         "initialization": "Initialized via event-integration.js"
       },
       {
         "file": "transition-engine.js",
         "imports": [],
-        "exports": [
-          "evaluateTransition",
-          "getNextAgent",
-          "shouldRetry"
-        ],
-        "callers": [
-          "agent-orchestrator.js",
-          "self-healing-engine.js",
-          "state-recovery-engine.js"
-        ]
+        "exports": ["evaluateTransition", "getNextAgent", "shouldRetry"],
+        "callers": ["agent-orchestrator.js", "self-healing-engine.js", "state-recovery-engine.js"]
       },
       {
         "file": "learning-loop-engine.js",
@@ -327,18 +283,11 @@
         ],
         "exports": ["runHealing"],
         "callers": ["global-state-engine.js"],
-        "events_published": [
-          "healing-attempted",
-          "healing-cycle-completed",
-          "bug-pattern-recorded"
-        ]
+        "events_published": ["healing-attempted", "healing-cycle-completed", "bug-pattern-recorded"]
       },
       {
         "file": "event-bus.js",
-        "imports": [
-          "./event-schema-registry",
-          "./event-validation-middleware"
-        ],
+        "imports": ["./event-schema-registry", "./event-validation-middleware"],
         "exports": ["singleton EventBus instance"],
         "pattern": "Middleware-based event validation with schema registry",
         "subscribers": [
@@ -377,10 +326,7 @@
       {
         "file": "framework-health.js",
         "imports": [],
-        "exports": [
-          "generateHealthReport",
-          "getFrameworkStatus"
-        ],
+        "exports": ["generateHealthReport", "getFrameworkStatus"],
         "purpose": "Consumes audit and metrics to generate health scores",
         "callers": ["prompt-evolution-scheduler.js"]
       },
@@ -403,14 +349,8 @@
           "./memory-retrieval-engine",
           "./knowledge-indexer"
         ],
-        "exports": [
-          "planStrategically",
-          "decomposeGoal",
-          "computePriorityScores"
-        ],
-        "callers": [
-          "autonomous-task-generator.js (potential integration point)"
-        ]
+        "exports": ["planStrategically", "decomposeGoal", "computePriorityScores"],
+        "callers": ["autonomous-task-generator.js (potential integration point)"]
       },
       {
         "file": "autonomous-task-generator.js",
@@ -426,19 +366,12 @@
       },
       {
         "file": "unified-validation-pipeline.js",
-        "imports": [
-          "../scripts/validation/validation-utils",
-          "./phase-controller"
-        ],
+        "imports": ["../scripts/validation/validation-utils", "./phase-controller"],
         "exports": ["runUnifiedValidationPipeline"]
       },
       {
         "file": "global-state-engine.js",
-        "imports": [
-          "./state-manager",
-          "./artifact-store",
-          "./self-healing-engine"
-        ],
+        "imports": ["./state-manager", "./artifact-store", "./self-healing-engine"],
         "exports": ["captureState", "restoreState"],
         "purpose": "Global state snapshots and recovery"
       },
@@ -450,34 +383,18 @@
           "./transition-engine",
           "./agent-orchestrator"
         ],
-        "exports": [
-          "captureExecutionState",
-          "loadExecutionState",
-          "resumeExecution"
-        ]
+        "exports": ["captureExecutionState", "loadExecutionState", "resumeExecution"]
       },
       {
         "file": "knowledge-indexer.js",
-        "imports": [
-          "../scripts/validation/validation-utils",
-          "./artifact-store"
-        ],
+        "imports": ["../scripts/validation/validation-utils", "./artifact-store"],
         "exports": ["indexArtifacts", "searchKnowledge"]
       },
       {
         "file": "phase-controller.js",
         "imports": [],
-        "exports": [
-          "getRoleConfig",
-          "getCurrentWorkflowState",
-          "getNextRole",
-          "advancePhase"
-        ],
-        "callers": [
-          "agent-runner.js",
-          "pipeline-runner.js",
-          "unified-validation-pipeline.js"
-        ]
+        "exports": ["getRoleConfig", "getCurrentWorkflowState", "getNextRole", "advancePhase"],
+        "callers": ["agent-runner.js", "pipeline-runner.js", "unified-validation-pipeline.js"]
       }
     ],
     "circular_dependencies": [
@@ -635,11 +552,7 @@
           "Improved prompt candidates (stored via prompt-version-manager)",
           "Evolution reports"
         ],
-        "promotion_rules": [
-          "successRate increase > 10%",
-          "retryRate decreases",
-          "ratings improve"
-        ],
+        "promotion_rules": ["successRate increase > 10%", "retryRate decreases", "ratings improve"],
         "safety": "Never auto-replaces broken prompts; requires manual review flag unless all rules pass"
       },
       {
@@ -773,9 +686,7 @@
       "file": "workflow/agent-orchestrator.js",
       "category": "A-Core Runtime",
       "purpose": "Orchestrates agent workflow; manages transitions, state, learning, and events",
-      "primary_callers": [
-        "state-recovery-engine.js"
-      ],
+      "primary_callers": ["state-recovery-engine.js"],
       "primary_callees": [
         "agent-executor",
         "artifact-store",
@@ -793,14 +704,8 @@
       "file": "workflow/event-bus.js",
       "category": "A-Core Runtime",
       "purpose": "Central event messaging system with schema validation; enables event-driven architecture",
-      "primary_callers": [
-        "8 workflow modules",
-        "1 script (event-integration)"
-      ],
-      "primary_callees": [
-        "event-schema-registry",
-        "event-validation-middleware"
-      ],
+      "primary_callers": ["8 workflow modules", "1 script (event-integration)"],
+      "primary_callees": ["event-schema-registry", "event-validation-middleware"],
       "can_remove": "NO",
       "removal_reason": "Essential for observability and event-driven systems; used by audit/metrics/learning",
       "risk_level": "HIGH",
@@ -827,14 +732,8 @@
       "file": "workflow/agent-runner.js",
       "category": "B-Required Infrastructure",
       "purpose": "Prepares agent execution context; builds project context and validates readiness",
-      "primary_callers": [
-        "agent-executor.js",
-        "pipeline-runner.js"
-      ],
-      "primary_callees": [
-        "phase-controller",
-        "memory-retrieval-engine"
-      ],
+      "primary_callers": ["agent-executor.js", "pipeline-runner.js"],
+      "primary_callees": ["phase-controller", "memory-retrieval-engine"],
       "can_remove": "NO",
       "removal_reason": "Required for agent context building; without it agents lack project context",
       "risk_level": "HIGH",
@@ -900,12 +799,8 @@
       "file": "workflow/unified-validation-pipeline.js",
       "category": "B-Required Infrastructure",
       "purpose": "Validates project workspace before execution; ensures artifact and file completeness",
-      "primary_callers": [
-        "pipeline-runner.js"
-      ],
-      "primary_callees": [
-        "phase-controller"
-      ],
+      "primary_callers": ["pipeline-runner.js"],
+      "primary_callees": ["phase-controller"],
       "can_remove": "NO",
       "removal_reason": "Critical pre-execution validation; prevents invalid state propagation",
       "risk_level": "MEDIUM",
@@ -931,14 +826,8 @@
       "file": "workflow/prompt-evolution-engine.js",
       "category": "C-Evolution System",
       "purpose": "Orchestrates prompt improvement cycle: analyze weaknesses → generate improvements → promote versions",
-      "primary_callers": [
-        "prompt-evolution-scheduler.js",
-        "scripts/run-prompt-evolution.js"
-      ],
-      "primary_callees": [
-        "prompt-analyzer",
-        "prompt-version-manager"
-      ],
+      "primary_callers": ["prompt-evolution-scheduler.js", "scripts/run-prompt-evolution.js"],
+      "primary_callees": ["prompt-analyzer", "prompt-version-manager"],
       "can_remove": "MAYBE",
       "removal_reason": "Optional feature for continuous prompt improvement; system works without evolution",
       "risk_level": "LOW",
@@ -949,9 +838,7 @@
       "file": "workflow/prompt-analyzer.js",
       "category": "C-Evolution System",
       "purpose": "Analyzes audit logs to detect prompt weaknesses and improvement opportunities",
-      "primary_callers": [
-        "prompt-evolution-engine.js"
-      ],
+      "primary_callers": ["prompt-evolution-engine.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional; used only by evolution engine which is itself optional",
@@ -969,10 +856,7 @@
       "file": "workflow/prompt-version-manager.js",
       "category": "C-Evolution System",
       "purpose": "Manages prompt version lifecycle: active, candidate, archived; supports evolution",
-      "primary_callers": [
-        "agent-executor.js",
-        "prompt-evolution-engine.js"
-      ],
+      "primary_callers": ["agent-executor.js", "prompt-evolution-engine.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional; system falls back to legacy prompts/{role}.md if not used",
@@ -996,14 +880,8 @@
       "file": "workflow/prompt-evolution-scheduler.js",
       "category": "C-Evolution System",
       "purpose": "Schedules evolution cycles based on health/metrics; triggers prompt improvement",
-      "primary_callers": [
-        "scripts/event-integration.js"
-      ],
-      "primary_callees": [
-        "prompt-evolution-engine",
-        "framework-health",
-        "metrics-engine"
-      ],
+      "primary_callers": ["scripts/event-integration.js"],
+      "primary_callees": ["prompt-evolution-engine", "framework-health", "metrics-engine"],
       "can_remove": "MAYBE",
       "removal_reason": "Optional; evolution is continuous improvement feature, not essential to core workflow",
       "risk_level": "LOW",
@@ -1019,10 +897,7 @@
         "autonomous-task-generator.js",
         "self-healing-engine.js"
       ],
-      "primary_callees": [
-        "artifact-store",
-        "event-bus"
-      ],
+      "primary_callees": ["artifact-store", "event-bus"],
       "can_remove": "MAYBE",
       "removal_reason": "Optional continuous learning feature; system functions without it but loses learning",
       "risk_level": "LOW",
@@ -1037,9 +912,7 @@
       "file": "workflow/self-healing-engine.js",
       "category": "D-Learning System",
       "purpose": "Detects failures and auto-recovers; runs debugger and re-executes failing agents",
-      "primary_callers": [
-        "global-state-engine.js"
-      ],
+      "primary_callers": ["global-state-engine.js"],
       "primary_callees": [
         "agent-executor",
         "artifact-store",
@@ -1052,11 +925,7 @@
       "removal_reason": "Improves resilience but not required; system degrades to manual retry without it",
       "risk_level": "MEDIUM",
       "dependencies": 6,
-      "events_published": [
-        "healing-attempted",
-        "healing-cycle-completed",
-        "bug-pattern-recorded"
-      ]
+      "events_published": ["healing-attempted", "healing-cycle-completed", "bug-pattern-recorded"]
     },
     {
       "file": "workflow/autonomous-task-generator.js",
@@ -1097,9 +966,7 @@
       "file": "workflow/audit-engine.js",
       "category": "E-Observability",
       "purpose": "Event audit logging; captures all events for compliance and debugging",
-      "primary_callers": [
-        "scripts/event-integration.js"
-      ],
+      "primary_callers": ["scripts/event-integration.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional observability feature; system works without audit trail but loses compliance",
@@ -1112,9 +979,7 @@
       "file": "workflow/metrics-engine.js",
       "category": "E-Observability",
       "purpose": "Performance metrics collection; tracks agent execution, learning, and healing",
-      "primary_callers": [
-        "scripts/event-integration.js"
-      ],
+      "primary_callers": ["scripts/event-integration.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional observability feature; system works without metrics but loses visibility",
@@ -1135,9 +1000,7 @@
       "file": "workflow/framework-health.js",
       "category": "E-Observability",
       "purpose": "Generates health reports from audit/metrics; detects bottlenecks and risks",
-      "primary_callers": [
-        "prompt-evolution-scheduler.js"
-      ],
+      "primary_callers": ["prompt-evolution-scheduler.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional observability; evolution scheduler would skip checks without it but evolution still runs",
@@ -1154,9 +1017,7 @@
       "file": "workflow/event-schema-registry.js",
       "category": "E-Observability",
       "purpose": "Loads and manages event schemas; validates event payload structure",
-      "primary_callers": [
-        "event-bus.js"
-      ],
+      "primary_callers": ["event-bus.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional validation layer; event-bus works without it but loses schema validation",
@@ -1168,9 +1029,7 @@
       "file": "workflow/event-validation-middleware.js",
       "category": "E-Observability",
       "purpose": "Middleware that validates events against schema; quarantines invalid events",
-      "primary_callers": [
-        "event-bus.js"
-      ],
+      "primary_callers": ["event-bus.js"],
       "primary_callees": [],
       "can_remove": "MAYBE",
       "removal_reason": "Optional validation layer; events propagate without it but no schema enforcement",
@@ -1182,12 +1041,8 @@
       "file": "workflow/knowledge-indexer.js",
       "category": "E-Observability",
       "purpose": "Indexes artifacts for search; enables knowledge discovery",
-      "primary_callers": [
-        "strategic-planner.js"
-      ],
-      "primary_callees": [
-        "artifact-store"
-      ],
+      "primary_callers": ["strategic-planner.js"],
+      "primary_callees": ["artifact-store"],
       "can_remove": "YES",
       "removal_reason": "Optional enhancement; only called by strategic-planner which is itself optional",
       "risk_level": "NONE",
@@ -1198,11 +1053,7 @@
       "category": "D-Learning System",
       "purpose": "Captures global state snapshots; enables drift detection and recovery",
       "primary_callers": [],
-      "primary_callees": [
-        "state-manager",
-        "artifact-store",
-        "self-healing-engine"
-      ],
+      "primary_callees": ["state-manager", "artifact-store", "self-healing-engine"],
       "can_remove": "MAYBE",
       "removal_reason": "Optional resilience feature; system works without drift detection but loses recovery capability",
       "risk_level": "LOW",
@@ -1280,11 +1131,7 @@
     {
       "issue": "Redundant Abstraction Layers",
       "severity": "LOW",
-      "affected_modules": [
-        "agent-executor.js",
-        "agent-runner.js",
-        "agent-orchestrator.js"
-      ],
+      "affected_modules": ["agent-executor.js", "agent-runner.js", "agent-orchestrator.js"],
       "description": "Three agent-related modules with overlapping naming and functionality",
       "recommendation": "Clarify: agent-runner (prepare), agent-executor (run), agent-orchestrator (sequence)",
       "impact": "Naming confusion; developers unclear which to use"
@@ -1310,9 +1157,7 @@
     {
       "issue": "Dead Code - prompt-experiment-engine.js",
       "severity": "LOW",
-      "affected_modules": [
-        "prompt-experiment-engine.js"
-      ],
+      "affected_modules": ["prompt-experiment-engine.js"],
       "description": "A/B testing framework exists but has zero callers in production code",
       "recommendation": "Either integrate into evolution pipeline or move to examples/",
       "impact": "Dead code clutters codebase; increases maintenance burden"
@@ -1320,9 +1165,7 @@
     {
       "issue": "No Caller for autonomous-task-generator",
       "severity": "LOW",
-      "affected_modules": [
-        "autonomous-task-generator.js"
-      ],
+      "affected_modules": ["autonomous-task-generator.js"],
       "description": "Sophisticated task generation engine exists but is not called by any module",
       "recommendation": "Integrate into workflow or document as optional utility",
       "impact": "Feature is available but discovery/usage is unclear"
@@ -1330,9 +1173,7 @@
     {
       "issue": "Strategic Planner Not Integrated",
       "severity": "LOW",
-      "affected_modules": [
-        "strategic-planner.js"
-      ],
+      "affected_modules": ["strategic-planner.js"],
       "description": "Planning engine exists but only called from autonomous-task-generator which itself is not integrated",
       "recommendation": "Integrate strategic-planner → autonomous-task-generator → workflow or mark as optional",
       "impact": "Advanced feature exists but cannot be easily used"
@@ -1340,9 +1181,7 @@
     {
       "issue": "Multiple Callers to artifact-store",
       "severity": "LOW",
-      "affected_modules": [
-        "artifact-store.js is called by 8 modules"
-      ],
+      "affected_modules": ["artifact-store.js is called by 8 modules"],
       "description": "Heavy use of artifact-store creates central bottleneck",
       "recommendation": "Consider artifact caching or local storage patterns for high-volume access",
       "impact": "Artifact-store is performance-critical; ensure efficient implementation"
@@ -1350,9 +1189,7 @@
     {
       "issue": "Script Files Lack Architecture Documentation",
       "severity": "LOW",
-      "affected_modules": [
-        "scripts/*.js (27 files)"
-      ],
+      "affected_modules": ["scripts/*.js (27 files)"],
       "description": "27 scripts exist with unclear purposes and dependencies",
       "recommendation": "Categorize scripts (init, deploy, admin, etc.) and document purposes",
       "impact": "Hard to understand script ecosystem; maintenance unclear"
@@ -1390,9 +1227,7 @@
       "Autonomous generation (autonomous-task-generator.js)",
       "Strategic planning (strategic-planner.js)"
     ],
-    "removable_without_impact": [
-      "prompt-experiment-engine.js (A/B testing, unused)"
-    ],
+    "removable_without_impact": ["prompt-experiment-engine.js (A/B testing, unused)"],
     "removable_with_feature_loss": [
       "audit-engine.js (loses audit trail)",
       "metrics-engine.js (loses performance visibility)",

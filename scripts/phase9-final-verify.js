@@ -8,7 +8,10 @@ console.log("============================================================\n");
 console.log("=== PART 1: AgentExecutor Integration ===\n");
 
 const ae = fs.readFileSync("workflow/agent-executor.js", "utf8");
-console.log("require('./prompt-version-manager'):", ae.includes("prompt-version-manager") ? "YES" : "NO");
+console.log(
+  "require('./prompt-version-manager'):",
+  ae.includes("prompt-version-manager") ? "YES" : "NO"
+);
 console.log("getActiveVersion(role) call:", ae.includes("getActiveVersion(role)") ? "YES" : "NO");
 console.log("Fallback to legacy:", ae.includes("Fall back to legacy prompts") ? "YES" : "NO\n");
 
@@ -31,7 +34,9 @@ roles.forEach(r => {
       const v = JSON.parse(fs.readFileSync(vp, "utf8"));
       const files = fs.readdirSync(dir).filter(f => f.endsWith(".md"));
       console.log(r + ": activeVersion=" + v.activeVersion + " files=" + files.join(", "));
-      v.versions.forEach(x => console.log("    v" + x.version + " " + x.approvalStatus + " isActive=" + x.isActive));
+      v.versions.forEach(x =>
+        console.log("    v" + x.version + " " + x.approvalStatus + " isActive=" + x.isActive)
+      );
     }
   } else {
     console.log(r + ": MISSING");
@@ -48,8 +53,15 @@ roles.forEach(r => {
   const v2 = fs.existsSync(v2p) ? fs.readFileSync(v2p, "utf8") : null;
   if (v1 && v2) {
     const diff = v2.length - v1.length;
-    console.log(r + ": different=" + (v1 !== v2) + " sizeDiff=" + (diff > 0 ? "+" : "") + diff + "b");
-    console.log("  hasImprovements=" + v2.includes("Improvement Directives") + " hasRationale=" + v2.includes("Evolution Rationale"));
+    console.log(
+      r + ": different=" + (v1 !== v2) + " sizeDiff=" + (diff > 0 ? "+" : "") + diff + "b"
+    );
+    console.log(
+      "  hasImprovements=" +
+        v2.includes("Improvement Directives") +
+        " hasRationale=" +
+        v2.includes("Evolution Rationale")
+    );
   } else if (v1 && !v2) {
     console.log(r + ": only v1 (no v2 candidate)");
   }
@@ -58,7 +70,11 @@ console.log("");
 
 console.log("=== PART 6: getActiveVersion() callers ===\n");
 
-const targetFiles = ["workflow/agent-executor.js", "workflow/prompt-evolution-engine.js", "workflow/prompt-version-manager.js"];
+const targetFiles = [
+  "workflow/agent-executor.js",
+  "workflow/prompt-evolution-engine.js",
+  "workflow/prompt-version-manager.js"
+];
 targetFiles.forEach(f => {
   if (fs.existsSync(f)) {
     const c = fs.readFileSync(f, "utf8");
@@ -73,10 +89,17 @@ console.log("");
 
 console.log("=== PART 7: Dead Code Audit ===\n");
 
-const phase9Files = ["prompt-analyzer.js", "prompt-version-manager.js", "prompt-evolution-engine.js", "prompt-experiment-engine.js"];
+const phase9Files = [
+  "prompt-analyzer.js",
+  "prompt-version-manager.js",
+  "prompt-evolution-engine.js",
+  "prompt-experiment-engine.js"
+];
 phase9Files.forEach(f => {
   const inAgentExec = ae.includes(f.replace(".js", ""));
-  const inPipeline = fs.existsSync("workflow/pipeline-runner.js") && fs.readFileSync("workflow/pipeline-runner.js", "utf8").includes(f.replace(".js", ""));
+  const inPipeline =
+    fs.existsSync("workflow/pipeline-runner.js") &&
+    fs.readFileSync("workflow/pipeline-runner.js", "utf8").includes(f.replace(".js", ""));
   console.log("workflow/" + f + " -> agent-executor:", inAgentExec ? "YES (LIVE)" : "NO");
   console.log("  -> pipeline-runner:", inPipeline ? "YES (LIVE)" : "NO");
 });
@@ -85,11 +108,34 @@ console.log("");
 console.log("=== PART 8: FINAL SCORE ===\n");
 
 const checks = {
-  A: { name: "Prompt Evolution exists", pass: fs.existsSync("workflow/prompt-evolution-engine.js") },
+  A: {
+    name: "Prompt Evolution exists",
+    pass: fs.existsSync("workflow/prompt-evolution-engine.js")
+  },
   B: { name: "Generates candidates", pass: fs.existsSync("prompts/planner/v2.md") },
-  C: { name: "Promotion works", pass: (() => { try { const v = JSON.parse(fs.readFileSync("prompts/planner/versions.json", "utf8")); return v.activeVersion === 2; } catch(e) { return false; } })() },
-  D: { name: "AgentExecutor consumes promoted", pass: ae.includes("prompt-version-manager") && ae.includes("getActiveVersion") },
-  E: { name: "Learning loop closed", pass: ae.includes("prompt-version-manager") && fs.existsSync("workflow/prompt-analyzer.js") && fs.existsSync("workflow/metrics-engine.js") && fs.existsSync("workflow/audit-engine.js") }
+  C: {
+    name: "Promotion works",
+    pass: (() => {
+      try {
+        const v = JSON.parse(fs.readFileSync("prompts/planner/versions.json", "utf8"));
+        return v.activeVersion === 2;
+      } catch (e) {
+        return false;
+      }
+    })()
+  },
+  D: {
+    name: "AgentExecutor consumes promoted",
+    pass: ae.includes("prompt-version-manager") && ae.includes("getActiveVersion")
+  },
+  E: {
+    name: "Learning loop closed",
+    pass:
+      ae.includes("prompt-version-manager") &&
+      fs.existsSync("workflow/prompt-analyzer.js") &&
+      fs.existsSync("workflow/metrics-engine.js") &&
+      fs.existsSync("workflow/audit-engine.js")
+  }
 };
 
 let score = 0;

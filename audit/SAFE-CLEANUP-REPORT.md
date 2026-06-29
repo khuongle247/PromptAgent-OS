@@ -9,7 +9,9 @@
 ## A. CURRENT STATE SUMMARY
 
 ### What the system does
+
 PromptAgent is an autonomous AI software-engineering framework that:
+
 1. Executes an agent loop: planner → architect → coder → reviewer → debugger
 2. Persists state, artifacts, and memory for each project
 3. Validates outputs against JSON schemas
@@ -19,6 +21,7 @@ PromptAgent is an autonomous AI software-engineering framework that:
 7. Tracks observability via event bus, audit log, metrics, and health scores
 
 ### Current structure
+
 ```
 workflow/         — 28 files (core engines)
   ├── 7 core runtime
@@ -33,6 +36,7 @@ validation/       — 3 validators (separate from scripts/validation/)
 ```
 
 ### Current structure issues
+
 1. **Script proliferation** — 8 legacy files with v2/v3 variants alongside originals
 2. **Two validation directories** — `scripts/validation/` and `validation/` contain overlapping logic
 3. **Unused files** — some scripts have no callers
@@ -45,62 +49,65 @@ validation/       — 3 validators (separate from scripts/validation/)
 Files verified by searching `require(...)` references across entire codebase.
 
 ### NOT duplicates (contradicting initial analysis)
+
 - **`global-state-engine.js`** — NOT a duplicate of state-manager. It provides state reconciliation, drift detection, and snapshot persistence. state-manager is CRUD for project state; global-state-engine builds unified views and triggers self-healing. These are complementary, not overlapping.
 - **`knowledge-indexer.js`** — NOT a duplicate of memory-retrieval-engine. Knowledge indexer builds graph structures from memory+artifacts; retrieval engine does relevance-based querying. Different outputs.
 - **`agent-runner.js`** — PARTIALLY overlaps with agent-executor.js. agent-runner does pre-flight validation (checking config/prompt/schema readiness). agent-executor does actual LLM execution. The context-building overlaps (both read project files) but serve different lifecycle phases. **Minor duplication, not worth merging.**
 
 ### Confirmed duplication (safe to consolidate)
 
-| Files | Duplication | Action |
-|-------|-------------|--------|
-| `scripts/task-utils.js` ↔ `scripts/task-utils-v2.js` | v2 is the active version; v1 has no callers | Archive v1 |
-| `scripts/task-engine.js` ↔ `scripts/task-engine-v3.js` | v3 is active; v1 has no callers | Archive v1 |
-| `scripts/memory-manager.js` ↔ `scripts/memory-manager-v2.js` | v2 is active; v1 has no callers | Archive v1 |
-| `scripts/init-project.js` ↔ `scripts/init-project-v2.js` | v2 is active; v1 referenced in package.json but v2 exists | Update package.json, archive v1 |
-| `scripts/generate-prompt.js` ↔ `scripts/generate-prompt-v3.js` | v3 exists; v1 referenced in package.json | Update package.json, archive v1 |
-| `scripts/validate-project.js` ↔ `scripts/validate-project-v2.js` | v2 is in package.json; v1 has no callers | Archive v1 |
-| `scripts/validation/` (5 files) ↔ `validation/` (3 files) | Two validation directories with overlapping concerns | Keep both for now; requires deeper audit |
-| `scripts/append-memory.js` | No callers; memory is managed by learning-loop-engine | Archive |
+| Files                                                            | Duplication                                               | Action                                   |
+| ---------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------- |
+| `scripts/task-utils.js` ↔ `scripts/task-utils-v2.js`             | v2 is the active version; v1 has no callers               | Archive v1                               |
+| `scripts/task-engine.js` ↔ `scripts/task-engine-v3.js`           | v3 is active; v1 has no callers                           | Archive v1                               |
+| `scripts/memory-manager.js` ↔ `scripts/memory-manager-v2.js`     | v2 is active; v1 has no callers                           | Archive v1                               |
+| `scripts/init-project.js` ↔ `scripts/init-project-v2.js`         | v2 is active; v1 referenced in package.json but v2 exists | Update package.json, archive v1          |
+| `scripts/generate-prompt.js` ↔ `scripts/generate-prompt-v3.js`   | v3 exists; v1 referenced in package.json                  | Update package.json, archive v1          |
+| `scripts/validate-project.js` ↔ `scripts/validate-project-v2.js` | v2 is in package.json; v1 has no callers                  | Archive v1                               |
+| `scripts/validation/` (5 files) ↔ `validation/` (3 files)        | Two validation directories with overlapping concerns      | Keep both for now; requires deeper audit |
+| `scripts/append-memory.js`                                       | No callers; memory is managed by learning-loop-engine     | Archive                                  |
 
 ---
 
 ## C. SAFE TO ARCHIVE
 
 These files can be moved to `archive/` directory with ZERO risk. Verified by:
+
 - No `require(...)` references found in any other `.js` file
 - No references in `package.json` scripts
 - No references in test files
 
-| File | Reason |
-|------|--------|
-| **scripts/append-memory.js** | No callers anywhere. Memory is written by learning-loop-engine and CLI scripts |
-| **scripts/task-utils.js** | Superseded by task-utils-v2.js. No require() references |
-| **scripts/task-engine.js** | Superseded by task-engine-v3.js. No require() references |
-| **scripts/memory-manager.js** | Superseded by memory-manager-v2.js. No require() references |
-| **scripts/init-project.js** | Superseded by init-project-v2.js. Referenced in package.json but v2 exists |
-| **scripts/generate-prompt.js** | Superseded by generate-prompt-v3.js. Referenced in package.json |
-| **scripts/validate-project.js** | Superseded by validate-project-v2.js. No require() references |
-| **scripts/generate-planner-prompt-v2.js** | No require() references found |
-| **scripts/test-task-engine.js** | No require() references found. Likely a one-off test |
-| **agents/agent-state-machine.js** | No require() references found |
-| **workflow/state-recovery-engine.js** | (Not reviewed) — Verify before archiving |
+| File                                      | Reason                                                                         |
+| ----------------------------------------- | ------------------------------------------------------------------------------ |
+| **scripts/append-memory.js**              | No callers anywhere. Memory is written by learning-loop-engine and CLI scripts |
+| **scripts/task-utils.js**                 | Superseded by task-utils-v2.js. No require() references                        |
+| **scripts/task-engine.js**                | Superseded by task-engine-v3.js. No require() references                       |
+| **scripts/memory-manager.js**             | Superseded by memory-manager-v2.js. No require() references                    |
+| **scripts/init-project.js**               | Superseded by init-project-v2.js. Referenced in package.json but v2 exists     |
+| **scripts/generate-prompt.js**            | Superseded by generate-prompt-v3.js. Referenced in package.json                |
+| **scripts/validate-project.js**           | Superseded by validate-project-v2.js. No require() references                  |
+| **scripts/generate-planner-prompt-v2.js** | No require() references found                                                  |
+| **scripts/test-task-engine.js**           | No require() references found. Likely a one-off test                           |
+| **agents/agent-state-machine.js**         | No require() references found                                                  |
+| **workflow/state-recovery-engine.js**     | (Not reviewed) — Verify before archiving                                       |
 
 ### Additional cleanup items
 
-| Item | Path Pattern | Action |
-|------|-------------|--------|
-| Runtime snapshots | `workflow/snapshots/state-*.json` | Add to `.gitignore` |
-| Experiment artifacts | `experiments/EXP-*.json` | Add to `.gitignore` |
-| Metrics files | `metrics/*.json` | Add to `.gitignore` |
-| Health files | `health/*.json` | Add to `.gitignore` |
-| Invalid event logs | `logs/invalid-events.jsonl` | Add to `.gitignore` |
-| Audit logs | `logs/audit.jsonl` | Add to `.gitignore` |
+| Item                 | Path Pattern                      | Action              |
+| -------------------- | --------------------------------- | ------------------- |
+| Runtime snapshots    | `workflow/snapshots/state-*.json` | Add to `.gitignore` |
+| Experiment artifacts | `experiments/EXP-*.json`          | Add to `.gitignore` |
+| Metrics files        | `metrics/*.json`                  | Add to `.gitignore` |
+| Health files         | `health/*.json`                   | Add to `.gitignore` |
+| Invalid event logs   | `logs/invalid-events.jsonl`       | Add to `.gitignore` |
+| Audit logs           | `logs/audit.jsonl`                | Add to `.gitignore` |
 
 ---
 
 ## D. KEEP (CORE SYSTEM — MUST NOT TOUCH)
 
 ### Core Runtime (7 files)
+
 ```
 workflow/agent-orchestrator.js     — Agent loop orchestration
 workflow/agent-executor.js          — Single agent execution
@@ -112,6 +119,7 @@ workflow/unified-validation-pipeline.js
 ```
 
 ### Required Infrastructure (6 files)
+
 ```
 workflow/phase-controller.js        — Role configuration
 workflow/pipeline-runner.js          — Main entry point
@@ -122,6 +130,7 @@ scripts/validation/validation-utils.js — Shared utilities
 ```
 
 ### Evolution System (5 files)
+
 ```
 workflow/prompt-evolution-engine.js
 workflow/prompt-version-manager.js
@@ -131,6 +140,7 @@ workflow/prompt-evolution-scheduler.js
 ```
 
 ### Learning System (3 files)
+
 ```
 workflow/memory-retrieval-engine.js
 workflow/knowledge-indexer.js
@@ -138,6 +148,7 @@ workflow/learning-loop-engine.js
 ```
 
 ### Observability (6 files)
+
 ```
 workflow/event-bus.js
 workflow/event-schema-registry.js
@@ -148,6 +159,7 @@ workflow/framework-health.js
 ```
 
 ### Active Scripts (keep all — actively referenced)
+
 ```
 scripts/init-project-v2.js          — package.json "init-project" → v2
 scripts/generate-prompt-v3.js        — Used by evolution system
@@ -174,6 +186,7 @@ scripts/validation/task-validator.js         — Active
 ```
 
 ### Validation directory (3 files)
+
 ```
 validation/content-validator.js      — Keep (separate concern from scripts/validation/)
 validation/phase-gate-validator.js    — Keep
@@ -181,6 +194,7 @@ validation/validate-agent-handoff.js  — Keep
 ```
 
 ### All test files (6 files)
+
 ```
 tests/event-validation-test.js
 tests/phase7-integration-test.js
@@ -221,6 +235,7 @@ move agents/agent-state-machine.js archive/agents/
 ```
 
 Then archive the legacy scripts:
+
 ```
 move scripts/init-project.js archive/scripts/
 move scripts/generate-prompt.js archive/scripts/
@@ -229,6 +244,7 @@ move scripts/generate-prompt.js archive/scripts/
 ### Step 3: Update .gitignore (NO CODE CHANGE)
 
 Add to `.gitignore`:
+
 ```
 # Runtime-generated artifacts
 workflow/snapshots/*
@@ -272,18 +288,18 @@ agents/
 
 ### If cleanup is done correctly: ZERO RISK
 
-| Archive Candidate | Risk Level | Why |
-|------------------|------------|-----|
-| append-memory.js | NONE | No require() refs, no tests, no package.json ref |
-| task-utils.js | NONE | No require() refs (v2 is used by 7 files) |
-| task-engine.js | NONE | No require() refs (v3 is active) |
-| memory-manager.js | NONE | No require() refs (v2 is active) |
-| validate-project.js | NONE | No require() refs (v2 is referenced) |
-| init-project.js | LOW | Referenced in package.json; must update package.json first |
-| generate-prompt.js | LOW | Referenced in package.json; must update package.json first |
-| generate-planner-prompt-v2.js | NONE | No require() refs |
-| test-task-engine.js | NONE | No require() refs |
-| agent-state-machine.js | NONE | No require() refs |
+| Archive Candidate             | Risk Level | Why                                                        |
+| ----------------------------- | ---------- | ---------------------------------------------------------- |
+| append-memory.js              | NONE       | No require() refs, no tests, no package.json ref           |
+| task-utils.js                 | NONE       | No require() refs (v2 is used by 7 files)                  |
+| task-engine.js                | NONE       | No require() refs (v3 is active)                           |
+| memory-manager.js             | NONE       | No require() refs (v2 is active)                           |
+| validate-project.js           | NONE       | No require() refs (v2 is referenced)                       |
+| init-project.js               | LOW        | Referenced in package.json; must update package.json first |
+| generate-prompt.js            | LOW        | Referenced in package.json; must update package.json first |
+| generate-planner-prompt-v2.js | NONE       | No require() refs                                          |
+| test-task-engine.js           | NONE       | No require() refs                                          |
+| agent-state-machine.js        | NONE       | No require() refs                                          |
 
 ### What MUST be tested after cleanup
 
@@ -298,17 +314,18 @@ agents/
 
 ### What COULD break if done incorrectly
 
-| Mistake | Impact |
-|---------|--------|
-| Archiving a file still referenced by require() | Runtime error (missing module) |
-| Archiving before updating package.json | npm run script fails |
-| Deleting snapshots before testing | No impact (runtime regenerates) |
-| Merging agent-runner into agent-executor | pipeline-runner breaks (pre-flight vs execution separation) |
-| Removing validation middlewares | Events not validated; invalid events processed |
+| Mistake                                        | Impact                                                      |
+| ---------------------------------------------- | ----------------------------------------------------------- |
+| Archiving a file still referenced by require() | Runtime error (missing module)                              |
+| Archiving before updating package.json         | npm run script fails                                        |
+| Deleting snapshots before testing              | No impact (runtime regenerates)                             |
+| Merging agent-runner into agent-executor       | pipeline-runner breaks (pre-flight vs execution separation) |
+| Removing validation middlewares                | Events not validated; invalid events processed              |
 
 ### Root cause analysis: Why this is safe
 
 All archived files are verified as unreferenced by:
+
 1. **No `require(...)` matches** in any `.js` file
 2. **No `package.json` script references** (except 3 with v2/v3 alternatives)
 3. **No test file references**
@@ -319,15 +336,15 @@ All archived files are verified as unreferenced by:
 
 ## G. SUMMARY SNAPSHOT
 
-| Metric | Value |
-|--------|-------|
-| **Files to archive** (confirmed unused) | 10 |
-| **Files to keep** (core + active) | 38+ |
-| **Files requiring more investigation** | 2 (state-recovery-engine) |
-| **Files that must NOT be touched** | 28 workflow files |
-| **package.json script updates needed** | 3 |
-| **Total lines of code removed** | ~0 (move to archive, NOT delete) |
-| **Architecture changes** | NONE |
-| **Runtime behavior changes** | NONE |
+| Metric                                  | Value                            |
+| --------------------------------------- | -------------------------------- |
+| **Files to archive** (confirmed unused) | 10                               |
+| **Files to keep** (core + active)       | 38+                              |
+| **Files requiring more investigation**  | 2 (state-recovery-engine)        |
+| **Files that must NOT be touched**      | 28 workflow files                |
+| **package.json script updates needed**  | 3                                |
+| **Total lines of code removed**         | ~0 (move to archive, NOT delete) |
+| **Architecture changes**                | NONE                             |
+| **Runtime behavior changes**            | NONE                             |
 
 **This cleanup reduces file count by ~20% without affecting any runtime behavior.**

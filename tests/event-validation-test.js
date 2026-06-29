@@ -18,7 +18,7 @@ async function testValidAgentExecutedEvent() {
   EventBus.reset(); // Reset EventBus for clean test state
 
   let eventReceived = false;
-  const handler = (payload) => {
+  const handler = payload => {
     eventReceived = true;
     console.log("Subscriber received valid event:", payload);
   };
@@ -44,7 +44,8 @@ async function testValidAgentExecutedEvent() {
   } else {
     console.error("Test A FAILED: Valid event did not behave as expected.");
     if (!eventReceived) console.error("  - Event was NOT received by subscriber.");
-    if (fs.existsSync(INVALID_EVENTS_LOG)) console.error("  - Invalid events log was created/had content.");
+    if (fs.existsSync(INVALID_EVENTS_LOG))
+      console.error("  - Invalid events log was created/had content.");
   }
 }
 
@@ -55,7 +56,7 @@ async function testInvalidAgentExecutedEvent() {
   EventBus.reset(); // Reset EventBus for clean test state
 
   let eventReceived = false;
-  const handler = (payload) => {
+  const handler = payload => {
     eventReceived = true;
     console.log("Subscriber unexpectedly received invalid event:", payload);
   };
@@ -86,7 +87,8 @@ async function testInvalidAgentExecutedEvent() {
   } else {
     console.error("Test B FAILED: Invalid event did not behave as expected.");
     if (eventReceived) console.error("  - Event was unexpectedly received by subscriber.");
-    if (!fs.existsSync(INVALID_EVENTS_LOG)) console.error("  - Invalid events log was NOT created.");
+    if (!fs.existsSync(INVALID_EVENTS_LOG))
+      console.error("  - Invalid events log was NOT created.");
   }
 }
 

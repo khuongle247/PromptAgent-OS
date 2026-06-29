@@ -22,12 +22,12 @@ const HEALTH_DIR = path.join(process.cwd(), "health");
 const HEALTH_STATUS_PATH = path.join(HEALTH_DIR, "framework-status.json");
 
 // Thresholds
-const RETRY_RATE_THRESHOLD = 0.2;       // 20% retry rate triggers bottleneck
-const FAILURE_RATE_THRESHOLD = 0.2;     // 20% failure rate triggers risk
-const HIGH_AVG_DURATION_MS = 10000;     // 10s average triggers bottleneck
-const HEALING_CYCLE_THRESHOLD = 3;      // 3+ healing cycles in window triggers risk
-const LESSON_IMPORTANCE_BOOST = 1;      // Each lesson learned adds 1 point
-const MEMORY_CONFLICT_THRESHOLD = 5;    // 5+ importance changes triggers memory risk
+const RETRY_RATE_THRESHOLD = 0.2; // 20% retry rate triggers bottleneck
+const FAILURE_RATE_THRESHOLD = 0.2; // 20% failure rate triggers risk
+const HIGH_AVG_DURATION_MS = 10000; // 10s average triggers bottleneck
+const HEALING_CYCLE_THRESHOLD = 3; // 3+ healing cycles in window triggers risk
+const LESSON_IMPORTANCE_BOOST = 1; // Each lesson learned adds 1 point
+const MEMORY_CONFLICT_THRESHOLD = 5; // 5+ importance changes triggers memory risk
 const PROMPT_DEGRADATION_THRESHOLD = 0.3; // 30%+ retry rate triggers prompt degradation
 
 // ---- File Readers ----
@@ -82,9 +82,8 @@ function readAuditLog(limit = 500) {
 function detectRetryRateBottleneck(agentMetrics) {
   if (!agentMetrics || agentMetrics.totalExecutions === 0) return null;
 
-  const retryRate = agentMetrics.totalExecutions > 0
-    ? agentMetrics.retryCount / agentMetrics.totalExecutions
-    : 0;
+  const retryRate =
+    agentMetrics.totalExecutions > 0 ? agentMetrics.retryCount / agentMetrics.totalExecutions : 0;
 
   if (retryRate > RETRY_RATE_THRESHOLD) {
     return {
@@ -156,9 +155,10 @@ function detectRecurringBugPatterns(auditRecords) {
 function detectFailureRateRisk(agentMetrics) {
   if (!agentMetrics || agentMetrics.totalExecutions === 0) return null;
 
-  const failureRate = agentMetrics.totalExecutions > 0
-    ? agentMetrics.failedExecutions / agentMetrics.totalExecutions
-    : 0;
+  const failureRate =
+    agentMetrics.totalExecutions > 0
+      ? agentMetrics.failedExecutions / agentMetrics.totalExecutions
+      : 0;
 
   if (failureRate > FAILURE_RATE_THRESHOLD) {
     return {
@@ -176,9 +176,11 @@ function detectMemoryConflicts(learningMetrics) {
   if (!learningMetrics) return null;
 
   // High memory update count relative to lessons can indicate churn
-  if (learningMetrics.memoryUpdates >= MEMORY_CONFLICT_THRESHOLD &&
-      learningMetrics.lessonsLearned > 0 &&
-      learningMetrics.memoryUpdates > learningMetrics.lessonsLearned * 2) {
+  if (
+    learningMetrics.memoryUpdates >= MEMORY_CONFLICT_THRESHOLD &&
+    learningMetrics.lessonsLearned > 0 &&
+    learningMetrics.memoryUpdates > learningMetrics.lessonsLearned * 2
+  ) {
     return {
       type: "memory-conflict-churn",
       severity: "warning",
@@ -209,9 +211,8 @@ function detectPromptDegradation(agentMetrics) {
 function detectTaskFailureRateRisk(taskMetrics) {
   if (!taskMetrics || taskMetrics.totalTasks === 0) return null;
 
-  const taskFailureRate = taskMetrics.totalTasks > 0
-    ? taskMetrics.failedTasks / taskMetrics.totalTasks
-    : 0;
+  const taskFailureRate =
+    taskMetrics.totalTasks > 0 ? taskMetrics.failedTasks / taskMetrics.totalTasks : 0;
 
   if (taskFailureRate > FAILURE_RATE_THRESHOLD) {
     return {
@@ -252,7 +253,10 @@ function calculateHealthScore(agentMetrics, taskMetrics, learningMetrics, bottle
 
     // Healing penalty (each completed task that required healing implies overhead)
     if (taskMetrics.totalTasks > 0) {
-      const healingOverhead = Math.max(0, taskMetrics.totalTasks - taskMetrics.completedTasks - taskMetrics.failedTasks);
+      const healingOverhead = Math.max(
+        0,
+        taskMetrics.totalTasks - taskMetrics.completedTasks - taskMetrics.failedTasks
+      );
       score -= healingOverhead * 3;
     }
   }
@@ -298,8 +302,10 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             id: "REC-OPTIMIZE-PROMPT",
             priority: b.severity === "critical" ? "high" : "medium",
             category: "prompt-engineering",
-            description: "High retry rate detected. Review and optimize agent prompts to improve first-pass success rate.",
-            action: "Improve Planner prompt with clearer instructions and stricter output format requirements."
+            description:
+              "High retry rate detected. Review and optimize agent prompts to improve first-pass success rate.",
+            action:
+              "Improve Planner prompt with clearer instructions and stricter output format requirements."
           });
           usedKeys.add("optimize-prompt");
         }
@@ -308,7 +314,8 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             id: "REC-ADD-VALIDATION",
             priority: "medium",
             category: "validation",
-            description: "Add pre-execution validation for Architect outputs to catch errors before coder execution.",
+            description:
+              "Add pre-execution validation for Architect outputs to catch errors before coder execution.",
             action: "Add validation for Architect outputs"
           });
           usedKeys.add("add-validation");
@@ -322,7 +329,8 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             priority: "medium",
             category: "performance",
             description: `Average execution duration (${b.value}ms) is high. Consider breaking tasks into smaller units.`,
-            action: "Reduce task complexity by splitting large tasks into smaller, focused subtasks."
+            action:
+              "Reduce task complexity by splitting large tasks into smaller, focused subtasks."
           });
           usedKeys.add("reduce-complexity");
         }
@@ -335,7 +343,8 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             priority: b.severity === "critical" ? "high" : "medium",
             category: "self-healing",
             description: `${b.detail}. Too many healing cycles indicate systemic issues.`,
-            action: "Improve debugger root cause analysis and coder fix generation to reduce healing cycles."
+            action:
+              "Improve debugger root cause analysis and coder fix generation to reduce healing cycles."
           });
           usedKeys.add("improve-debugging");
         }
@@ -354,7 +363,8 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             priority: r.severity === "critical" ? "high" : "medium",
             category: "quality",
             description: `${r.detail}. Recurring bug patterns suggest gaps in test coverage or code review.`,
-            action: "Add regression tests for identified bug patterns and strengthen reviewer validation criteria."
+            action:
+              "Add regression tests for identified bug patterns and strengthen reviewer validation criteria."
           });
           usedKeys.add("add-bug-tests");
         }
@@ -368,7 +378,8 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             priority: r.severity === "critical" ? "high" : "medium",
             category: "error-handling",
             description: `${r.detail}. High failure rates may indicate systemic issues requiring manual intervention.`,
-            action: "Escalate repeated failures to human review. Consider increasing memory importance threshold for recurring failures."
+            action:
+              "Escalate repeated failures to human review. Consider increasing memory importance threshold for recurring failures."
           });
           usedKeys.add("escalate-errors");
         }
@@ -394,7 +405,8 @@ function generateRecommendations(bottlenecks, risks, agentMetrics, learningMetri
             priority: r.severity === "critical" ? "high" : "medium",
             category: "prompt-engineering",
             description: `${r.detail}. Prompts may need updating to maintain effectiveness.`,
-            action: "Review all agent prompts for clarity, completeness, and alignment with current task complexity."
+            action:
+              "Review all agent prompts for clarity, completeness, and alignment with current task complexity."
           });
           usedKeys.add("review-prompts");
         }
@@ -473,11 +485,22 @@ function generateHealthReport() {
   ].filter(Boolean);
 
   // Compute score and status
-  const score = calculateHealthScore(agentMetrics, taskMetrics, learningMetrics, bottlenecks, risks);
+  const score = calculateHealthScore(
+    agentMetrics,
+    taskMetrics,
+    learningMetrics,
+    bottlenecks,
+    risks
+  );
   const status = determineStatus(score);
 
   // Generate recommendations
-  const recommendations = generateRecommendations(bottlenecks, risks, agentMetrics, learningMetrics);
+  const recommendations = generateRecommendations(
+    bottlenecks,
+    risks,
+    agentMetrics,
+    learningMetrics
+  );
 
   // Build report
   const report = {
@@ -487,15 +510,18 @@ function generateHealthReport() {
     summary: {
       totalExecutions: agentMetrics.totalExecutions,
       totalTasks: taskMetrics.totalTasks,
-      successRate: agentMetrics.totalExecutions > 0
-        ? Math.round((agentMetrics.successfulExecutions / agentMetrics.totalExecutions) * 100)
-        : 0,
-      failureRate: agentMetrics.totalExecutions > 0
-        ? Math.round((agentMetrics.failedExecutions / agentMetrics.totalExecutions) * 100)
-        : 0,
-      retryRate: agentMetrics.totalExecutions > 0
-        ? Math.round((agentMetrics.retryCount / agentMetrics.totalExecutions) * 100)
-        : 0,
+      successRate:
+        agentMetrics.totalExecutions > 0
+          ? Math.round((agentMetrics.successfulExecutions / agentMetrics.totalExecutions) * 100)
+          : 0,
+      failureRate:
+        agentMetrics.totalExecutions > 0
+          ? Math.round((agentMetrics.failedExecutions / agentMetrics.totalExecutions) * 100)
+          : 0,
+      retryRate:
+        agentMetrics.totalExecutions > 0
+          ? Math.round((agentMetrics.retryCount / agentMetrics.totalExecutions) * 100)
+          : 0,
       avgDuration: agentMetrics.avgDuration,
       lessonsLearned: learningMetrics.lessonsLearned,
       reusablePatterns: learningMetrics.reusablePatterns,

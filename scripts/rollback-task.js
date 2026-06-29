@@ -14,9 +14,7 @@ const projectName = process.argv[2];
 const taskId = process.argv[3];
 
 if (!projectName || !taskId) {
-  console.log(
-    "Usage: node scripts/rollback-task.js ProjectName TASK-ID"
-  );
+  console.log("Usage: node scripts/rollback-task.js ProjectName TASK-ID");
 
   process.exit(1);
 }
@@ -25,31 +23,16 @@ if (!projectName || !taskId) {
 // VALIDATE
 // =====================================
 
-if (
-  !taskExists(
-    projectName,
-    taskId
-  )
-) {
-  console.log(
-    `Task not found: ${taskId}`
-  );
+if (!taskExists(projectName, taskId)) {
+  console.log(`Task not found: ${taskId}`);
 
   process.exit(1);
 }
 
-const task =
-  getTaskById(
-    projectName,
-    taskId
-  );
+const task = getTaskById(projectName, taskId);
 
-if (
-  task.status !== "done"
-) {
-  console.log(
-    "Task is not completed"
-  );
+if (task.status !== "done") {
+  console.log("Task is not completed");
 
   process.exit(1);
 }
@@ -59,45 +42,21 @@ if (
 // =====================================
 
 try {
+  updateTaskStatus(projectName, taskId, "todo");
 
-  updateTaskStatus(
-    projectName,
-    taskId,
-    "todo"
-  );
+  const removed = removeCompletedTaskMemory(projectName, taskId);
 
-  const removed =
-    removeCompletedTaskMemory(
-      projectName,
-      taskId
-    );
+  setCurrentTask(projectName, taskId);
 
-  setCurrentTask(
-    projectName,
-    taskId
-  );
+  console.log("\nRollback successful\n");
 
-  console.log(
-    "\nRollback successful\n"
-  );
+  console.log(`Task ID         : ${task.id}`);
 
-  console.log(
-    `Task ID         : ${task.id}`
-  );
+  console.log(`Status          : todo`);
 
-  console.log(
-    `Status          : todo`
-  );
-
-  console.log(
-    `Memory Removed  : ${removed}`
-  );
-
+  console.log(`Memory Removed  : ${removed}`);
 } catch (error) {
-
-  console.log(
-    error.message
-  );
+  console.log(error.message);
 
   process.exit(1);
 }

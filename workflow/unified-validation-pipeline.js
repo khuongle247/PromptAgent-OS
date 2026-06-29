@@ -88,7 +88,11 @@ function validateTasks(tasks, report) {
   }
 }
 
-function validateProjectWorkspace(rootDir, projectDir, report = createReport(path.basename(projectDir))) {
+function validateProjectWorkspace(
+  rootDir,
+  projectDir,
+  report = createReport(path.basename(projectDir))
+) {
   const requiredFiles = [
     "project.json",
     "docs/requirements.md",
@@ -113,7 +117,13 @@ function validateProjectWorkspace(rootDir, projectDir, report = createReport(pat
     }
   });
 
-  const project = validateFileObject(rootDir, path.join(projectDir, "project.json"), "project.schema.json", "project.json", report);
+  const project = validateFileObject(
+    rootDir,
+    path.join(projectDir, "project.json"),
+    "project.schema.json",
+    "project.json",
+    report
+  );
   const tasksFile = parseJsonFile(path.join(projectDir, "tasks", "tasks.json"));
   const memoryFile = parseJsonFile(path.join(projectDir, "memory", "memory.json"));
 
@@ -122,7 +132,9 @@ function validateProjectWorkspace(rootDir, projectDir, report = createReport(pat
     tasksFile.tasks.forEach(task => {
       const result = validateSchema(task, taskSchema);
       if (!result.valid) {
-        result.errors.forEach(error => addWarning(report, `${task.id || "task"}: ${error.instancePath} ${error.message}`));
+        result.errors.forEach(error =>
+          addWarning(report, `${task.id || "task"}: ${error.instancePath} ${error.message}`)
+        );
       }
     });
     validateTasks(tasksFile.tasks, report);
@@ -134,7 +146,9 @@ function validateProjectWorkspace(rootDir, projectDir, report = createReport(pat
     const memorySchema = loadSchema(rootDir, "memory.schema.json");
     const result = validateSchema(memoryFile, memorySchema);
     if (!result.valid) {
-      result.errors.forEach(error => addError(report, `memory.json: ${error.instancePath} ${error.message}`));
+      result.errors.forEach(error =>
+        addError(report, `memory.json: ${error.instancePath} ${error.message}`)
+      );
     }
   } else if (memoryFile) {
     addWarning(report, "Legacy memory.json detected; strict v3 schema validation skipped");
@@ -143,10 +157,20 @@ function validateProjectWorkspace(rootDir, projectDir, report = createReport(pat
   return report;
 }
 
-function validatePhaseConfiguration(rootDir, projectDir, report = createReport(path.basename(projectDir))) {
+function validatePhaseConfiguration(
+  rootDir,
+  projectDir,
+  report = createReport(path.basename(projectDir))
+) {
   const phaseGatePath = path.join(rootDir, "schemas", "phase-gates.schema.json");
   const phaseGates = parseJsonFile(phaseGatePath);
-  const project = validateFileObject(rootDir, path.join(projectDir, "project.json"), "project.schema.json", "project.json", report);
+  const project = validateFileObject(
+    rootDir,
+    path.join(projectDir, "project.json"),
+    "project.schema.json",
+    "project.json",
+    report
+  );
 
   if (!phaseGates || !project) {
     return report;
@@ -194,7 +218,7 @@ function validatePhaseConfiguration(rootDir, projectDir, report = createReport(p
 
   if (currentPhase > 1) {
     const previousGate = (phaseGates.phases || []).find(phase => phase.phase === currentPhase - 1);
-    (previousGate && previousGate.exitCriteria || []).forEach(criterion => {
+    ((previousGate && previousGate.exitCriteria) || []).forEach(criterion => {
       if (!evaluate(criterion)) {
         addError(report, `Exit criterion ${criterion.id} failed: ${criterion.description}`);
       }
@@ -204,7 +228,12 @@ function validatePhaseConfiguration(rootDir, projectDir, report = createReport(p
   return report;
 }
 
-function validateAgentArtifacts(rootDir, projectDir, role, report = createReport(path.basename(projectDir))) {
+function validateAgentArtifacts(
+  rootDir,
+  projectDir,
+  role,
+  report = createReport(path.basename(projectDir))
+) {
   const { getRoleConfig } = require("./phase-controller");
   const config = getRoleConfig(role);
 
@@ -231,7 +260,9 @@ function validateAgentArtifacts(rootDir, projectDir, role, report = createReport
     const result = validateSchema(outputData, outputSchema);
 
     if (!result.valid) {
-      result.errors.forEach(error => addError(report, `${path.basename(outputPath)}: ${error.instancePath} ${error.message}`));
+      result.errors.forEach(error =>
+        addError(report, `${path.basename(outputPath)}: ${error.instancePath} ${error.message}`)
+      );
     }
   } else {
     addWarning(report, `No output artifact found for ${role}`);

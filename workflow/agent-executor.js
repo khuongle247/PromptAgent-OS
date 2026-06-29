@@ -1,7 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 
-const { readJson, readText, loadSchema, validateSchema } = require("../scripts/validation/validation-utils");
+const {
+  readJson,
+  readText,
+  loadSchema,
+  validateSchema
+} = require("../scripts/validation/validation-utils");
 const { buildAgentContext } = require("./agent-runner");
 const { writeArtifact } = require("./artifact-store");
 const { adaptLegacyArtifact } = require("../adapters/legacy-adapter");
@@ -63,7 +68,12 @@ function resolveTaskId(projectDir, options = {}) {
 function loadProjectBundle(rootDir, projectDir, role) {
   const context = buildAgentContext(rootDir, projectDir, role);
   const taskId = resolveTaskId(projectDir, {});
-  const relevantMemories = retrieveMemories(rootDir, projectDir, `context for ${role} task ${taskId}`, { limit: 5 });
+  const relevantMemories = retrieveMemories(
+    rootDir,
+    projectDir,
+    `context for ${role} task ${taskId}`,
+    { limit: 5 }
+  );
 
   return {
     context,
@@ -81,7 +91,11 @@ function loadProjectBundle(rootDir, projectDir, role) {
 function buildMockOutput(role, bundle, options = {}) {
   const now = new Date().toISOString();
   const taskId = options.taskId || bundle.currentTaskId || "TASK-001";
-  const projectName = bundle.project?.name || path.basename(path.dirname(bundle.context?.project?.projectDir || projectNameFallback(options.projectDir)));
+  const projectName =
+    bundle.project?.name ||
+    path.basename(
+      path.dirname(bundle.context?.project?.projectDir || projectNameFallback(options.projectDir))
+    );
   const taskTitle = bundle.currentTask?.title || `${role} execution for ${projectName}`;
 
   if (role === "planner") {
@@ -141,9 +155,12 @@ function buildMockOutput(role, bundle, options = {}) {
         {
           adrId: "ADR-001",
           title: "Preserve Existing PromptAgent Workflow",
-          context: "The execution layer must extend the current framework without redesigning the workflow or changing schemas.",
-          decision: "Keep the execution layer additive and reuse the existing prompts, contracts, and validation entry points.",
-          consequences: "The framework remains stable while gaining mockable execution capability and artifact persistence.",
+          context:
+            "The execution layer must extend the current framework without redesigning the workflow or changing schemas.",
+          decision:
+            "Keep the execution layer additive and reuse the existing prompts, contracts, and validation entry points.",
+          consequences:
+            "The framework remains stable while gaining mockable execution capability and artifact persistence.",
           status: "proposed",
           relatedTasks: [taskId]
         }
@@ -151,14 +168,16 @@ function buildMockOutput(role, bundle, options = {}) {
       architectureUpdates: [
         {
           file: "docs/architecture.md",
-          content: "Execution layer extends the existing workflow without altering the schema or handoff model."
+          content:
+            "Execution layer extends the existing workflow without altering the schema or handoff model."
         }
       ],
       taskAssignments: [
         {
           taskId,
           adrReferences: ["ADR-001"],
-          implementationGuidance: "Use the existing prompt, schema, and validation stack with a mockable execution boundary."
+          implementationGuidance:
+            "Use the existing prompt, schema, and validation stack with a mockable execution boundary."
         }
       ],
       risks: []
@@ -246,7 +265,13 @@ function projectNameFallback(projectDir) {
 
 function coerceOutput(role, rawOutput, options = {}) {
   if (rawOutput && typeof rawOutput === "object" && !Array.isArray(rawOutput)) {
-    if (rawOutput.metadata || rawOutput.tasks || rawOutput.decisions || rawOutput.filesChanged || rawOutput.reviewItems) {
+    if (
+      rawOutput.metadata ||
+      rawOutput.tasks ||
+      rawOutput.decisions ||
+      rawOutput.filesChanged ||
+      rawOutput.reviewItems
+    ) {
       return rawOutput;
     }
   }
@@ -318,18 +343,22 @@ async function executeAgent(rootDir, projectDir, role, options = {}) {
 
   let artifact = null;
   if (validation.valid && options.store !== false) {
-    artifact = writeArtifact(projectDir, {
-      role,
-      taskId,
-      output,
-      source: executionSource,
-      schemaPath: validation.schemaPath
-    }, {
-      role,
-      taskId,
-      source: executionSource,
-      schemaPath: validation.schemaPath
-    });
+    artifact = writeArtifact(
+      projectDir,
+      {
+        role,
+        taskId,
+        output,
+        source: executionSource,
+        schemaPath: validation.schemaPath
+      },
+      {
+        role,
+        taskId,
+        source: executionSource,
+        schemaPath: validation.schemaPath
+      }
+    );
 
     // Emit ArtifactWritten event
     const eventBus = require("./event-bus");
@@ -390,7 +419,9 @@ if (require.main === module) {
   const role = process.argv[3] || "planner";
 
   if (!projectName) {
-    console.log("Usage: node workflow/agent-executor.js ProjectName [planner|architect|coder|reviewer|debugger]");
+    console.log(
+      "Usage: node workflow/agent-executor.js ProjectName [planner|architect|coder|reviewer|debugger]"
+    );
     process.exit(1);
   }
 

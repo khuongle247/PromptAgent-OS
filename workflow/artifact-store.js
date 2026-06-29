@@ -104,7 +104,9 @@ function writeArtifact(projectDir, artifact, options = {}) {
   writeJson(artifactPath, payload);
 
   const manifest = loadManifest(projectDir);
-  const existingIndex = manifest.artifacts.findIndex(entry => entry.role === role && entry.taskId === taskId);
+  const existingIndex = manifest.artifacts.findIndex(
+    entry => entry.role === role && entry.taskId === taskId
+  );
 
   const record = {
     id: `${role}:${taskId}`,
@@ -133,12 +135,15 @@ function writeArtifact(projectDir, artifact, options = {}) {
 
 function readArtifact(projectDir, selector) {
   const manifest = loadManifest(projectDir);
-  const query = typeof selector === "string" ? { taskId: selector } : (selector || {});
+  const query = typeof selector === "string" ? { taskId: selector } : selector || {};
 
   let record = null;
 
   if (query.role && query.taskId) {
-    record = manifest.artifacts.find(entry => entry.role === query.role && entry.taskId === query.taskId) || null;
+    record =
+      manifest.artifacts.find(
+        entry => entry.role === query.role && entry.taskId === query.taskId
+      ) || null;
   } else if (query.role) {
     const scoped = manifest.artifacts.filter(entry => entry.role === query.role);
     record = scoped[scoped.length - 1] || null;

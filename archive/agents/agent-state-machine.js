@@ -7,15 +7,15 @@ const fs = require("fs");
 const path = require("path");
 
 const VALID_TRANSITIONS = {
-  "idle": ["active"],
-  "active": ["blocked", "completed", "failed"],
-  "blocked": ["active", "escalated"],
-  "completed": ["review"],
-  "review": ["approved", "changes-requested", "failed"],
-  "approved": ["idle"],
+  idle: ["active"],
+  active: ["blocked", "completed", "failed"],
+  blocked: ["active", "escalated"],
+  completed: ["review"],
+  review: ["approved", "changes-requested", "failed"],
+  approved: ["idle"],
   "changes-requested": ["active"],
-  "failed": ["idle", "escalated"],
-  "escalated": ["idle"]
+  failed: ["idle", "escalated"],
+  escalated: ["idle"]
 };
 
 function getStateFilePath(projectDir) {
@@ -50,7 +50,9 @@ function transition(projectDir, agent, toStatus, reason) {
   const fromStatus = state.status;
 
   if (!VALID_TRANSITIONS[fromStatus] || !VALID_TRANSITIONS[fromStatus].includes(toStatus)) {
-    throw new Error(`Invalid transition: ${fromStatus} → ${toStatus}. Allowed: ${(VALID_TRANSITIONS[fromStatus] || []).join(", ")}`);
+    throw new Error(
+      `Invalid transition: ${fromStatus} → ${toStatus}. Allowed: ${(VALID_TRANSITIONS[fromStatus] || []).join(", ")}`
+    );
   }
 
   state.currentAgent = agent;

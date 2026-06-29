@@ -5,11 +5,11 @@
   "type": "object",
   "required": ["bugId", "rootCause", "severity", "taskId", "timestamp", "schemaVersion"],
   "properties": {
-    "bugId": {"type": "string", "pattern": "^BUG-[0-9]{3,}$"},
-    "rootCause": {"type": "string", "minLength": 10},
-    "severity": {"type": "string", "enum": ["P0-critical", "P1-high", "P2-medium", "P3-low"]},
-    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
-    "timestamp": {"type": "string", "format": "date-time"},
-    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+    "bugId": { "type": "string", "pattern": "^BUG-[0-9]{3,}$" },
+    "rootCause": { "type": "string", "minLength": 10 },
+    "severity": { "type": "string", "enum": ["P0-critical", "P1-high", "P2-medium", "P3-low"] },
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
   }
 }

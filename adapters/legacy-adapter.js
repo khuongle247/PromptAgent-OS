@@ -23,23 +23,25 @@ function datePlusDays(days) {
 }
 
 function normalizeTask(task, index, defaultAssignee) {
-  const title = String(task.title || task.name || task.summary || task.label || `Legacy Task ${index + 1}`).trim() || `Legacy Task ${index + 1}`;
+  const title =
+    String(
+      task.title || task.name || task.summary || task.label || `Legacy Task ${index + 1}`
+    ).trim() || `Legacy Task ${index + 1}`;
   const id = String(task.id || task.taskId || `TASK-${String(index + 1).padStart(3, "0")}`);
   const dependencies = Array.isArray(task.dependencies) ? task.dependencies.map(String) : [];
-  const acceptanceCriteria = Array.isArray(task.acceptanceCriteria) && task.acceptanceCriteria.length
-    ? task.acceptanceCriteria.map(item => String(item))
-    : [
-      `Task ${title} can be executed successfully.`,
-      `Output remains valid against the planner schema.`,
-      `Dependencies are resolved before execution starts.`
-    ];
+  const acceptanceCriteria =
+    Array.isArray(task.acceptanceCriteria) && task.acceptanceCriteria.length
+      ? task.acceptanceCriteria.map(item => String(item))
+      : [
+          `Task ${title} can be executed successfully.`,
+          `Output remains valid against the planner schema.`,
+          `Dependencies are resolved before execution starts.`
+        ];
 
-  const definitionOfDone = Array.isArray(task.definitionOfDone) && task.definitionOfDone.length
-    ? task.definitionOfDone.map(item => String(item))
-    : [
-      `Implementation for ${title} is complete.`,
-      `Validation has been executed and passed.`
-    ];
+  const definitionOfDone =
+    Array.isArray(task.definitionOfDone) && task.definitionOfDone.length
+      ? task.definitionOfDone.map(item => String(item))
+      : [`Implementation for ${title} is complete.`, `Validation has been executed and passed.`];
 
   return {
     id,
@@ -59,12 +61,17 @@ function normalizeTask(task, index, defaultAssignee) {
 }
 
 function normalizeMilestone(milestone, index, taskIds) {
-  const title = String(milestone.title || milestone.name || `Legacy Milestone ${index + 1}`).trim() || `Legacy Milestone ${index + 1}`;
+  const title =
+    String(milestone.title || milestone.name || `Legacy Milestone ${index + 1}`).trim() ||
+    `Legacy Milestone ${index + 1}`;
   return {
     id: String(milestone.id || `MS-${String(index + 1).padStart(3, "0")}`),
     title,
     description: String(milestone.description || `Converted legacy milestone for ${title}.`),
-    tasks: Array.isArray(milestone.tasks) && milestone.tasks.length ? milestone.tasks.map(String) : taskIds.slice(),
+    tasks:
+      Array.isArray(milestone.tasks) && milestone.tasks.length
+        ? milestone.tasks.map(String)
+        : taskIds.slice(),
     targetDate: milestone.targetDate || datePlusDays(7),
     status: milestone.status || "planned"
   };
@@ -92,13 +99,19 @@ function parseMarkdownToPlannerOutput(markdown, options = {}) {
   const items = extractChecklistItems(markdown);
   const headings = extractHeadings(markdown);
   const baseTitle = headings[0] || options.title || "Legacy Planning Output";
-  const tasks = (items.length ? items : [baseTitle]).map((item, index) => normalizeTask({
-    title: item,
-    module: options.module || "general",
-    priority: options.priority || "P2",
-    status: "todo",
-    dependencies: []
-  }, index, options.assignee || "coder"));
+  const tasks = (items.length ? items : [baseTitle]).map((item, index) =>
+    normalizeTask(
+      {
+        title: item,
+        module: options.module || "general",
+        priority: options.priority || "P2",
+        status: "todo",
+        dependencies: []
+      },
+      index,
+      options.assignee || "coder"
+    )
+  );
 
   const taskIds = tasks.map(task => task.id);
 
@@ -111,7 +124,9 @@ function parseMarkdownToPlannerOutput(markdown, options = {}) {
       assumptions: ["Converted from legacy markdown format."]
     },
     tasks,
-    milestones: [normalizeMilestone({ title: `${baseTitle} Milestone`, tasks: taskIds }, 0, taskIds)],
+    milestones: [
+      normalizeMilestone({ title: `${baseTitle} Milestone`, tasks: taskIds }, 0, taskIds)
+    ],
     risks: []
   };
 }
@@ -157,7 +172,10 @@ function parseMarkdownToArchitectOutput(markdown, options = {}) {
 
 function parseMarkdownToCoderOutput(markdown, options = {}) {
   const taskId = options.taskId || "TASK-001";
-  const fileMatches = asText(markdown).match(/\b[a-zA-Z0-9_./-]+\.(?:js|ts|dart|java|kt|md|json|yaml|yml|py|go|cs)\b/g) || [];
+  const fileMatches =
+    asText(markdown).match(
+      /\b[a-zA-Z0-9_./-]+\.(?:js|ts|dart|java|kt|md|json|yaml|yml|py|go|cs)\b/g
+    ) || [];
   const files = fileMatches.length ? Array.from(new Set(fileMatches)) : ["src/legacy-output.txt"];
 
   return {
@@ -196,22 +214,26 @@ function parseMarkdownToReviewerOutput(markdown, options = {}) {
     .filter(Boolean);
 
   const reviewItems = lines.length
-    ? [{
-        category: "style",
-        severity: "P3-minor",
-        description: lines[0].slice(0, 120),
-        location: options.location || "legacy",
-        actionable: false,
-        suggestion: "Legacy review notes converted to the new schema."
-      }]
-    : [{
-        category: "architecture-compliance",
-        severity: "P4-suggestion",
-        description: "Legacy reviewer content converted without structured review items.",
-        location: options.location || "legacy",
-        actionable: false,
-        suggestion: "No action required."
-      }];
+    ? [
+        {
+          category: "style",
+          severity: "P3-minor",
+          description: lines[0].slice(0, 120),
+          location: options.location || "legacy",
+          actionable: false,
+          suggestion: "Legacy review notes converted to the new schema."
+        }
+      ]
+    : [
+        {
+          category: "architecture-compliance",
+          severity: "P4-suggestion",
+          description: "Legacy reviewer content converted without structured review items.",
+          location: options.location || "legacy",
+          actionable: false,
+          suggestion: "No action required."
+        }
+      ];
 
   return {
     metadata: {
@@ -230,7 +252,9 @@ function parseMarkdownToReviewerOutput(markdown, options = {}) {
 
 function normalizeLegacyJsonByRole(role, data, options = {}) {
   if (role === "planner") {
-    const tasks = Array.isArray(data.tasks) ? data.tasks.map((task, index) => normalizeTask(task, index, options.assignee || "coder")) : [];
+    const tasks = Array.isArray(data.tasks)
+      ? data.tasks.map((task, index) => normalizeTask(task, index, options.assignee || "coder"))
+      : [];
     const taskIds = tasks.map(task => task.id);
 
     return {
@@ -242,49 +266,88 @@ function normalizeLegacyJsonByRole(role, data, options = {}) {
         assumptions: Array.isArray(data.metadata?.assumptions) ? data.metadata.assumptions : []
       },
       tasks,
-      milestones: Array.isArray(data.milestones) && data.milestones.length
-        ? data.milestones.map((milestone, index) => normalizeMilestone(milestone, index, taskIds))
-        : [normalizeMilestone({ title: options.title || "Legacy Planning Milestone", tasks: taskIds }, 0, taskIds)],
+      milestones:
+        Array.isArray(data.milestones) && data.milestones.length
+          ? data.milestones.map((milestone, index) => normalizeMilestone(milestone, index, taskIds))
+          : [
+              normalizeMilestone(
+                { title: options.title || "Legacy Planning Milestone", tasks: taskIds },
+                0,
+                taskIds
+              )
+            ],
       risks: Array.isArray(data.risks) ? data.risks : []
     };
   }
 
   if (role === "architect") {
     const taskId = options.taskId || data.metadata?.taskId || data.taskId || "TASK-001";
-    const decisions = Array.isArray(data.decisions) && data.decisions.length
-      ? data.decisions.map((decision, index) => ({
-          adrId: String(decision.adrId || `ADR-${String(index + 1).padStart(3, "0")}`),
-          title: String(decision.title || decision.name || `Legacy Decision ${index + 1}`),
-          context: String(decision.context || decision.description || "Converted legacy architecture decision."),
-          decision: String(decision.decision || decision.result || "Converted legacy decision into current schema."),
-          consequences: String(decision.consequences || decision.impact || "Converted legacy decision consequences."),
-          status: decision.status === "accepted" ? "accepted" : "proposed",
-          relatedTasks: Array.isArray(decision.relatedTasks) ? decision.relatedTasks.map(String) : [taskId]
-        }))
-      : [parseMarkdownToArchitectOutput("Legacy architecture content", { taskId }).decisions[0]];
+    const decisions =
+      Array.isArray(data.decisions) && data.decisions.length
+        ? data.decisions.map((decision, index) => ({
+            adrId: String(decision.adrId || `ADR-${String(index + 1).padStart(3, "0")}`),
+            title: String(decision.title || decision.name || `Legacy Decision ${index + 1}`),
+            context: String(
+              decision.context || decision.description || "Converted legacy architecture decision."
+            ),
+            decision: String(
+              decision.decision ||
+                decision.result ||
+                "Converted legacy decision into current schema."
+            ),
+            consequences: String(
+              decision.consequences || decision.impact || "Converted legacy decision consequences."
+            ),
+            status: decision.status === "accepted" ? "accepted" : "proposed",
+            relatedTasks: Array.isArray(decision.relatedTasks)
+              ? decision.relatedTasks.map(String)
+              : [taskId]
+          }))
+        : [parseMarkdownToArchitectOutput("Legacy architecture content", { taskId }).decisions[0]];
 
     return {
       metadata: {
-        architectVersion: data.metadata?.architectVersion || data.architectVersion || "legacy-adapter",
+        architectVersion:
+          data.metadata?.architectVersion || data.architectVersion || "legacy-adapter",
         generatedAt: data.metadata?.generatedAt || data.generatedAt || nowIso(),
         adrCount: decisions.length
       },
       decisions,
-      architectureUpdates: Array.isArray(data.architectureUpdates) && data.architectureUpdates.length
-        ? data.architectureUpdates
-        : [{ file: "docs/architecture.md", content: `Converted legacy architecture content for ${taskId}.` }],
-      taskAssignments: Array.isArray(data.taskAssignments) && data.taskAssignments.length
-        ? data.taskAssignments
-        : [{ taskId, adrReferences: decisions.map(decision => decision.adrId), implementationGuidance: `Execute the converted architecture guidance for ${taskId}.` }],
+      architectureUpdates:
+        Array.isArray(data.architectureUpdates) && data.architectureUpdates.length
+          ? data.architectureUpdates
+          : [
+              {
+                file: "docs/architecture.md",
+                content: `Converted legacy architecture content for ${taskId}.`
+              }
+            ],
+      taskAssignments:
+        Array.isArray(data.taskAssignments) && data.taskAssignments.length
+          ? data.taskAssignments
+          : [
+              {
+                taskId,
+                adrReferences: decisions.map(decision => decision.adrId),
+                implementationGuidance: `Execute the converted architecture guidance for ${taskId}.`
+              }
+            ],
       risks: Array.isArray(data.risks) ? data.risks : []
     };
   }
 
   if (role === "coder") {
     const taskId = options.taskId || data.metadata?.taskId || data.taskId || "TASK-001";
-    const filesChanged = Array.isArray(data.filesChanged) && data.filesChanged.length
-      ? data.filesChanged
-      : [{ path: "src/legacy-output.txt", changeType: "modified", summary: "Converted legacy coder output." }];
+    const filesChanged =
+      Array.isArray(data.filesChanged) && data.filesChanged.length
+        ? data.filesChanged
+        : [
+            {
+              path: "src/legacy-output.txt",
+              changeType: "modified",
+              summary: "Converted legacy coder output."
+            }
+          ];
 
     return {
       metadata: {
@@ -297,23 +360,28 @@ function normalizeLegacyJsonByRole(role, data, options = {}) {
       testResults: data.testResults || { total: 0, passed: 0, failed: 0, skipped: 0, details: [] },
       lintResults: data.lintResults || { passed: true, errors: 0, warnings: 0 },
       memoryUpdates: Array.isArray(data.memoryUpdates) ? data.memoryUpdates : [],
-      acceptanceVerification: Array.isArray(data.acceptanceVerification) ? data.acceptanceVerification : [],
+      acceptanceVerification: Array.isArray(data.acceptanceVerification)
+        ? data.acceptanceVerification
+        : [],
       decisions: Array.isArray(data.decisions) ? data.decisions : []
     };
   }
 
   if (role === "reviewer") {
     const taskId = options.taskId || data.metadata?.taskId || data.taskId || "TASK-001";
-    const reviewItems = Array.isArray(data.reviewItems) && data.reviewItems.length
-      ? data.reviewItems
-      : [{
-          category: "style",
-          severity: "P3-minor",
-          description: "Converted legacy reviewer output.",
-          location: options.location || "legacy",
-          actionable: false,
-          suggestion: "Review the converted reviewer output.",
-        }];
+    const reviewItems =
+      Array.isArray(data.reviewItems) && data.reviewItems.length
+        ? data.reviewItems
+        : [
+            {
+              category: "style",
+              severity: "P3-minor",
+              description: "Converted legacy reviewer output.",
+              location: options.location || "legacy",
+              actionable: false,
+              suggestion: "Review the converted reviewer output."
+            }
+          ];
 
     return {
       metadata: {
@@ -325,7 +393,9 @@ function normalizeLegacyJsonByRole(role, data, options = {}) {
       decision: data.decision || "approved",
       reviewItems,
       summary: String(data.summary || `Converted legacy reviewer output for ${taskId}.`),
-      acceptanceVerification: Array.isArray(data.acceptanceVerification) ? data.acceptanceVerification : [],
+      acceptanceVerification: Array.isArray(data.acceptanceVerification)
+        ? data.acceptanceVerification
+        : [],
       memoryUpdates: Array.isArray(data.memoryUpdates) ? data.memoryUpdates : []
     };
   }

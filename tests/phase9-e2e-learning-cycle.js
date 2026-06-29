@@ -35,35 +35,153 @@ if (!fs.existsSync(metricsDir)) fs.mkdirSync(metricsDir, { recursive: true });
 // Write audit log with planner errors + retry hotspots
 const auditEntries = [
   // Planner failures: 3 failed executions with schema validation errors
-  { id: "AUD-E2E-001", eventType: "agent-executed", timestamp: new Date().toISOString(), actor: "planner", payload: { agent: "planner", ok: false, validation: { errors: ["Invalid TASK ID format: expected ^TASK-[0-9]{3,}$"] } }, correlationId: "task-TASK-001" },
-  { id: "AUD-E2E-002", eventType: "agent-executed", timestamp: new Date().toISOString(), actor: "planner", payload: { agent: "planner", ok: false, validation: { errors: ["Missing acceptance criteria: expected min 3 per task"] } }, correlationId: "task-TASK-001" },
-  { id: "AUD-E2E-003", eventType: "agent-executed", timestamp: new Date().toISOString(), actor: "planner", payload: { agent: "planner", ok: false, validation: { errors: ["Invalid TASK ID format: expected ^TASK-[0-9]{3,}$"] } }, correlationId: "task-TASK-002" },
+  {
+    id: "AUD-E2E-001",
+    eventType: "agent-executed",
+    timestamp: new Date().toISOString(),
+    actor: "planner",
+    payload: {
+      agent: "planner",
+      ok: false,
+      validation: { errors: ["Invalid TASK ID format: expected ^TASK-[0-9]{3,}$"] }
+    },
+    correlationId: "task-TASK-001"
+  },
+  {
+    id: "AUD-E2E-002",
+    eventType: "agent-executed",
+    timestamp: new Date().toISOString(),
+    actor: "planner",
+    payload: {
+      agent: "planner",
+      ok: false,
+      validation: { errors: ["Missing acceptance criteria: expected min 3 per task"] }
+    },
+    correlationId: "task-TASK-001"
+  },
+  {
+    id: "AUD-E2E-003",
+    eventType: "agent-executed",
+    timestamp: new Date().toISOString(),
+    actor: "planner",
+    payload: {
+      agent: "planner",
+      ok: false,
+      validation: { errors: ["Invalid TASK ID format: expected ^TASK-[0-9]{3,}$"] }
+    },
+    correlationId: "task-TASK-002"
+  },
   // Coder retry hotspot
-  { id: "AUD-E2E-004", eventType: "agent-transitioned", timestamp: new Date().toISOString(), actor: "coder", payload: { fromAgent: "coder", action: "retry" }, correlationId: "task-TASK-001" },
-  { id: "AUD-E2E-005", eventType: "agent-transitioned", timestamp: new Date().toISOString(), actor: "coder", payload: { fromAgent: "coder", action: "retry" }, correlationId: "task-TASK-001" },
-  { id: "AUD-E2E-006", eventType: "agent-transitioned", timestamp: new Date().toISOString(), actor: "coder", payload: { fromAgent: "coder", action: "retry" }, correlationId: "task-TASK-001" },
+  {
+    id: "AUD-E2E-004",
+    eventType: "agent-transitioned",
+    timestamp: new Date().toISOString(),
+    actor: "coder",
+    payload: { fromAgent: "coder", action: "retry" },
+    correlationId: "task-TASK-001"
+  },
+  {
+    id: "AUD-E2E-005",
+    eventType: "agent-transitioned",
+    timestamp: new Date().toISOString(),
+    actor: "coder",
+    payload: { fromAgent: "coder", action: "retry" },
+    correlationId: "task-TASK-001"
+  },
+  {
+    id: "AUD-E2E-006",
+    eventType: "agent-transitioned",
+    timestamp: new Date().toISOString(),
+    actor: "coder",
+    payload: { fromAgent: "coder", action: "retry" },
+    correlationId: "task-TASK-001"
+  },
   // Successful executions to balance
-  { id: "AUD-E2E-007", eventType: "agent-executed", timestamp: new Date().toISOString(), actor: "planner", payload: { agent: "planner", ok: true, validation: { errors: [] } }, correlationId: "task-TASK-003" },
-  { id: "AUD-E2E-008", eventType: "agent-executed", timestamp: new Date().toISOString(), actor: "planner", payload: { agent: "planner", ok: true, validation: { errors: [] } }, correlationId: "task-TASK-004" },
+  {
+    id: "AUD-E2E-007",
+    eventType: "agent-executed",
+    timestamp: new Date().toISOString(),
+    actor: "planner",
+    payload: { agent: "planner", ok: true, validation: { errors: [] } },
+    correlationId: "task-TASK-003"
+  },
+  {
+    id: "AUD-E2E-008",
+    eventType: "agent-executed",
+    timestamp: new Date().toISOString(),
+    actor: "planner",
+    payload: { agent: "planner", ok: true, validation: { errors: [] } },
+    correlationId: "task-TASK-004"
+  },
   // Healing cycle
-  { id: "AUD-E2E-009", eventType: "healing-cycle-completed", timestamp: new Date().toISOString(), actor: "self-healing-engine", payload: { passed: true }, correlationId: "task-TASK-001" },
+  {
+    id: "AUD-E2E-009",
+    eventType: "healing-cycle-completed",
+    timestamp: new Date().toISOString(),
+    actor: "self-healing-engine",
+    payload: { passed: true },
+    correlationId: "task-TASK-001"
+  },
   // Some lessons
-  { id: "AUD-E2E-010", eventType: "lesson-learned", timestamp: new Date().toISOString(), actor: "learning-loop-engine", payload: { lessonId: "LESSON-001" }, correlationId: "LESSON-001" }
+  {
+    id: "AUD-E2E-010",
+    eventType: "lesson-learned",
+    timestamp: new Date().toISOString(),
+    actor: "learning-loop-engine",
+    payload: { lessonId: "LESSON-001" },
+    correlationId: "LESSON-001"
+  }
 ];
-fs.writeFileSync(path.join(auditDir, "audit.jsonl"), auditEntries.map(e => JSON.stringify(e)).join("\n"));
+fs.writeFileSync(
+  path.join(auditDir, "audit.jsonl"),
+  auditEntries.map(e => JSON.stringify(e)).join("\n")
+);
 
 // Write agent metrics showing poor performance (to be improved by prompt v2)
-fs.writeFileSync(path.join(metricsDir, "agent-performance.json"), JSON.stringify({
-  totalExecutions: 10, successfulExecutions: 5, failedExecutions: 5, retryCount: 4, avgDuration: 8000, lastUpdated: new Date().toISOString()
-}, null, 2));
+fs.writeFileSync(
+  path.join(metricsDir, "agent-performance.json"),
+  JSON.stringify(
+    {
+      totalExecutions: 10,
+      successfulExecutions: 5,
+      failedExecutions: 5,
+      retryCount: 4,
+      avgDuration: 8000,
+      lastUpdated: new Date().toISOString()
+    },
+    null,
+    2
+  )
+);
 
 // Write task + learning metrics
-fs.writeFileSync(path.join(metricsDir, "task-metrics.json"), JSON.stringify({
-  totalTasks: 3, completedTasks: 1, failedTasks: 2, avgCycleTime: 300000, lastUpdated: new Date().toISOString()
-}, null, 2));
-fs.writeFileSync(path.join(metricsDir, "learning-metrics.json"), JSON.stringify({
-  lessonsLearned: 1, reusablePatterns: 0, memoryUpdates: 0, lastUpdated: new Date().toISOString()
-}, null, 2));
+fs.writeFileSync(
+  path.join(metricsDir, "task-metrics.json"),
+  JSON.stringify(
+    {
+      totalTasks: 3,
+      completedTasks: 1,
+      failedTasks: 2,
+      avgCycleTime: 300000,
+      lastUpdated: new Date().toISOString()
+    },
+    null,
+    2
+  )
+);
+fs.writeFileSync(
+  path.join(metricsDir, "learning-metrics.json"),
+  JSON.stringify(
+    {
+      lessonsLearned: 1,
+      reusablePatterns: 0,
+      memoryUpdates: 0,
+      lastUpdated: new Date().toISOString()
+    },
+    null,
+    2
+  )
+);
 
 console.log("  Audit: 10 events written (3 planner failures, 3 coder retries, healing cycle)");
 console.log("  Agent metrics: 10 executions, 50% success rate, 40% retry rate");
@@ -81,7 +199,8 @@ console.log("  Prompt Health Score:", analysisResult.promptHealthScore);
 console.log("  Weaknesses found:", analysisResult.weaknessesFound);
 analysisResult.weaknesses.forEach(w => {
   console.log(`    [${w.severity}] ${w.type} — ${w.detail}`);
-  if (w.topErrors) w.topErrors.forEach(e => console.log(`           error: "${e.message}" (x${e.count})`));
+  if (w.topErrors)
+    w.topErrors.forEach(e => console.log(`           error: "${e.message}" (x${e.count})`));
 });
 console.log("  Summary:", JSON.stringify(analysisResult.summary, null, 2));
 console.log();
@@ -97,7 +216,9 @@ console.log("--- STEP 2: EVOLVE — Run prompt-evolution-engine to generate impr
     const files = fs.readdirSync(dir);
     files.forEach(f => {
       if ((f.startsWith("v") && f.endsWith(".md") && f !== "v1.md") || f === "versions.json") {
-        try { fs.unlinkSync(path.join(dir, f)); } catch(e) {}
+        try {
+          fs.unlinkSync(path.join(dir, f));
+        } catch (e) {}
       }
     });
   }
@@ -129,7 +250,10 @@ console.log("  Planner improved content (showing Improvement Directives section)
 if (improvedPlannerContent.includes("Improvement Directives")) {
   const idx = improvedPlannerContent.indexOf("## Improvement Directives");
   const sectionEnd = improvedPlannerContent.indexOf("##", idx + 3);
-  const directivesSection = sectionEnd > idx ? improvedPlannerContent.substring(idx, sectionEnd) : improvedPlannerContent.substring(idx);
+  const directivesSection =
+    sectionEnd > idx
+      ? improvedPlannerContent.substring(idx, sectionEnd)
+      : improvedPlannerContent.substring(idx);
   console.log(directivesSection.substring(0, 500));
   console.log("  ... (truncated)");
 }
@@ -142,15 +266,46 @@ const coderV2 = pvm.createCandidate("coder", improvedCoderContent, 1);
 const reviewerV2 = pvm.createCandidate("reviewer", improvedReviewerContent, 1);
 
 console.log("  Stored candidates:");
-console.log("    Planner v2:", plannerV2.version, "| parent:", plannerV2.parentVersion, "| status:", plannerV2.approvalStatus);
-console.log("    Architect v2:", architectV2.version, "| parent:", architectV2.parentVersion, "| status:", architectV2.approvalStatus);
-console.log("    Coder v2:", coderV2.version, "| parent:", coderV2.parentVersion, "| status:", coderV2.approvalStatus);
-console.log("    Reviewer v2:", reviewerV2.version, "| parent:", reviewerV2.parentVersion, "| status:", reviewerV2.approvalStatus);
+console.log(
+  "    Planner v2:",
+  plannerV2.version,
+  "| parent:",
+  plannerV2.parentVersion,
+  "| status:",
+  plannerV2.approvalStatus
+);
+console.log(
+  "    Architect v2:",
+  architectV2.version,
+  "| parent:",
+  architectV2.parentVersion,
+  "| status:",
+  architectV2.approvalStatus
+);
+console.log(
+  "    Coder v2:",
+  coderV2.version,
+  "| parent:",
+  coderV2.parentVersion,
+  "| status:",
+  coderV2.approvalStatus
+);
+console.log(
+  "    Reviewer v2:",
+  reviewerV2.version,
+  "| parent:",
+  reviewerV2.parentVersion,
+  "| status:",
+  reviewerV2.approvalStatus
+);
 console.log();
 
 // Verify candidate content is different from v1
 const plannerV2Loaded = pvm.getVersion("planner", 2);
-console.log("  v2 content differs from v1:", plannerV2Loaded.content !== plannerV1.content ? "YES" : "NO");
+console.log(
+  "  v2 content differs from v1:",
+  plannerV2Loaded.content !== plannerV1.content ? "YES" : "NO"
+);
 console.log();
 
 // ===== STEP 3: PROMOTE — Activate the improved version =====
@@ -163,10 +318,38 @@ const promotedCoder = pvm.promoteVersion("coder", 2);
 const promotedReviewer = pvm.promoteVersion("reviewer", 2);
 
 console.log("  Promoted versions:");
-console.log("    Planner:", promotedPlanner.version, "| isActive:", promotedPlanner.isActive, "| status:", promotedPlanner.approvalStatus);
-console.log("    Architect:", promotedArchitect.version, "| isActive:", promotedArchitect.isActive, "| status:", promotedArchitect.approvalStatus);
-console.log("    Coder:", promotedCoder.version, "| isActive:", promotedCoder.isActive, "| status:", promotedCoder.approvalStatus);
-console.log("    Reviewer:", promotedReviewer.version, "| isActive:", promotedReviewer.isActive, "| status:", promotedReviewer.approvalStatus);
+console.log(
+  "    Planner:",
+  promotedPlanner.version,
+  "| isActive:",
+  promotedPlanner.isActive,
+  "| status:",
+  promotedPlanner.approvalStatus
+);
+console.log(
+  "    Architect:",
+  promotedArchitect.version,
+  "| isActive:",
+  promotedArchitect.isActive,
+  "| status:",
+  promotedArchitect.approvalStatus
+);
+console.log(
+  "    Coder:",
+  promotedCoder.version,
+  "| isActive:",
+  promotedCoder.isActive,
+  "| status:",
+  promotedCoder.approvalStatus
+);
+console.log(
+  "    Reviewer:",
+  promotedReviewer.version,
+  "| isActive:",
+  promotedReviewer.isActive,
+  "| status:",
+  promotedReviewer.approvalStatus
+);
 console.log();
 
 // Verify v1 is superseded
@@ -185,7 +368,10 @@ const activePlanner = pvm.getActiveVersion("planner");
 console.log("  prompt-version-manager.getActiveVersion('planner'):");
 console.log("    Version:", activePlanner.version);
 console.log("    Content starts with:", activePlanner.content.substring(0, 100).replace(/\n/, " "));
-console.log("    Includes 'Improvement Directives':", activePlanner.content.includes("Improvement Directives"));
+console.log(
+  "    Includes 'Improvement Directives':",
+  activePlanner.content.includes("Improvement Directives")
+);
 console.log();
 
 // 4b. Simulate what AgentExecutor.loadPrompt() would do when loading prompts
@@ -210,12 +396,18 @@ const legacyPrompt = loadPromptLegacy(process.cwd(), "planner");
 
 console.log("  Version Manager prompt (v2, promoted):");
 console.log("    Length:", versionManagerPrompt.length, "chars");
-console.log("    Includes Evolution Rationale:", versionManagerPrompt.includes("Evolution Rationale"));
+console.log(
+  "    Includes Evolution Rationale:",
+  versionManagerPrompt.includes("Evolution Rationale")
+);
 console.log();
 
 console.log("  Legacy prompt file (prompts/planner.md):");
 console.log("    Length:", legacyPrompt.length, "chars");
-console.log("    Includes 'Improvement Directives':", legacyPrompt.includes("Improvement Directives"));
+console.log(
+  "    Includes 'Improvement Directives':",
+  legacyPrompt.includes("Improvement Directives")
+);
 console.log();
 
 // 4c. Demonstrate the integration point: AgentExecutor should use version manager
@@ -268,13 +460,28 @@ const improvedLearningMetrics = {
   lastUpdated: new Date().toISOString()
 };
 
-fs.writeFileSync(path.join(metricsDir, "agent-performance.json"), JSON.stringify(improvedAgentMetrics, null, 2));
-fs.writeFileSync(path.join(metricsDir, "task-metrics.json"), JSON.stringify(improvedTaskMetrics, null, 2));
-fs.writeFileSync(path.join(metricsDir, "learning-metrics.json"), JSON.stringify(improvedLearningMetrics, null, 2));
+fs.writeFileSync(
+  path.join(metricsDir, "agent-performance.json"),
+  JSON.stringify(improvedAgentMetrics, null, 2)
+);
+fs.writeFileSync(
+  path.join(metricsDir, "task-metrics.json"),
+  JSON.stringify(improvedTaskMetrics, null, 2)
+);
+fs.writeFileSync(
+  path.join(metricsDir, "learning-metrics.json"),
+  JSON.stringify(improvedLearningMetrics, null, 2)
+);
 
 console.log("  Updated agent metrics (simulating execution with v2 prompt):");
-console.log("    Success rate:", improvedAgentMetrics.successfulExecutions + "/" + improvedAgentMetrics.totalExecutions + " = 95%");
-console.log("    Retry rate:", improvedAgentMetrics.retryCount + "/" + improvedAgentMetrics.totalExecutions + " = 10%");
+console.log(
+  "    Success rate:",
+  improvedAgentMetrics.successfulExecutions + "/" + improvedAgentMetrics.totalExecutions + " = 95%"
+);
+console.log(
+  "    Retry rate:",
+  improvedAgentMetrics.retryCount + "/" + improvedAgentMetrics.totalExecutions + " = 10%"
+);
 console.log("    Avg duration:", improvedAgentMetrics.avgDuration + "ms");
 console.log("    Lessons learned:", improvedLearningMetrics.lessonsLearned);
 console.log("    Reusable patterns:", improvedLearningMetrics.reusablePatterns);
@@ -284,14 +491,29 @@ console.log();
 
 console.log("--- STEP 6: VERIFY — Run evaluatePromotionRules() on before/after metrics ---\n");
 
-const oldMetrics = { totalExecutions: 10, successfulExecutions: 5, failedExecutions: 5, retryCount: 4, avgDuration: 8000 };
-const newMetrics = { totalExecutions: 20, successfulExecutions: 19, failedExecutions: 1, retryCount: 2, avgDuration: 3000 };
+const oldMetrics = {
+  totalExecutions: 10,
+  successfulExecutions: 5,
+  failedExecutions: 5,
+  retryCount: 4,
+  avgDuration: 8000
+};
+const newMetrics = {
+  totalExecutions: 20,
+  successfulExecutions: 19,
+  failedExecutions: 1,
+  retryCount: 2,
+  avgDuration: 3000
+};
 
 const promotionResult = pee.evaluatePromotionRules("planner", oldMetrics, newMetrics);
 
 console.log("  Promotion rule evaluation:");
 console.log("    Passes:", promotionResult.passes ? "YES ✓" : "NO ✗");
-console.log("    Success rate increase:", promotionResult.details.successRateIncrease + "% (threshold: 10%)");
+console.log(
+  "    Success rate increase:",
+  promotionResult.details.successRateIncrease + "% (threshold: 10%)"
+);
 console.log("    Retry rate decrease:", promotionResult.details.retryRateDecrease + "%");
 console.log("    Rating improvement:", promotionResult.details.ratingImprovement + "%");
 if (promotionResult.errors.length > 0) {

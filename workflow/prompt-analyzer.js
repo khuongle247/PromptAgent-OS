@@ -26,7 +26,9 @@ function readJsonFile(filePath) {
   try {
     if (fs.existsSync(filePath)) return JSON.parse(fs.readFileSync(filePath, "utf8"));
     return null;
-  } catch (err) { return null; }
+  } catch (err) {
+    return null;
+  }
 }
 
 function readAuditLog(limit = 1000) {
@@ -37,18 +39,24 @@ function readAuditLog(limit = 1000) {
     const lines = content.trim().split("\n").filter(Boolean);
     const records = [];
     for (let i = lines.length - 1; i >= 0 && records.length < limit; i--) {
-      try { records.push(JSON.parse(lines[i])); } catch (e) { /* skip */ }
+      try {
+        records.push(JSON.parse(lines[i]));
+      } catch (e) {
+        /* skip */
+      }
     }
     return records;
-  } catch (err) { return []; }
+  } catch (err) {
+    return [];
+  }
 }
 
 // ---- Pattern Detectors ----
 
 function detectCommonErrors(auditRecords) {
   // Look for agent-executed events with ok:false to identify frequent failure modes
-  const failedExecutions = auditRecords.filter(r =>
-    r.eventType === "agent-executed" && r.payload && r.payload.ok === false
+  const failedExecutions = auditRecords.filter(
+    r => r.eventType === "agent-executed" && r.payload && r.payload.ok === false
   );
 
   // Group by agent role
@@ -93,8 +101,8 @@ function detectCommonErrors(auditRecords) {
 
 function detectRetryHotspots(auditRecords) {
   // Look for agent-transitioned events with action:retry
-  const retries = auditRecords.filter(r =>
-    r.eventType === "agent-transitioned" && r.payload && r.payload.action === "retry"
+  const retries = auditRecords.filter(
+    r => r.eventType === "agent-transitioned" && r.payload && r.payload.action === "retry"
   );
 
   // Group by agent
@@ -161,8 +169,8 @@ function detectMissingArtifactPatterns(auditRecords) {
 
       // Check if a corresponding artifact-written exists for this correlation
       const corrId = r.correlationId;
-      const hasArtifact = auditRecords.some(aw =>
-        aw.eventType === "artifact-written" && aw.correlationId === corrId
+      const hasArtifact = auditRecords.some(
+        aw => aw.eventType === "artifact-written" && aw.correlationId === corrId
       );
       if (hasArtifact) byAgent[agent].withArtifact++;
       else byAgent[agent].withoutArtifact++;
@@ -197,14 +205,16 @@ function detectHealingDependency(auditRecords) {
   // Count how many unique tasks went through healing
   const uniqueTasks = new Set(healingAfter.map(r => r.correlationId).filter(Boolean));
   if (uniqueTasks.size >= 2) {
-    return [{
-      type: "healing-dependency",
-      severity: uniqueTasks.size >= 5 ? "high" : "medium",
-      agent: "coder",
-      detail: `${healingAfter.length} healing cycles across ${uniqueTasks.size} unique tasks`,
-      healingCount: healingAfter.length,
-      uniqueTasks: uniqueTasks.size
-    }];
+    return [
+      {
+        type: "healing-dependency",
+        severity: uniqueTasks.size >= 5 ? "high" : "medium",
+        agent: "coder",
+        detail: `${healingAfter.length} healing cycles across ${uniqueTasks.size} unique tasks`,
+        healingCount: healingAfter.length,
+        uniqueTasks: uniqueTasks.size
+      }
+    ];
   }
   return [];
 }
@@ -214,7 +224,9 @@ function detectHealingDependency(auditRecords) {
 function analyzePrompts(options = {}) {
   const auditRecords = readAuditLog(options.auditLimit || 1000);
   const agentMetrics = readJsonFile(path.join(process.cwd(), "metrics", "agent-performance.json"));
-  const learningMetrics = readJsonFile(path.join(process.cwd(), "metrics", "learning-metrics.json"));
+  const learningMetrics = readJsonFile(
+    path.join(process.cwd(), "metrics", "learning-metrics.json")
+  );
 
   const weaknesses = [
     ...detectCommonErrors(auditRecords),
@@ -240,8 +252,11 @@ function analyzePrompts(options = {}) {
       auditRecordsAnalyzed: auditRecords.length,
       agentsWithWeaknesses: [...new Set(weaknesses.map(w => w.agent))],
       topWeaknessTypes: [...new Set(weaknesses.map(w => w.type))],
-      totalRetries: auditRecords.filter(r => r.eventType === "agent-transitioned" && r.payload?.action === "retry").length,
-      totalHealingCycles: auditRecords.filter(r => r.eventType === "healing-cycle-completed").length,
+      totalRetries: auditRecords.filter(
+        r => r.eventType === "agent-transitioned" && r.payload?.action === "retry"
+      ).length,
+      totalHealingCycles: auditRecords.filter(r => r.eventType === "healing-cycle-completed")
+        .length,
       lessonsAvailable: learningMetrics?.lessonsLearned || 0
     }
   };

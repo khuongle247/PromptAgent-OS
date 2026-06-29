@@ -5,17 +5,9 @@
 
   "type": "object",
 
-  "required": [
-    "id",
-    "title",
-    "status",
-    "priority",
-    "acceptanceCriteria",
-    "definitionOfDone"
-  ],
+  "required": ["id", "title", "status", "priority", "acceptanceCriteria", "definitionOfDone"],
 
   "properties": {
-
     "id": {
       "type": "string",
       "pattern": "^TASK-[0-9]{3,}$"
@@ -32,23 +24,12 @@
 
     "status": {
       "type": "string",
-      "enum": [
-        "todo",
-        "in_progress",
-        "blocked",
-        "review",
-        "done",
-        "cancelled"
-      ]
+      "enum": ["todo", "in_progress", "blocked", "review", "done", "cancelled"]
     },
 
     "priority": {
       "type": "string",
-      "enum": [
-        "P1",
-        "P2",
-        "P3"
-      ]
+      "enum": ["P1", "P2", "P3"]
     },
 
     "dependencies": {
@@ -86,11 +67,7 @@
 
     "source": {
       "type": "string",
-      "enum": [
-        "human",
-        "planner",
-        "system"
-      ]
+      "enum": ["human", "planner", "system"]
     },
 
     "milestoneId": {

@@ -39,7 +39,10 @@
             }
           },
           "status": { "type": "string", "enum": ["proposed", "accepted"] },
-          "relatedTasks": { "type": "array", "items": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" } }
+          "relatedTasks": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" }
+          }
         }
       }
     },
@@ -61,7 +64,10 @@
         "required": ["taskId", "adrReferences", "implementationGuidance"],
         "properties": {
           "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" },
-          "adrReferences": { "type": "array", "items": { "type": "string", "pattern": "^ADR-[0-9]{3}$" } },
+          "adrReferences": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^ADR-[0-9]{3}$" }
+          },
           "implementationGuidance": { "type": "string", "minLength": 20 }
         }
       }

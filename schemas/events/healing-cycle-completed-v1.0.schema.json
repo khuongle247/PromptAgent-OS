@@ -5,11 +5,11 @@
   "type": "object",
   "required": ["taskId", "passed", "reason", "attemptsMade", "timestamp", "schemaVersion"],
   "properties": {
-    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
-    "passed": {"type": "boolean"},
-    "reason": {"type": "string", "minLength": 5},
-    "attemptsMade": {"type": "integer", "minimum": 1},
-    "timestamp": {"type": "string", "format": "date-time"},
-    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" },
+    "passed": { "type": "boolean" },
+    "reason": { "type": "string", "minLength": 5 },
+    "attemptsMade": { "type": "integer", "minimum": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
   }
 }

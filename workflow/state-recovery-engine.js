@@ -69,8 +69,11 @@ function captureExecutionState(rootDir, projectName) {
   const artifacts = listArtifacts(projectDir);
   const latestArtifactRecord = getLatestArtifactRecord(projectDir);
   const latestArtifact = hydrateArtifact(projectDir, latestArtifactRecord);
-  const derivedResumeAgent = latestArtifactRecord ? inferResumeAgentFromArtifact(latestArtifactRecord) : null;
-  const currentResumeAgent = state.currentAgent && state.currentAgent !== "none" ? state.currentAgent : derivedResumeAgent;
+  const derivedResumeAgent = latestArtifactRecord
+    ? inferResumeAgentFromArtifact(latestArtifactRecord)
+    : null;
+  const currentResumeAgent =
+    state.currentAgent && state.currentAgent !== "none" ? state.currentAgent : derivedResumeAgent;
 
   return {
     schemaVersion: "1.0.0",

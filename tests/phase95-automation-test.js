@@ -39,18 +39,24 @@ function run() {
   console.log(result.stdout);
   if (result.stderr) console.error(result.stderr);
 
-  const promptCandidateExists = ["planner", "architect", "coder", "reviewer", "debugger"].some(role => {
-    const dir = path.join(PROMPTS_DIR, role);
-    if (!fs.existsSync(dir)) return false;
-    return fs.readdirSync(dir).some(file => file.startsWith("v") && file.endsWith(".md") && file !== "v1.md");
-  });
+  const promptCandidateExists = ["planner", "architect", "coder", "reviewer", "debugger"].some(
+    role => {
+      const dir = path.join(PROMPTS_DIR, role);
+      if (!fs.existsSync(dir)) return false;
+      return fs
+        .readdirSync(dir)
+        .some(file => file.startsWith("v") && file.endsWith(".md") && file !== "v1.md");
+    }
+  );
 
   if (result.status !== 0) {
     throw new Error(`run-prompt-evolution.js exited with code ${result.status}`);
   }
 
   if (!promptCandidateExists) {
-    throw new Error("No prompt candidate files were generated after running the automation script.");
+    throw new Error(
+      "No prompt candidate files were generated after running the automation script."
+    );
   }
 
   console.log("PASS: automation script runs and generates prompt candidates.");

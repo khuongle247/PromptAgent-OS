@@ -8,7 +8,16 @@ function getProjectDir(rootDir, projectName) {
 
 function loadMemory(projectDir) {
   const memoryPath = path.join(projectDir, "memory", "memory.json");
-  return readJsonSafe(memoryPath) || { decisions: [], architecture: [], completedTasks: [], bugs: [], conventions: [], risks: [] };
+  return (
+    readJsonSafe(memoryPath) || {
+      decisions: [],
+      architecture: [],
+      completedTasks: [],
+      bugs: [],
+      conventions: [],
+      risks: []
+    }
+  );
 }
 
 function loadTasks(projectDir) {
@@ -29,13 +38,15 @@ function extractADRs(memory) {
 }
 
 function extractCompletedTasks(tasks) {
-  return tasks.filter(t => t.status === "done").map(t => ({
-    id: t.id,
-    title: t.title,
-    module: t.module,
-    description: t.definitionOfDone.join(" "),
-    type: "CompletedTask"
-  }));
+  return tasks
+    .filter(t => t.status === "done")
+    .map(t => ({
+      id: t.id,
+      title: t.title,
+      module: t.module,
+      description: t.definitionOfDone.join(" "),
+      type: "CompletedTask"
+    }));
 }
 
 function extractArtifactSummaries(projectDir) {
@@ -44,7 +55,10 @@ function extractArtifactSummaries(projectDir) {
     id: `${artifact.role}-${artifact.taskId}`,
     role: artifact.role,
     taskId: artifact.taskId,
-    summary: artifact.output?.summary || artifact.output?.metadata?.assumptions?.join(" ") || JSON.stringify(artifact.output).slice(0, 100),
+    summary:
+      artifact.output?.summary ||
+      artifact.output?.metadata?.assumptions?.join(" ") ||
+      JSON.stringify(artifact.output).slice(0, 100),
     type: "Artifact"
   }));
 }

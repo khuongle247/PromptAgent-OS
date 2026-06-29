@@ -1,11 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const {
-  readJson,
-  readText,
-  validateSchema
-} = require("../scripts/validation/validation-utils");
+const { readJson, readText, validateSchema } = require("../scripts/validation/validation-utils");
 
 const { getRoleConfig, getCurrentWorkflowState } = require("./phase-controller");
 const { retrieveMemories } = require("./memory-retrieval-engine"); // New import for context
@@ -19,9 +15,7 @@ function readJsonSafe(filePath) {
 }
 
 function resolveAgentOutputPath(projectDir, role) {
-  const candidates = [
-    path.join(projectDir, `${role}-output.json`),
-  ];
+  const candidates = [path.join(projectDir, `${role}-output.json`)];
 
   if (role === "planner") {
     candidates.unshift(path.join(projectDir, "planner-output.json"));
@@ -41,19 +35,33 @@ function buildAgentContext(rootDir, projectDir, role) {
   const projectPath = path.join(projectDir, "project.json");
   const project = fs.existsSync(projectPath) ? readJsonSafe(projectPath) : null;
 
-  const relevantMemories = retrieveMemories(rootDir, projectDir, `context for ${role} agent`, { limit: 5 });
+  const relevantMemories = retrieveMemories(rootDir, projectDir, `context for ${role} agent`, {
+    limit: 5
+  });
 
   return {
     role,
     workflowState: getCurrentWorkflowState(project || {}),
     project,
-    requirements: fs.existsSync(path.join(projectDir, "docs", "requirements.md")) ? readText(path.join(projectDir, "docs", "requirements.md")) : "",
-    features: fs.existsSync(path.join(projectDir, "docs", "features.md")) ? readText(path.join(projectDir, "docs", "features.md")) : "",
-    architecture: fs.existsSync(path.join(projectDir, "docs", "architecture.md")) ? readText(path.join(projectDir, "docs", "architecture.md")) : "",
-    prompt: config && fs.existsSync(path.join(rootDir, "prompts", config.promptFile)) ? readText(path.join(rootDir, "prompts", config.promptFile)) : "",
-    contract: config && config.contractFile && fs.existsSync(path.join(rootDir, "schemas", "contracts", config.contractFile))
-      ? readJsonSafe(path.join(rootDir, "schemas", "contracts", config.contractFile))
-      : null,
+    requirements: fs.existsSync(path.join(projectDir, "docs", "requirements.md"))
+      ? readText(path.join(projectDir, "docs", "requirements.md"))
+      : "",
+    features: fs.existsSync(path.join(projectDir, "docs", "features.md"))
+      ? readText(path.join(projectDir, "docs", "features.md"))
+      : "",
+    architecture: fs.existsSync(path.join(projectDir, "docs", "architecture.md"))
+      ? readText(path.join(projectDir, "docs", "architecture.md"))
+      : "",
+    prompt:
+      config && fs.existsSync(path.join(rootDir, "prompts", config.promptFile))
+        ? readText(path.join(rootDir, "prompts", config.promptFile))
+        : "",
+    contract:
+      config &&
+      config.contractFile &&
+      fs.existsSync(path.join(rootDir, "schemas", "contracts", config.contractFile))
+        ? readJsonSafe(path.join(rootDir, "schemas", "contracts", config.contractFile))
+        : null,
     inputSchemaPath: config ? path.join(rootDir, "schemas", config.inputSchema) : null,
     outputSchemaPath: config ? path.join(rootDir, "schemas", config.outputSchema) : null,
     relevantMemories // New: pass relevant memories to the agent context
@@ -102,7 +110,9 @@ function validateAgentOutput(rootDir, projectDir, role) {
 
   return {
     valid: result.valid,
-    errors: (result.errors || []).map(error => `${path.basename(outputPath)}: ${error.instancePath} ${error.message}`),
+    errors: (result.errors || []).map(
+      error => `${path.basename(outputPath)}: ${error.instancePath} ${error.message}`
+    ),
     output
   };
 }

@@ -3,16 +3,59 @@
   "title": "AgentTransitioned Event Schema",
   "description": "Schema for event emitted when the orchestrator initiates a transition to the next agent.",
   "type": "object",
-  "required": ["fromAgent", "toAgent", "fromStatus", "toStatus", "action", "reason", "phase", "timestamp", "schemaVersion"],
+  "required": [
+    "fromAgent",
+    "toAgent",
+    "fromStatus",
+    "toStatus",
+    "action",
+    "reason",
+    "phase",
+    "timestamp",
+    "schemaVersion"
+  ],
   "properties": {
-    "fromAgent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "none"]},
-    "toAgent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "none"]},
-    "fromStatus": {"type": "string", "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated", "none"]},
-    "toStatus": {"type": "string", "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated"]},
-    "action": {"type": "string", "enum": ["advance", "retry", "finish"]},
-    "reason": {"type": "string", "minLength": 5},
-    "phase": {"type": "integer", "minimum": 1},
-    "timestamp": {"type": "string", "format": "date-time"},
-    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+    "fromAgent": {
+      "type": "string",
+      "enum": ["planner", "architect", "coder", "reviewer", "debugger", "none"]
+    },
+    "toAgent": {
+      "type": "string",
+      "enum": ["planner", "architect", "coder", "reviewer", "debugger", "none"]
+    },
+    "fromStatus": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "active",
+        "blocked",
+        "completed",
+        "review",
+        "approved",
+        "changes-requested",
+        "failed",
+        "escalated",
+        "none"
+      ]
+    },
+    "toStatus": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "active",
+        "blocked",
+        "completed",
+        "review",
+        "approved",
+        "changes-requested",
+        "failed",
+        "escalated"
+      ]
+    },
+    "action": { "type": "string", "enum": ["advance", "retry", "finish"] },
+    "reason": { "type": "string", "minLength": 5 },
+    "phase": { "type": "integer", "minimum": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
   }
 }

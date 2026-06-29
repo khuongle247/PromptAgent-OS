@@ -5,11 +5,14 @@
   "type": "object",
   "required": ["agent", "taskId", "artifactPath", "schemaPath", "timestamp", "schemaVersion"],
   "properties": {
-    "agent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger"]},
-    "taskId": {"type": "string", "pattern": "^TASK-[0-9]{3,}$"},
-    "artifactPath": {"type": "string"},
-    "schemaPath": {"type": "string"},
-    "timestamp": {"type": "string", "format": "date-time"},
-    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+    "agent": {
+      "type": "string",
+      "enum": ["planner", "architect", "coder", "reviewer", "debugger"]
+    },
+    "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" },
+    "artifactPath": { "type": "string" },
+    "schemaPath": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
   }
 }

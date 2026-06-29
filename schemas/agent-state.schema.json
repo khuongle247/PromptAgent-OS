@@ -17,7 +17,17 @@
     },
     "status": {
       "type": "string",
-      "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated"],
+      "enum": [
+        "idle",
+        "active",
+        "blocked",
+        "completed",
+        "review",
+        "approved",
+        "changes-requested",
+        "failed",
+        "escalated"
+      ],
       "description": "Current state in the agent lifecycle"
     },
     "retryCount": {
@@ -45,9 +55,39 @@
         "type": "object",
         "required": ["fromStatus", "toStatus", "agent", "timestamp", "reason"],
         "properties": {
-          "fromStatus": { "type": "string", "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated", "none"] },
-          "toStatus": { "type": "string", "enum": ["idle", "active", "blocked", "completed", "review", "approved", "changes-requested", "failed", "escalated"] },
-          "agent": { "type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"] },
+          "fromStatus": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "active",
+              "blocked",
+              "completed",
+              "review",
+              "approved",
+              "changes-requested",
+              "failed",
+              "escalated",
+              "none"
+            ]
+          },
+          "toStatus": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "active",
+              "blocked",
+              "completed",
+              "review",
+              "approved",
+              "changes-requested",
+              "failed",
+              "escalated"
+            ]
+          },
+          "agent": {
+            "type": "string",
+            "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"]
+          },
           "timestamp": { "type": "string", "format": "date-time" },
           "reason": { "type": "string", "minLength": 5 }
         }

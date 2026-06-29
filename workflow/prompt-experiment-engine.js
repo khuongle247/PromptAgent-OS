@@ -81,7 +81,10 @@ function createExperiment(role, versionA, versionB, options = {}) {
     metadata: options.metadata || {}
   };
 
-  fs.writeFileSync(getExperimentFilePath(experiment.experimentId), JSON.stringify(experiment, null, 2));
+  fs.writeFileSync(
+    getExperimentFilePath(experiment.experimentId),
+    JSON.stringify(experiment, null, 2)
+  );
   return experiment;
 }
 
@@ -107,7 +110,9 @@ function listExperiments(filter = {}) {
       if (filter.status && exp.status !== filter.status) matches = false;
       if (filter.role && exp.role !== filter.role) matches = false;
       if (matches) experiments.push(exp);
-    } catch (e) { /* skip */ }
+    } catch (e) {
+      /* skip */
+    }
   });
 
   return experiments;
@@ -118,10 +123,15 @@ function listExperiments(filter = {}) {
 function recordExecution(experimentId, version, executionResult) {
   const experiment = getExperiment(experimentId);
   if (!experiment) throw new Error(`Experiment ${experimentId} not found`);
-  if (experiment.status === "completed") throw new Error(`Experiment ${experimentId} is already completed`);
+  if (experiment.status === "completed")
+    throw new Error(`Experiment ${experimentId} is already completed`);
 
-  const versionKey = version === experiment.versionA ? "versionA" : 
-                     version === experiment.versionB ? "versionB" : null;
+  const versionKey =
+    version === experiment.versionA
+      ? "versionA"
+      : version === experiment.versionB
+        ? "versionB"
+        : null;
   if (!versionKey) throw new Error(`Version ${version} is not part of experiment ${experimentId}`);
 
   const v = experiment.results[versionKey];
@@ -140,7 +150,10 @@ function recordExecution(experimentId, version, executionResult) {
   // Track reviewer approval
   if (executionResult.reviewerDecision === "approved") {
     v.reviewerApprovals++;
-  } else if (executionResult.reviewerDecision === "changes-requested" || executionResult.reviewerDecision === "rejected") {
+  } else if (
+    executionResult.reviewerDecision === "changes-requested" ||
+    executionResult.reviewerDecision === "rejected"
+  ) {
     v.reviewerRejections++;
   }
 
@@ -151,7 +164,8 @@ function recordExecution(experimentId, version, executionResult) {
     v.avgDuration = Math.round(v.durationSum / v.durationCount);
   }
 
-  experiment.sampleSize = experiment.results.versionA.totalExecutions + experiment.results.versionB.totalExecutions;
+  experiment.sampleSize =
+    experiment.results.versionA.totalExecutions + experiment.results.versionB.totalExecutions;
 
   // Auto-complete if target sample size reached
   if (experiment.sampleSize >= experiment.targetSampleSize) {
@@ -172,9 +186,10 @@ function compareVersions(experiment) {
   function calcRates(v) {
     const successRate = v.totalExecutions > 0 ? v.successfulExecutions / v.totalExecutions : 0;
     const retryRate = v.totalExecutions > 0 ? v.retryCount / v.totalExecutions : 0;
-    const approvalRate = (v.reviewerApprovals + v.reviewerRejections) > 0
-      ? v.reviewerApprovals / (v.reviewerApprovals + v.reviewerRejections)
-      : 0;
+    const approvalRate =
+      v.reviewerApprovals + v.reviewerRejections > 0
+        ? v.reviewerApprovals / (v.reviewerApprovals + v.reviewerRejections)
+        : 0;
     return { successRate, retryRate, approvalRate, avgDuration: v.avgDuration };
   }
 
@@ -186,11 +201,19 @@ function compareVersions(experiment) {
   let reasoning = [];
 
   const successDiff = ratesB.successRate - ratesA.successRate;
-  const retryDiff = ratesA.retryRate - ratesB.retryRate;  // positive means B has fewer retries
+  const retryDiff = ratesA.retryRate - ratesB.retryRate; // positive means B has fewer retries
   const approvalDiff = ratesB.approvalRate - ratesA.approvalRate;
 
-  const totalScoreA = ratesA.successRate * 40 + ratesA.approvalRate * 30 + (1 - ratesA.retryRate) * 20 + (ratesA.avgDuration > 0 ? Math.max(0, 10 - ratesA.avgDuration / 10000) : 0);
-  const totalScoreB = ratesB.successRate * 40 + ratesB.approvalRate * 30 + (1 - ratesB.retryRate) * 20 + (ratesB.avgDuration > 0 ? Math.max(0, 10 - ratesB.avgDuration / 10000) : 0);
+  const totalScoreA =
+    ratesA.successRate * 40 +
+    ratesA.approvalRate * 30 +
+    (1 - ratesA.retryRate) * 20 +
+    (ratesA.avgDuration > 0 ? Math.max(0, 10 - ratesA.avgDuration / 10000) : 0);
+  const totalScoreB =
+    ratesB.successRate * 40 +
+    ratesB.approvalRate * 30 +
+    (1 - ratesB.retryRate) * 20 +
+    (ratesB.avgDuration > 0 ? Math.max(0, 10 - ratesB.avgDuration / 10000) : 0);
 
   if (totalScoreB > totalScoreA) {
     winner = experiment.versionB;
@@ -203,9 +226,12 @@ function compareVersions(experiment) {
     reasoning.push("Scores are equal");
   }
 
-  if (successDiff > 0.05) reasoning.push(`Version B success rate is ${(successDiff * 100).toFixed(1)}% higher`);
-  if (retryDiff > 0.05) reasoning.push(`Version B retry rate is ${(retryDiff * 100).toFixed(1)}% lower`);
-  if (approvalDiff > 0.05) reasoning.push(`Version B approval rate is ${(approvalDiff * 100).toFixed(1)}% higher`);
+  if (successDiff > 0.05)
+    reasoning.push(`Version B success rate is ${(successDiff * 100).toFixed(1)}% higher`);
+  if (retryDiff > 0.05)
+    reasoning.push(`Version B retry rate is ${(retryDiff * 100).toFixed(1)}% lower`);
+  if (approvalDiff > 0.05)
+    reasoning.push(`Version B approval rate is ${(approvalDiff * 100).toFixed(1)}% higher`);
 
   return {
     experimentId: experiment.experimentId,

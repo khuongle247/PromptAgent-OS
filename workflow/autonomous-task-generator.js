@@ -59,14 +59,21 @@ function extractMemorySignals(memory) {
   ];
 
   return buckets
-    .flatMap(bucket => Array.isArray(bucket) ? bucket : [])
+    .flatMap(bucket => (Array.isArray(bucket) ? bucket : []))
     .map(entry => {
       if (typeof entry === "string") {
         return normalizeText(entry);
       }
 
       if (entry && typeof entry === "object") {
-        return normalizeText(entry.title || entry.description || entry.summary || entry.name || entry.taskId || entry.id);
+        return normalizeText(
+          entry.title ||
+            entry.description ||
+            entry.summary ||
+            entry.name ||
+            entry.taskId ||
+            entry.id
+        );
       }
 
       return "";
@@ -155,7 +162,9 @@ function buildMilestones(tasks) {
     title: `Autonomous Planning Wave ${index + 1}`,
     description: `Task bundle generated from project requirements and architecture signals for wave ${index + 1}.`,
     tasks: chunk.map(task => task.id),
-    targetDate: new Date(Date.now() + (index + 1) * 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+    targetDate: new Date(Date.now() + (index + 1) * 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10),
     status: "planned"
   }));
 }
@@ -178,7 +187,10 @@ function collectSignals(rootDir, projectDir) {
   ];
 
   // Incorporate reusable lessons learned from the learning loop (if any)
-  const lessonsLearned = retrieveMemories(rootDir, projectDir, "reusable lessons learned", { type: "convention", limit: 5 }); // Example usage
+  const lessonsLearned = retrieveMemories(rootDir, projectDir, "reusable lessons learned", {
+    type: "convention",
+    limit: 5
+  }); // Example usage
   lessonsLearned.forEach(lesson => signals.push(lesson.description));
 
   const uniqueSignals = [];
@@ -195,7 +207,9 @@ function collectSignals(rootDir, projectDir) {
 
   return {
     existingTasks,
-    signals: uniqueSignals.length ? uniqueSignals : [normalizeText(`${path.basename(rootDir)} planning bootstrap`)],
+    signals: uniqueSignals.length
+      ? uniqueSignals
+      : [normalizeText(`${path.basename(rootDir)} planning bootstrap`)],
     memorySummary
   };
 }
@@ -206,7 +220,10 @@ function buildPlannerOutput(rootDir, projectDir, options = {}) {
   const selectedSignals = signals.slice(0, maxTasks);
 
   const generatedTasks = selectedSignals.map((signal, index) => {
-    const previousTaskId = index > 0 ? getNextTaskId(existingTasks, index - 1) : (existingTasks[existingTasks.length - 1]?.id || null);
+    const previousTaskId =
+      index > 0
+        ? getNextTaskId(existingTasks, index - 1)
+        : existingTasks[existingTasks.length - 1]?.id || null;
     return createTaskFromSignal(signal, index, existingTasks, previousTaskId);
   });
 
@@ -252,10 +269,16 @@ async function feedPlanner(rootDir, projectName, options = {}) {
     llmClient: async () => plannerOutput
   });
 
-  setAgentStatus(projectDir, "planner", plannerExecution.ok ? "completed" : "failed", plannerExecution.validation.errors[0] || "Autonomous planner generation failed.", {
-    phase: state.phase,
-    retryCount: state.retryCount || 0
-  });
+  setAgentStatus(
+    projectDir,
+    "planner",
+    plannerExecution.ok ? "completed" : "failed",
+    plannerExecution.validation.errors[0] || "Autonomous planner generation failed.",
+    {
+      phase: state.phase,
+      retryCount: state.retryCount || 0
+    }
+  );
 
   return {
     projectName,

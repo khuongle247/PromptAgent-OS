@@ -68,13 +68,29 @@ async function runAll() {
 
   // Test detectCommonErrors
   const auditWithErrors = [
-    { eventType: "agent-executed", payload: { agent: "planner", ok: false, validation: { errors: ["Invalid TASK ID format"] } } },
-    { eventType: "agent-executed", payload: { agent: "planner", ok: false, validation: { errors: ["Missing acceptance criteria"] } } },
-    { eventType: "agent-executed", payload: { agent: "planner", ok: false, validation: { errors: ["Invalid TASK ID format"] } } }
+    {
+      eventType: "agent-executed",
+      payload: { agent: "planner", ok: false, validation: { errors: ["Invalid TASK ID format"] } }
+    },
+    {
+      eventType: "agent-executed",
+      payload: {
+        agent: "planner",
+        ok: false,
+        validation: { errors: ["Missing acceptance criteria"] }
+      }
+    },
+    {
+      eventType: "agent-executed",
+      payload: { agent: "planner", ok: false, validation: { errors: ["Invalid TASK ID format"] } }
+    }
   ];
   const commonErrors = pa.detectCommonErrors(auditWithErrors);
   assert(commonErrors.length >= 1, "detectCommonErrors finds planner failures");
-  assert(commonErrors.some(e => e.type === "common-error" && e.agent === "planner"), "Common error type and agent correct");
+  assert(
+    commonErrors.some(e => e.type === "common-error" && e.agent === "planner"),
+    "Common error type and agent correct"
+  );
 
   // Test detectRetryHotspots
   const auditWithRetries = [
@@ -84,7 +100,10 @@ async function runAll() {
   ];
   const retryHotspots = pa.detectRetryHotspots(auditWithRetries);
   assert(retryHotspots.length >= 1, "detectRetryHotspots finds coder retries");
-  assert(retryHotspots.some(h => h.type === "retry-hotspot" && h.retryCount >= 3), "Retry hotspot count correct");
+  assert(
+    retryHotspots.some(h => h.type === "retry-hotspot" && h.retryCount >= 3),
+    "Retry hotspot count correct"
+  );
 
   // Test detectPhantomPatterns
   const auditWithPhantoms = [
@@ -93,17 +112,39 @@ async function runAll() {
     { eventType: "agent-executed", payload: { agent: "coder" }, correlationId: "task-TASK-003" }
   ];
   const phantoms = pa.detectPhantomPatterns(auditWithPhantoms);
-  assert(phantoms.length >= 1 || phantoms.length === 0, "detectPhantomPatterns handles no-artifact scenario");
+  assert(
+    phantoms.length >= 1 || phantoms.length === 0,
+    "detectPhantomPatterns handles no-artifact scenario"
+  );
 
   // Test detectMissingArtifactPatterns
   const auditWithMissing = [
-    { eventType: "agent-executed", payload: { agent: "architect" }, correlationId: "task-TASK-001" },
-    { eventType: "agent-executed", payload: { agent: "architect" }, correlationId: "task-TASK-002" },
-    { eventType: "agent-executed", payload: { agent: "architect" }, correlationId: "task-TASK-003" },
-    { eventType: "artifact-written", payload: { agent: "architect" }, correlationId: "task-TASK-001" }
+    {
+      eventType: "agent-executed",
+      payload: { agent: "architect" },
+      correlationId: "task-TASK-001"
+    },
+    {
+      eventType: "agent-executed",
+      payload: { agent: "architect" },
+      correlationId: "task-TASK-002"
+    },
+    {
+      eventType: "agent-executed",
+      payload: { agent: "architect" },
+      correlationId: "task-TASK-003"
+    },
+    {
+      eventType: "artifact-written",
+      payload: { agent: "architect" },
+      correlationId: "task-TASK-001"
+    }
   ];
   const missingArtifacts = pa.detectMissingArtifactPatterns(auditWithMissing);
-  assert(missingArtifacts.length >= 1, "detectMissingArtifactPatterns finds architect missing artifacts");
+  assert(
+    missingArtifacts.length >= 1,
+    "detectMissingArtifactPatterns finds architect missing artifacts"
+  );
 
   // Test detectHealingDependency
   const auditWithHealing = [
@@ -133,7 +174,10 @@ async function runAll() {
   // listVersions
   const versions = pvm.listVersions("planner");
   assert(versions.length >= 1, "listVersions returns >= 1 version");
-  assert(versions.some(v => v.isActive === true), "listVersions marks active version");
+  assert(
+    versions.some(v => v.isActive === true),
+    "listVersions marks active version"
+  );
 
   // createCandidate
   const candidateContent = "# Planner Agent v2\n\nImproved version";
@@ -162,7 +206,10 @@ async function runAll() {
   assert(afterPromotion.version === 2, "Active version is now v2 after promotion");
 
   // updateVersionMetadata
-  const updated = pvm.updateVersionMetadata("planner", 2, { successRate: 85, note: "Updated after testing" });
+  const updated = pvm.updateVersionMetadata("planner", 2, {
+    successRate: 85,
+    note: "Updated after testing"
+  });
   assert(updated.successRate === 85, "updateVersionMetadata updates successRate");
   assert(updated.note === "Updated after testing", "updateVersionMetadata updates note");
 
@@ -171,39 +218,78 @@ async function runAll() {
 
   // Test prompt improvement templates
   const plannerImprovements = pee.buildImprovedPromptPlanner([]);
-  assert(plannerImprovements.improvements.length > 0, "Planner improvement template generates improvements");
-  assert(plannerImprovements.rationale.includes("Proactive"), "Planner improvement has default rationale");
+  assert(
+    plannerImprovements.improvements.length > 0,
+    "Planner improvement template generates improvements"
+  );
+  assert(
+    plannerImprovements.rationale.includes("Proactive"),
+    "Planner improvement has default rationale"
+  );
 
   const architectImprovements = pee.buildImprovedPromptArchitect([]);
-  assert(architectImprovements.improvements.length > 0, "Architect improvement template generates improvements");
+  assert(
+    architectImprovements.improvements.length > 0,
+    "Architect improvement template generates improvements"
+  );
 
   const coderImprovements = pee.buildImprovedPromptCoder([]);
-  assert(coderImprovements.improvements.length > 0, "Coder improvement template generates improvements");
+  assert(
+    coderImprovements.improvements.length > 0,
+    "Coder improvement template generates improvements"
+  );
 
   const reviewerImprovements = pee.buildImprovedPromptReviewer([]);
-  assert(reviewerImprovements.improvements.length > 0, "Reviewer improvement template generates improvements");
+  assert(
+    reviewerImprovements.improvements.length > 0,
+    "Reviewer improvement template generates improvements"
+  );
 
   // Test generateImprovedPrompt
   const improvedPlanner = pee.generateImprovedPrompt("planner", []);
   assert(improvedPlanner !== null, "generateImprovedPrompt returns non-null for planner");
-  assert(improvedPlanner.includes("Improvement Directives"), "Improved prompt includes Improvement Directives section");
+  assert(
+    improvedPlanner.includes("Improvement Directives"),
+    "Improved prompt includes Improvement Directives section"
+  );
 
   // Test runEvolutionCycle
   const evolutionResult = pee.runEvolutionCycle({ auditLimit: 100 });
   assert(evolutionResult.generatedAt !== undefined, "Evolution cycle generates timestamp");
   assert(evolutionResult.analysisScore >= 0, "Evolution cycle has analysis score");
-  assert(evolutionResult.evolutionResults !== undefined, "Evolution cycle returns per-role results");
+  assert(
+    evolutionResult.evolutionResults !== undefined,
+    "Evolution cycle returns per-role results"
+  );
   assert(evolutionResult.canAutoPromote !== undefined, "Evolution cycle evaluates auto-promotion");
 
   // Test evaluatePromotionRules
-  const oldMetrics = { totalExecutions: 10, successfulExecutions: 6, failedExecutions: 4, retryCount: 5, avgDuration: 5000 };
-  const newMetrics = { totalExecutions: 10, successfulExecutions: 9, failedExecutions: 1, retryCount: 1, avgDuration: 3000 };
+  const oldMetrics = {
+    totalExecutions: 10,
+    successfulExecutions: 6,
+    failedExecutions: 4,
+    retryCount: 5,
+    avgDuration: 5000
+  };
+  const newMetrics = {
+    totalExecutions: 10,
+    successfulExecutions: 9,
+    failedExecutions: 1,
+    retryCount: 1,
+    avgDuration: 3000
+  };
   const promotionEval = pee.evaluatePromotionRules("planner", oldMetrics, newMetrics);
   assert(promotionEval.passes === true, "Promotion rules pass with improved metrics");
   assert(promotionEval.details.successRateIncrease > 10, "Success rate increase > 10%");
 
   // Test failed promotion
-  const worseMetrics = { totalExecutions: 10, successfulExecutions: 5, failedExecutions: 5, retryCount: 6, avgDuration: 6000 };
+  const worseMetrics = {
+    totalExecutions: 10,
+    successfulExecutions: 5,
+    failedExecutions: 5,
+    retryCount: 6,
+    avgDuration: 6000
+  };
   const failedPromotion = pee.evaluatePromotionRules("planner", oldMetrics, worseMetrics);
   assert(failedPromotion.passes === false, "Promotion rules fail with worse metrics");
 
@@ -212,7 +298,10 @@ async function runAll() {
   assert(noWeaknesses.canPromote === true, "Auto-promotion allowed with no weaknesses");
 
   const manyWeaknesses = pee.evaluateAutoPromotion([
-    { severity: "medium" }, { severity: "medium" }, { severity: "medium" }, { severity: "medium" }
+    { severity: "medium" },
+    { severity: "medium" },
+    { severity: "medium" },
+    { severity: "medium" }
   ]);
   assert(manyWeaknesses.canPromote === false, "Auto-promotion blocked with 4+ weaknesses");
 
@@ -243,18 +332,47 @@ async function runAll() {
   assert(filtered.length >= 1, "listExperiments filter by role works");
 
   // recordExecution
-  const updatedExp1 = pex.recordExecution(exp.experimentId, 1, { ok: true, retryCount: 0, reviewerDecision: "approved", duration: 2000 });
-  assert(updatedExp1.results.versionA.totalExecutions === 1, "recordExecution increments versionA count");
-  assert(updatedExp1.results.versionA.successfulExecutions === 1, "recordExecution records success");
+  const updatedExp1 = pex.recordExecution(exp.experimentId, 1, {
+    ok: true,
+    retryCount: 0,
+    reviewerDecision: "approved",
+    duration: 2000
+  });
+  assert(
+    updatedExp1.results.versionA.totalExecutions === 1,
+    "recordExecution increments versionA count"
+  );
+  assert(
+    updatedExp1.results.versionA.successfulExecutions === 1,
+    "recordExecution records success"
+  );
 
-  const updatedExp2 = pex.recordExecution(exp.experimentId, 2, { ok: false, retryCount: 2, reviewerDecision: "changes-requested", duration: 5000 });
-  assert(updatedExp2.results.versionB.totalExecutions === 1, "recordExecution increments versionB count");
+  const updatedExp2 = pex.recordExecution(exp.experimentId, 2, {
+    ok: false,
+    retryCount: 2,
+    reviewerDecision: "changes-requested",
+    duration: 5000
+  });
+  assert(
+    updatedExp2.results.versionB.totalExecutions === 1,
+    "recordExecution increments versionB count"
+  );
   assert(updatedExp2.results.versionB.failedExecutions === 1, "recordExecution records failure");
 
   // Add more executions to trigger auto-completion
   for (let i = 0; i < 4; i++) {
-    pex.recordExecution(exp.experimentId, 1, { ok: true, retryCount: 0, reviewerDecision: "approved", duration: 1500 });
-    pex.recordExecution(exp.experimentId, 2, { ok: true, retryCount: 1, reviewerDecision: "approved", duration: 3000 });
+    pex.recordExecution(exp.experimentId, 1, {
+      ok: true,
+      retryCount: 0,
+      reviewerDecision: "approved",
+      duration: 1500
+    });
+    pex.recordExecution(exp.experimentId, 2, {
+      ok: true,
+      retryCount: 1,
+      reviewerDecision: "approved",
+      duration: 3000
+    });
   }
 
   // Experiment is still running (sample size 10 < target 20)
@@ -289,10 +407,16 @@ async function runAll() {
   // 3. Check versions exist
   const plannerVersions = pvm.listVersions("planner");
   assert(plannerVersions.length >= 1, "Planner has at least 1 version after evolution");
-  assert(plannerVersions.some(v => v.version === 2), "Planner v2 candidate exists");
+  assert(
+    plannerVersions.some(v => v.version === 2),
+    "Planner v2 candidate exists"
+  );
 
   // 4. Check we can create an experiment for the candidate
-  const finalExperiment = pex.createExperiment("planner", 1, 2, { targetSampleSize: 3, notes: "Integration test experiment" });
+  const finalExperiment = pex.createExperiment("planner", 1, 2, {
+    targetSampleSize: 3,
+    notes: "Integration test experiment"
+  });
   assert(finalExperiment.notes === "Integration test experiment", "Experiment metadata preserved");
 
   // Summary

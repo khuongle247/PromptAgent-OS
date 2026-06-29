@@ -9,9 +9,7 @@ const { execSync } = require("child_process");
 const projectName = process.argv[2];
 
 if (!projectName) {
-  console.log(
-    "Usage: node scripts/generate-prompt.js ProjectName"
-  );
+  console.log("Usage: node scripts/generate-prompt.js ProjectName");
   process.exit(1);
 }
 
@@ -20,16 +18,11 @@ if (!projectName) {
 // ======================================
 
 try {
-  execSync(
-    `node scripts/task-engine.js ${projectName}`,
-    {
-      stdio: "ignore"
-    }
-  );
+  execSync(`node scripts/task-engine.js ${projectName}`, {
+    stdio: "ignore"
+  });
 } catch (error) {
-  console.log(
-    "Task Engine Error"
-  );
+  console.log("Task Engine Error");
 }
 
 // ======================================
@@ -37,16 +30,11 @@ try {
 // ======================================
 
 try {
-  execSync(
-    `node scripts/memory-manager.js ${projectName}`,
-    {
-      stdio: "ignore"
-    }
-  );
+  execSync(`node scripts/memory-manager.js ${projectName}`, {
+    stdio: "ignore"
+  });
 } catch (error) {
-  console.log(
-    "Memory Manager Error"
-  );
+  console.log("Memory Manager Error");
 }
 
 // ======================================
@@ -58,118 +46,50 @@ function readFile(filePath) {
     return "";
   }
 
-  return fs.readFileSync(
-    filePath,
-    "utf8"
-  );
+  return fs.readFileSync(filePath, "utf8");
 }
 
 // ======================================
 // PATHS
 // ======================================
 
-const docsPath = path.join(
-  projectName,
-  "docs"
-);
+const docsPath = path.join(projectName, "docs");
 
-const contextPath = path.join(
-  projectName,
-  "context"
-);
+const contextPath = path.join(projectName, "context");
 
 // ======================================
 // DOCS
 // ======================================
 
-const requirements = readFile(
-  path.join(
-    docsPath,
-    "requirements.md"
-  )
-);
+const requirements = readFile(path.join(docsPath, "requirements.md"));
 
-const features = readFile(
-  path.join(
-    docsPath,
-    "features.md"
-  )
-);
+const features = readFile(path.join(docsPath, "features.md"));
 
-const architecture = readFile(
-  path.join(
-    docsPath,
-    "architecture.md"
-  )
-);
+const architecture = readFile(path.join(docsPath, "architecture.md"));
 
-const memorySummary =
-  readFile(
-    path.join(
-      docsPath,
-      "memory-summary.md"
-    )
-  );
+const memorySummary = readFile(path.join(docsPath, "memory-summary.md"));
 
-const decisions = readFile(
-  path.join(
-    docsPath,
-    "decisions.md"
-  )
-);
+const decisions = readFile(path.join(docsPath, "decisions.md"));
 
-const changelog = readFile(
-  path.join(
-    docsPath,
-    "changelog.md"
-  )
-);
+const changelog = readFile(path.join(docsPath, "changelog.md"));
 
 // ======================================
 // CONTEXT
 // ======================================
 
-const techStack = readFile(
-  path.join(
-    contextPath,
-    "tech-stack.md"
-  )
-);
+const techStack = readFile(path.join(contextPath, "tech-stack.md"));
 
-const codingRules =
-  readFile(
-    path.join(
-      contextPath,
-      "coding-rules.md"
-    )
-  );
+const codingRules = readFile(path.join(contextPath, "coding-rules.md"));
 
-const architectureRules =
-  readFile(
-    path.join(
-      contextPath,
-      "architecture-rules.md"
-    )
-  );
+const architectureRules = readFile(path.join(contextPath, "architecture-rules.md"));
 
-const aiRules = readFile(
-  path.join(
-    contextPath,
-    "ai-rules.md"
-  )
-);
+const aiRules = readFile(path.join(contextPath, "ai-rules.md"));
 
 // ======================================
 // CURRENT TASK
 // ======================================
 
-const currentTask =
-  readFile(
-    path.join(
-      projectName,
-      "current-task.md"
-    )
-  ) || "PROJECT COMPLETED";
+const currentTask = readFile(path.join(projectName, "current-task.md")) || "PROJECT COMPLETED";
 
 // ======================================
 // BUILD PROMPT
@@ -263,29 +183,16 @@ ${currentTask}
 // SAVE
 // ======================================
 
-const outputPath = path.join(
-  projectName,
-  "prompt-output.md"
-);
+const outputPath = path.join(projectName, "prompt-output.md");
 
-fs.writeFileSync(
-  outputPath,
-  prompt,
-  "utf8"
-);
+fs.writeFileSync(outputPath, prompt, "utf8");
 
 // ======================================
 // LOG
 // ======================================
 
-console.log(
-  "Prompt generated successfully"
-);
+console.log("Prompt generated successfully");
 
-console.log(
-  `Current Task: ${currentTask}`
-);
+console.log(`Current Task: ${currentTask}`);
 
-console.log(
-  `Output: ${outputPath}`
-);
+console.log(`Output: ${outputPath}`);

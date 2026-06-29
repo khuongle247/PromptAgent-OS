@@ -31,8 +31,14 @@ function getDebuggerOutput(projectDir, options = {}) {
 }
 
 function buildCoderFixOutput(debuggerOutput, attempt, maxRetries, taskId) {
-  const relatedTaskId = taskId || debuggerOutput?.output?.metadata?.relatedTaskId || debuggerOutput?.taskId || "TASK-001";
-  const rootCause = debuggerOutput?.output?.rootCauseAnalysis?.rootCause || "Debugger reported a failure that requires a code fix.";
+  const relatedTaskId =
+    taskId ||
+    debuggerOutput?.output?.metadata?.relatedTaskId ||
+    debuggerOutput?.taskId ||
+    "TASK-001";
+  const rootCause =
+    debuggerOutput?.output?.rootCauseAnalysis?.rootCause ||
+    "Debugger reported a failure that requires a code fix.";
 
   return {
     metadata: {
@@ -45,7 +51,11 @@ function buildCoderFixOutput(debuggerOutput, attempt, maxRetries, taskId) {
       {
         path: "src/healing-fix.js",
         changeType: attempt === 0 ? "modified" : "modified",
-        summary: `Auto-healing fix attempt ${attempt + 1}/${maxRetries} derived from: ${rootCause}`.slice(0, 180)
+        summary:
+          `Auto-healing fix attempt ${attempt + 1}/${maxRetries} derived from: ${rootCause}`.slice(
+            0,
+            180
+          )
       }
     ],
     testResults: {
@@ -81,7 +91,8 @@ function buildCoderFixOutput(debuggerOutput, attempt, maxRetries, taskId) {
 }
 
 function buildReviewerFixOutput(debuggerOutput, coderOutput, attempt, maxRetries, taskId) {
-  const relatedTaskId = taskId || coderOutput?.taskId || debuggerOutput?.output?.metadata?.relatedTaskId || "TASK-001";
+  const relatedTaskId =
+    taskId || coderOutput?.taskId || debuggerOutput?.output?.metadata?.relatedTaskId || "TASK-001";
   const approved = attempt >= Math.max(0, maxRetries - 1);
 
   return {
@@ -136,16 +147,27 @@ async function runSelfHealing(rootDir, projectName, options = {}) {
     };
   }
 
-  const taskId = options.taskId || debuggerArtifact.output?.metadata?.relatedTaskId || debuggerArtifact.taskId || "TASK-001";
+  const taskId =
+    options.taskId ||
+    debuggerArtifact.output?.metadata?.relatedTaskId ||
+    debuggerArtifact.taskId ||
+    "TASK-001";
   const currentState = loadState(projectDir);
   const maxRetries = Math.max(1, Number(options.maxRetries || currentState.maxRetries || 3));
   const attempts = [];
   const eventBus = require("./event-bus"); // New import
 
-  setAgentStatus(projectDir, "debugger", "failed", debuggerArtifact.output?.rootCauseAnalysis?.rootCause || "Debugger output triggered self-healing.", {
-    phase: currentState.phase,
-    retryCount: currentState.retryCount || 0
-  });
+  setAgentStatus(
+    projectDir,
+    "debugger",
+    "failed",
+    debuggerArtifact.output?.rootCauseAnalysis?.rootCause ||
+      "Debugger output triggered self-healing.",
+    {
+      phase: currentState.phase,
+      retryCount: currentState.retryCount || 0
+    }
+  );
 
   // Emit HealingAttempted event
   await eventBus.publish("healing-attempted", {
@@ -166,14 +188,21 @@ async function runSelfHealing(rootDir, projectName, options = {}) {
       llmClient: async () => buildCoderFixOutput(debuggerArtifact, attempt, maxRetries, taskId)
     });
 
-    setAgentStatus(projectDir, "coder", coderExecution.ok ? "completed" : "failed", coderExecution.validation.errors[0] || "Coder fix validation failed.", {
-      phase: currentState.phase,
-      retryCount: attempt
-    });
+    setAgentStatus(
+      projectDir,
+      "coder",
+      coderExecution.ok ? "completed" : "failed",
+      coderExecution.validation.errors[0] || "Coder fix validation failed.",
+      {
+        phase: currentState.phase,
+        retryCount: attempt
+      }
+    );
 
     const reviewerExecution = await executeAgent(rootDir, projectDir, "reviewer", {
       taskId,
-      llmClient: async () => buildReviewerFixOutput(debuggerArtifact, coderExecution.output, attempt, maxRetries, taskId)
+      llmClient: async () =>
+        buildReviewerFixOutput(debuggerArtifact, coderExecution.output, attempt, maxRetries, taskId)
     });
 
     const reviewerDecision = reviewerExecution.output?.decision || "changes-requested";
@@ -187,10 +216,16 @@ async function runSelfHealing(rootDir, projectName, options = {}) {
     });
 
     if (reviewerExecution.ok && reviewerDecision === "approved") {
-      const finalState = setAgentStatus(projectDir, "none", "approved", "Self-healing cycle approved.", {
-        phase: currentState.phase,
-        retryCount: 0
-      });
+      const finalState = setAgentStatus(
+        projectDir,
+        "none",
+        "approved",
+        "Self-healing cycle approved.",
+        {
+          phase: currentState.phase,
+          retryCount: 0
+        }
+      );
 
       // Emit HealingCycleCompleted event (success)
       await eventBus.publish("healing-cycle-completed", {
@@ -215,10 +250,14 @@ async function runSelfHealing(rootDir, projectName, options = {}) {
     }
 
     if (attempt < maxRetries - 1) {
-      incrementRetry(projectDir, reviewerExecution.validation.errors[0] || "Self-healing retry requested.", {
-        currentAgent: "coder",
-        phase: currentState.phase
-      });
+      incrementRetry(
+        projectDir,
+        reviewerExecution.validation.errors[0] || "Self-healing retry requested.",
+        {
+          currentAgent: "coder",
+          phase: currentState.phase
+        }
+      );
       // Emit HealingAttempted for next retry
       await eventBus.publish("healing-attempted", {
         taskId: taskId,
@@ -232,10 +271,16 @@ async function runSelfHealing(rootDir, projectName, options = {}) {
     }
   }
 
-  const failedState = setAgentStatus(projectDir, "debugger", "escalated", "Self-healing exhausted all retries.", {
-    phase: currentState.phase,
-    retryCount: maxRetries
-  });
+  const failedState = setAgentStatus(
+    projectDir,
+    "debugger",
+    "escalated",
+    "Self-healing exhausted all retries.",
+    {
+      phase: currentState.phase,
+      retryCount: maxRetries
+    }
+  );
 
   // Emit HealingCycleCompleted event (failure)
   await eventBus.publish("healing-cycle-completed", {

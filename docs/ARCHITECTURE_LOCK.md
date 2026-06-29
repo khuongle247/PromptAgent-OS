@@ -3,7 +3,7 @@
 **Version:** 1.0.0-beta  
 **Status:** FROZEN  
 **Date:** June 27, 2026  
-**Author:** Chief Software Architect  
+**Author:** Chief Software Architect
 
 ---
 
@@ -11,7 +11,7 @@
 
 This document establishes an **immutable architecture lock** for the PromptAgent framework throughout the v1.x lifecycle. No structural modifications, workflow redesigns, core behavior modifications, module renamings, or file reorganizations may be introduced without formal deprecation and semver-bump processes.
 
-All core modules are officially frozen to protect runtime stability, deterministic validation paths, and verified event-driven instrumentation. 
+All core modules are officially frozen to protect runtime stability, deterministic validation paths, and verified event-driven instrumentation.
 
 ---
 
@@ -24,10 +24,13 @@ run.js
 ```
 
 ### Usage
+
 ```bash
 node run.js <ProjectName>
 ```
+
 Or via npm:
+
 ```bash
 npm start -- <ProjectName>
 ```
@@ -41,6 +44,7 @@ No other script or file within `workflow/` or `scripts/` is authorized for direc
 The full runtime initialization flow is divided into three sequential phases.
 
 ### Phase A: Core Initialization (Synchronous Loading)
+
 1. **`run.js`** is executed with `ProjectName`.
 2. **`run.js`** invokes `runPipeline(process.cwd(), projectName)` from `workflow/pipeline-runner.js`.
 3. **`pipeline-runner.js`** synchronously loads dependency engines:
@@ -51,6 +55,7 @@ The full runtime initialization flow is divided into three sequential phases.
    - `workflow/event-bus.js` (Core communication channel)
 
 ### Phase B: Observability & Scheduler Startup
+
 4. **`event-integration.js`** initializes global engines and hooks them to the `event-bus.js`:
    - `AuditEngine.initialize(eventBus)` (Subscribed to `*` to record all event logs to `logs/audit.jsonl`)
    - `MetricsEngine.initialize(eventBus)` (Subscribed to performance and execution events)
@@ -58,6 +63,7 @@ The full runtime initialization flow is divided into three sequential phases.
 5. **`event-bus.js`** loads schemas via `event-schema-registry.js` and applies safety validations via `event-validation-middleware.js` to every published event.
 
 ### Phase C: Pre-Flight Validation & Loop Dispatch
+
 6. **`pipeline-runner.js`** invokes `runUnifiedValidationPipeline`:
    - Verifies project directory and workspace configuration
    - Validates phase configurations against schema rules

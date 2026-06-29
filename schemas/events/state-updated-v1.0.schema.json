@@ -5,11 +5,14 @@
   "type": "object",
   "required": ["agent", "oldState", "newState", "timestamp", "reason", "schemaVersion"],
   "properties": {
-    "agent": {"type": "string", "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"]},
-    "oldState": {"type": "object"},
-    "newState": {"type": "object"},
-    "timestamp": {"type": "string", "format": "date-time"},
-    "reason": {"type": "string", "minLength": 5},
-    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+    "agent": {
+      "type": "string",
+      "enum": ["planner", "architect", "coder", "reviewer", "debugger", "system", "human"]
+    },
+    "oldState": { "type": "object" },
+    "newState": { "type": "object" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "reason": { "type": "string", "minLength": 5 },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
   }
 }

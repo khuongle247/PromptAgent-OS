@@ -3,7 +3,15 @@
   "title": "Planner to Architect Handoff Contract",
   "description": "Framework-level handoff contract. Defines what Planner passes to Architect.",
   "type": "object",
-  "required": ["sourceAgent", "targetAgent", "contractVersion", "inputSchema", "outputSchema", "validationRules", "qualityGates"],
+  "required": [
+    "sourceAgent",
+    "targetAgent",
+    "contractVersion",
+    "inputSchema",
+    "outputSchema",
+    "validationRules",
+    "qualityGates"
+  ],
   "properties": {
     "sourceAgent": { "type": "string", "enum": ["planner"] },
     "targetAgent": { "type": "string", "enum": ["architect"] },
@@ -12,11 +20,23 @@
     "outputSchema": { "type": "string", "enum": ["schemas/outputs/architect-output.schema.json"] },
     "validationRules": {
       "type": "array",
-      "items": { "type": "object", "required": ["id", "description"], "properties": { "id": { "type": "string" }, "description": { "type": "string" } } }
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": { "id": { "type": "string" }, "description": { "type": "string" } }
+      }
     },
     "qualityGates": {
       "type": "array",
-      "items": { "type": "object", "required": ["id", "description", "passCondition"], "properties": { "id": { "type": "string" }, "description": { "type": "string" }, "passCondition": { "type": "string" } } }
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "passCondition"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "passCondition": { "type": "string" }
+        }
+      }
     },
     "errorCodes": { "type": "object" }
   }

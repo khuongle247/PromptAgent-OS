@@ -40,7 +40,11 @@ function runPipeline(rootDir, projectName) {
     };
   }
   const workflowState = getCurrentWorkflowState(project);
-  const validationReport = runUnifiedValidationPipeline(rootDir, projectDir, workflowState.currentRole);
+  const validationReport = runUnifiedValidationPipeline(
+    rootDir,
+    projectDir,
+    workflowState.currentRole
+  );
   const agentReport = runAgent(rootDir, projectDir, workflowState.currentRole);
 
   const ready = validationReport.errors.length === 0 && agentReport.promptReady;

@@ -7,7 +7,15 @@ function grep(dir, pattern, filterExt = ".js") {
     const entries = fs.readdirSync(d, { withFileTypes: true });
     entries.forEach(e => {
       const fp = path.join(d, e.name);
-      if (e.isDirectory() && !e.name.startsWith("node_modules") && !e.name.startsWith(".") && e.name !== "projects" && e.name !== "schemas" && e.name !== "templates") walk(fp);
+      if (
+        e.isDirectory() &&
+        !e.name.startsWith("node_modules") &&
+        !e.name.startsWith(".") &&
+        e.name !== "projects" &&
+        e.name !== "schemas" &&
+        e.name !== "templates"
+      )
+        walk(fp);
       else if (e.isFile() && fp.endsWith(filterExt)) {
         const c = fs.readFileSync(fp, "utf8");
         const lines = c.split("\n");
@@ -38,44 +46,59 @@ console.log("");
 
 const agentExec = readFile("workflow/agent-executor.js");
 const loadPromptLine = agentExec.split("\n").findIndex(l => l.includes("function loadPrompt")) + 1;
-const loadPromptContent = agentExec.split("\n").filter(l => l.includes("function loadPrompt") || l.includes("prompts") || l.includes("readTextSafe"))[0];
+const loadPromptContent = agentExec
+  .split("\n")
+  .filter(
+    l => l.includes("function loadPrompt") || l.includes("prompts") || l.includes("readTextSafe")
+  )[0];
 console.log("loadPrompt() at line:", loadPromptLine);
 console.log("  " + loadPromptContent);
 console.log("");
 
 const requirePVM = agentExec.includes("prompt-version-manager");
-const requireEventBus = agentExec.includes("require(\"./event-bus\"");
+const requireEventBus = agentExec.includes('require("./event-bus"');
 console.log("require('./prompt-version-manager'):", requirePVM ? "YES" : "NO");
 console.log("require('./event-bus'):", requireEventBus ? "YES" : "NO");
 console.log("");
 
-const loadProjectBundleLine = agentExec.split("\n").findIndex(l => l.includes("function loadProjectBundle")) + 1;
+const loadProjectBundleLine =
+  agentExec.split("\n").findIndex(l => l.includes("function loadProjectBundle")) + 1;
 const promptAssignment = agentExec.split("\n").filter(l => l.includes("prompt: loadPrompt"));
 console.log("loadProjectBundle() at line:", loadProjectBundleLine);
 promptAssignment.forEach(l => console.log("  " + l.trim()));
 console.log("");
 
-const executeAgentLine = agentExec.split("\n").findIndex(l => l.includes("function executeAgent")) + 1;
-const llmClientLines = agentExec.split("\n").filter((l, i) => l.includes("llmClient") && i > executeAgentLine && i < executeAgentLine + 30);
+const executeAgentLine =
+  agentExec.split("\n").findIndex(l => l.includes("function executeAgent")) + 1;
+const llmClientLines = agentExec
+  .split("\n")
+  .filter((l, i) => l.includes("llmClient") && i > executeAgentLine && i < executeAgentLine + 30);
 console.log("executeAgent() at line:", executeAgentLine);
 llmClientLines.forEach(l => console.log("  " + l.trim()));
 console.log("");
 
 const getActiveVersionCalls = grep(process.cwd(), "getActiveVersion(");
 console.log("Files calling getActiveVersion():", getActiveVersionCalls.length);
-getActiveVersionCalls.forEach(x => console.log("  " + x.file + ":" + x.line + " | " + x.content.substring(0, 120)));
+getActiveVersionCalls.forEach(x =>
+  console.log("  " + x.file + ":" + x.line + " | " + x.content.substring(0, 120))
+);
 console.log("");
 
 const agentExecGetActive = getActiveVersionCalls.filter(x => x.file.includes("agent-executor"));
-console.log("AgentExecutor calls getActiveVersion():", agentExecGetActive.length > 0 ? "YES" : "NO");
+console.log(
+  "AgentExecutor calls getActiveVersion():",
+  agentExecGetActive.length > 0 ? "YES" : "NO"
+);
 agentExecGetActive.forEach(x => console.log("  " + x.file + ":" + x.line + " | " + x.content));
 
 console.log("");
-const pvmImports1 = grep(process.cwd(), "require(\\\"../workflow/prompt-version-manager");
+const pvmImports1 = grep(process.cwd(), 'require(\\"../workflow/prompt-version-manager');
 const pvmImports2 = grep(process.cwd(), "require('../workflow/prompt-version-manager");
 const pvmImports = [...pvmImports1, ...pvmImports2];
 console.log("prompt-version-manager consumers:");
-pvmImports.forEach(x => console.log("  " + x.file + ":" + x.line + " | " + x.content.substring(0, 120)));
+pvmImports.forEach(x =>
+  console.log("  " + x.file + ":" + x.line + " | " + x.content.substring(0, 120))
+);
 if (pvmImports.length === 0) console.log("  NONE (only self-imported by tests)");
 
 console.log("");
@@ -108,7 +131,11 @@ for (let i = promoteVerStart - 1; i < promoteVerStart + 25; i++) {
 console.log("");
 
 console.log("activeVersion storage: meta.activeVersion (in-memory) + versions.json (on disk)");
-console.log("activeVersion read at line", getActiveVerStart + 5, ": const activeVer = meta.activeVersion || 1;");
+console.log(
+  "activeVersion read at line",
+  getActiveVerStart + 5,
+  ": const activeVer = meta.activeVersion || 1;"
+);
 console.log("activeVersion consumers:");
 pvmImports.forEach(x => console.log("  " + x.file));
 console.log("AgentExecutor is NOT a consumer");
@@ -139,7 +166,11 @@ roles.forEach(r => {
     if (fs.existsSync(vp)) {
       const v = JSON.parse(fs.readFileSync(vp, "utf8"));
       console.log("  activeVersion:", v.activeVersion);
-      v.versions.forEach(x => console.log("    v" + x.version + ": status=" + x.approvalStatus + " isActive=" + x.isActive));
+      v.versions.forEach(x =>
+        console.log(
+          "    v" + x.version + ": status=" + x.approvalStatus + " isActive=" + x.isActive
+        )
+      );
     }
   } else {
     console.log("  (DIRECTORY MISSING)");
@@ -185,7 +216,9 @@ console.log("PART 5: Learning Loop Verification");
 console.log("============================================================");
 console.log("");
 
-console.log("--- Call chain: AuditEngine → MetricsEngine → PromptAnalyzer → Evolution → VersionManager → AgentExecutor ---");
+console.log(
+  "--- Call chain: AuditEngine → MetricsEngine → PromptAnalyzer → Evolution → VersionManager → AgentExecutor ---"
+);
 console.log("");
 
 // Trace imports
@@ -197,31 +230,62 @@ const promptExperiment = readFile("workflow/prompt-experiment-engine.js");
 const pipelineRunner = readFile("workflow/pipeline-runner.js");
 
 console.log("audit-engine.js exports:", Object.keys(require("./workflow/audit-engine")).join(", "));
-console.log("metrics-engine.js exports:", Object.keys(require("./workflow/metrics-engine")).join(", "));
-console.log("prompt-analyzer.js exports:", Object.keys(require("./workflow/prompt-analyzer")).join(", "));
-console.log("prompt-evolution-engine.js exports:", Object.keys(require("./workflow/prompt-evolution-engine")).join(", "));
-console.log("prompt-version-manager.js exports:", Object.keys(require("./workflow/prompt-version-manager")).join(", "));
+console.log(
+  "metrics-engine.js exports:",
+  Object.keys(require("./workflow/metrics-engine")).join(", ")
+);
+console.log(
+  "prompt-analyzer.js exports:",
+  Object.keys(require("./workflow/prompt-analyzer")).join(", ")
+);
+console.log(
+  "prompt-evolution-engine.js exports:",
+  Object.keys(require("./workflow/prompt-evolution-engine")).join(", ")
+);
+console.log(
+  "prompt-version-manager.js exports:",
+  Object.keys(require("./workflow/prompt-version-manager")).join(", ")
+);
 console.log("");
 
 // Check who imports what
 console.log("Cross-file imports:");
-const promptEvoImports = grep(process.cwd(), "prompt-analyzer").filter(x => x.file.includes("prompt-evolution"));
-promptEvoImports.forEach(x => console.log("  prompt-evolution-engine imports prompt-analyzer:", x.file + ":" + x.line));
+const promptEvoImports = grep(process.cwd(), "prompt-analyzer").filter(x =>
+  x.file.includes("prompt-evolution")
+);
+promptEvoImports.forEach(x =>
+  console.log("  prompt-evolution-engine imports prompt-analyzer:", x.file + ":" + x.line)
+);
 
-const pvmImportInEvo = grep(process.cwd(), "prompt-version-manager").filter(x => x.file.includes("prompt-evolution"));
-pvmImportInEvo.forEach(x => console.log("  prompt-evolution-engine imports prompt-version-manager:", x.file + ":" + x.line));
+const pvmImportInEvo = grep(process.cwd(), "prompt-version-manager").filter(x =>
+  x.file.includes("prompt-evolution")
+);
+pvmImportInEvo.forEach(x =>
+  console.log("  prompt-evolution-engine imports prompt-version-manager:", x.file + ":" + x.line)
+);
 
 const pvmImportInTest = grep(process.cwd(), "prompt-version-manager");
-pvmImportInTest.forEach(x => console.log("  " + x.file + ":" + x.line + " imports prompt-version-manager"));
+pvmImportInTest.forEach(x =>
+  console.log("  " + x.file + ":" + x.line + " imports prompt-version-manager")
+);
 
 console.log("");
-console.log("AgentExecutor consumes prompt-version-manager:", agentExec.includes("prompt-version-manager") ? "YES" : "NO");
+console.log(
+  "AgentExecutor consumes prompt-version-manager:",
+  agentExec.includes("prompt-version-manager") ? "YES" : "NO"
+);
 console.log("");
 
 console.log("PART 5 RESULT: FAIL");
-console.log("Reason: The chain AuditEngine → MetricsEngine → PromptAnalyzer → PromptEvolutionEngine → PromptVersionManager");
-console.log("exists and is functional. But the final link PromptVersionManager → AgentExecutor is MISSING.");
-console.log("AgentExecutor still reads prompts/{role}.md directly without going through getActiveVersion().");
+console.log(
+  "Reason: The chain AuditEngine → MetricsEngine → PromptAnalyzer → PromptEvolutionEngine → PromptVersionManager"
+);
+console.log(
+  "exists and is functional. But the final link PromptVersionManager → AgentExecutor is MISSING."
+);
+console.log(
+  "AgentExecutor still reads prompts/{role}.md directly without going through getActiveVersion()."
+);
 console.log("");
 
 console.log("============================================================");
@@ -230,10 +294,15 @@ console.log("============================================================");
 console.log("");
 
 const gavCalls = grep(process.cwd(), "getActiveVersion(");
-gavCalls.forEach(x => console.log("  " + x.file + ":" + x.line + " | " + x.content.substring(0, 120)));
+gavCalls.forEach(x =>
+  console.log("  " + x.file + ":" + x.line + " | " + x.content.substring(0, 120))
+);
 console.log("");
 
-console.log("Is AgentExecutor a caller?", gavCalls.some(x => x.file.includes("agent-executor")) ? "YES" : "NO");
+console.log(
+  "Is AgentExecutor a caller?",
+  gavCalls.some(x => x.file.includes("agent-executor")) ? "YES" : "NO"
+);
 console.log("");
 
 console.log("PART 6 RESULT: FAIL");
@@ -258,11 +327,18 @@ const phase9Files = [
 phase9Files.forEach(f => {
   const basename = path.basename(f, ".js");
   // Find who imports this file
-  const consumers = grep(process.cwd(), basename).filter(x => !x.file.includes(f) && x.file.endsWith(".js") && !x.file.includes("node_modules"));
+  const consumers = grep(process.cwd(), basename).filter(
+    x => !x.file.includes(f) && x.file.endsWith(".js") && !x.file.includes("node_modules")
+  );
   const testConsumers = consumers.filter(x => x.file.includes("tests"));
   const prodConsumers = consumers.filter(x => !x.file.includes("tests"));
-  const startupConsumers = prodConsumers.filter(x => x.file.includes("pipeline-runner") || x.file.includes("event-integration") || x.file.includes("phase-controller"));
-  
+  const startupConsumers = prodConsumers.filter(
+    x =>
+      x.file.includes("pipeline-runner") ||
+      x.file.includes("event-integration") ||
+      x.file.includes("phase-controller")
+  );
+
   console.log("--- " + f + " ---");
   console.log("  Imported by " + consumers.length + " files");
   if (prodConsumers.length > 0) {
@@ -313,7 +389,7 @@ console.log("   Without D, the loop is broken after promotion");
 console.log("");
 
 console.log("SCORING:");
-const score = (20 + 20 + 20 + 0 + 0); // A=20, B=20, C=20, D=0, E=0
+const score = 20 + 20 + 20 + 0 + 0; // A=20, B=20, C=20, D=0, E=0
 console.log("  A (Evolution exists):     20/20");
 console.log("  B (Generates candidates):  20/20");
 console.log("  C (Promotion works):       20/20");

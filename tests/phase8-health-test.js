@@ -18,41 +18,100 @@ function ensureTestData() {
   if (!fs.existsSync(METRICS_DIR)) fs.mkdirSync(METRICS_DIR, { recursive: true });
 
   // Write test agent metrics (healthy scenario)
-  fs.writeFileSync(path.join(METRICS_DIR, "agent-performance.json"), JSON.stringify({
-    totalExecutions: 20,
-    successfulExecutions: 20,
-    failedExecutions: 0,
-    retryCount: 1,
-    avgDuration: 2000,
-    lastUpdated: new Date().toISOString()
-  }, null, 2));
+  fs.writeFileSync(
+    path.join(METRICS_DIR, "agent-performance.json"),
+    JSON.stringify(
+      {
+        totalExecutions: 20,
+        successfulExecutions: 20,
+        failedExecutions: 0,
+        retryCount: 1,
+        avgDuration: 2000,
+        lastUpdated: new Date().toISOString()
+      },
+      null,
+      2
+    )
+  );
 
   // Write test task metrics
-  fs.writeFileSync(path.join(METRICS_DIR, "task-metrics.json"), JSON.stringify({
-    totalTasks: 5,
-    completedTasks: 4,
-    failedTasks: 1,
-    avgCycleTime: 120000,
-    lastUpdated: new Date().toISOString()
-  }, null, 2));
+  fs.writeFileSync(
+    path.join(METRICS_DIR, "task-metrics.json"),
+    JSON.stringify(
+      {
+        totalTasks: 5,
+        completedTasks: 4,
+        failedTasks: 1,
+        avgCycleTime: 120000,
+        lastUpdated: new Date().toISOString()
+      },
+      null,
+      2
+    )
+  );
 
   // Write test learning metrics
-  fs.writeFileSync(path.join(METRICS_DIR, "learning-metrics.json"), JSON.stringify({
-    lessonsLearned: 3,
-    reusablePatterns: 2,
-    memoryUpdates: 4,
-    lastUpdated: new Date().toISOString()
-  }, null, 2));
+  fs.writeFileSync(
+    path.join(METRICS_DIR, "learning-metrics.json"),
+    JSON.stringify(
+      {
+        lessonsLearned: 3,
+        reusablePatterns: 2,
+        memoryUpdates: 4,
+        lastUpdated: new Date().toISOString()
+      },
+      null,
+      2
+    )
+  );
 
   // Write test audit log with some events
   const auditEntries = [
-    { id: "AUD-001", eventType: "agent-executed", timestamp: new Date().toISOString(), actor: "planner", payload: { agent: "planner", ok: true }, correlationId: "task-TASK-001" },
-    { id: "AUD-002", eventType: "agent-transitioned", timestamp: new Date().toISOString(), actor: "planner", payload: { action: "advance" }, correlationId: "task-TASK-001" },
-    { id: "AUD-003", eventType: "healing-cycle-completed", timestamp: new Date().toISOString(), actor: "self-healing-engine", payload: { passed: true }, correlationId: "task-TASK-002" },
-    { id: "AUD-004", eventType: "bug-pattern-recorded", timestamp: new Date().toISOString(), actor: "self-healing-engine", payload: { bugId: "BUG-001" }, correlationId: "BUG-001" },
-    { id: "AUD-005", eventType: "lesson-learned", timestamp: new Date().toISOString(), actor: "learning-loop-engine", payload: { lessonId: "LESSON-001" }, correlationId: "LESSON-001" }
+    {
+      id: "AUD-001",
+      eventType: "agent-executed",
+      timestamp: new Date().toISOString(),
+      actor: "planner",
+      payload: { agent: "planner", ok: true },
+      correlationId: "task-TASK-001"
+    },
+    {
+      id: "AUD-002",
+      eventType: "agent-transitioned",
+      timestamp: new Date().toISOString(),
+      actor: "planner",
+      payload: { action: "advance" },
+      correlationId: "task-TASK-001"
+    },
+    {
+      id: "AUD-003",
+      eventType: "healing-cycle-completed",
+      timestamp: new Date().toISOString(),
+      actor: "self-healing-engine",
+      payload: { passed: true },
+      correlationId: "task-TASK-002"
+    },
+    {
+      id: "AUD-004",
+      eventType: "bug-pattern-recorded",
+      timestamp: new Date().toISOString(),
+      actor: "self-healing-engine",
+      payload: { bugId: "BUG-001" },
+      correlationId: "BUG-001"
+    },
+    {
+      id: "AUD-005",
+      eventType: "lesson-learned",
+      timestamp: new Date().toISOString(),
+      actor: "learning-loop-engine",
+      payload: { lessonId: "LESSON-001" },
+      correlationId: "LESSON-001"
+    }
   ];
-  fs.writeFileSync(path.join(LOGS_DIR, "audit.jsonl"), auditEntries.map(e => JSON.stringify(e)).join("\n"));
+  fs.writeFileSync(
+    path.join(LOGS_DIR, "audit.jsonl"),
+    auditEntries.map(e => JSON.stringify(e)).join("\n")
+  );
 }
 
 function clearHealthDir() {
@@ -86,20 +145,44 @@ async function runAll() {
   console.log("\n--- Test 1: Bottleneck Detectors ---");
 
   // Retry rate below threshold (3/20 = 15%)
-  const lowRetryMetrics = { totalExecutions: 20, successfulExecutions: 18, failedExecutions: 2, retryCount: 3, avgDuration: 2500 };
-  assert(fh.detectRetryRateBottleneck(lowRetryMetrics) === null, "Retry rate 15% is below threshold (no bottleneck)");
+  const lowRetryMetrics = {
+    totalExecutions: 20,
+    successfulExecutions: 18,
+    failedExecutions: 2,
+    retryCount: 3,
+    avgDuration: 2500
+  };
+  assert(
+    fh.detectRetryRateBottleneck(lowRetryMetrics) === null,
+    "Retry rate 15% is below threshold (no bottleneck)"
+  );
 
   // Retry rate above threshold (6/20 = 30%)
-  const highRetryMetrics = { totalExecutions: 20, successfulExecutions: 14, failedExecutions: 6, retryCount: 6, avgDuration: 2500 };
+  const highRetryMetrics = {
+    totalExecutions: 20,
+    successfulExecutions: 14,
+    failedExecutions: 6,
+    retryCount: 6,
+    avgDuration: 2500
+  };
   const retryBottleneck = fh.detectRetryRateBottleneck(highRetryMetrics);
   assert(retryBottleneck !== null, "Retry rate 30% triggers bottleneck");
   assert(retryBottleneck.type === "high-retry-rate", "Bottleneck type is high-retry-rate");
 
   // Duration below threshold
-  assert(fh.detectHighDurationBottleneck(lowRetryMetrics) === null, "Duration 2500ms is below threshold (no bottleneck)");
+  assert(
+    fh.detectHighDurationBottleneck(lowRetryMetrics) === null,
+    "Duration 2500ms is below threshold (no bottleneck)"
+  );
 
   // Duration above threshold
-  const highDurationMetrics = { totalExecutions: 10, successfulExecutions: 8, failedExecutions: 2, retryCount: 1, avgDuration: 15000 };
+  const highDurationMetrics = {
+    totalExecutions: 10,
+    successfulExecutions: 8,
+    failedExecutions: 2,
+    retryCount: 1,
+    avgDuration: 15000
+  };
   const durationBottleneck = fh.detectHighDurationBottleneck(highDurationMetrics);
   assert(durationBottleneck !== null, "Duration 15000ms triggers bottleneck");
   assert(durationBottleneck.type === "high-avg-duration", "Bottleneck type is high-avg-duration");
@@ -113,16 +196,28 @@ async function runAll() {
   ];
   const healingBottleneck = fh.detectHealingCycleBottleneck(auditWithHealing);
   assert(healingBottleneck !== null, "4 healing cycles in last hour triggers bottleneck");
-  assert(healingBottleneck.type === "excessive-healing-cycles", "Bottleneck type is excessive-healing-cycles");
+  assert(
+    healingBottleneck.type === "excessive-healing-cycles",
+    "Bottleneck type is excessive-healing-cycles"
+  );
 
   // ---- Test 2: Risk Detectors ----
   console.log("\n--- Test 2: Risk Detectors ---");
 
   // Failure rate below threshold (2/20 = 10%)
-  assert(fh.detectFailureRateRisk(lowRetryMetrics) === null, "Failure rate 10% is below threshold (no risk)");
+  assert(
+    fh.detectFailureRateRisk(lowRetryMetrics) === null,
+    "Failure rate 10% is below threshold (no risk)"
+  );
 
   // Failure rate above threshold (6/20 = 30%)
-  const highFailureMetrics = { totalExecutions: 20, successfulExecutions: 14, failedExecutions: 6, retryCount: 4, avgDuration: 2500 };
+  const highFailureMetrics = {
+    totalExecutions: 20,
+    successfulExecutions: 14,
+    failedExecutions: 6,
+    retryCount: 4,
+    avgDuration: 2500
+  };
   const failureRisk = fh.detectFailureRateRisk(highFailureMetrics);
   assert(failureRisk !== null, "Failure rate 30% triggers risk");
   assert(failureRisk.type === "high-failure-rate", "Risk type is high-failure-rate");
@@ -144,13 +239,24 @@ async function runAll() {
   assert(memoryRisk.type === "memory-conflict-churn", "Risk type is memory-conflict-churn");
 
   // Prompt degradation detection
-  const highRetryForPrompt = { totalExecutions: 10, successfulExecutions: 6, failedExecutions: 4, retryCount: 4, avgDuration: 2500 };
+  const highRetryForPrompt = {
+    totalExecutions: 10,
+    successfulExecutions: 6,
+    failedExecutions: 4,
+    retryCount: 4,
+    avgDuration: 2500
+  };
   const promptRisk = fh.detectPromptDegradation(highRetryForPrompt);
   assert(promptRisk !== null, "Retry rate 40% triggers prompt degradation risk");
   assert(promptRisk.type === "prompt-degradation", "Risk type is prompt-degradation");
 
   // Task failure rate detection
-  const highTaskFailure = { totalTasks: 5, completedTasks: 3, failedTasks: 2, avgCycleTime: 120000 };
+  const highTaskFailure = {
+    totalTasks: 5,
+    completedTasks: 3,
+    failedTasks: 2,
+    avgCycleTime: 120000
+  };
   const taskFailureRisk = fh.detectTaskFailureRateRisk(highTaskFailure);
   assert(taskFailureRisk !== null, "Task failure rate 40% triggers risk");
   assert(taskFailureRisk.type === "high-task-failure-rate", "Risk type is high-task-failure-rate");
@@ -160,16 +266,29 @@ async function runAll() {
 
   // Perfect scenario
   const perfectScore = fh.calculateHealthScore(
-    { totalExecutions: 10, successfulExecutions: 10, failedExecutions: 0, retryCount: 0, avgDuration: 1000 },
+    {
+      totalExecutions: 10,
+      successfulExecutions: 10,
+      failedExecutions: 0,
+      retryCount: 0,
+      avgDuration: 1000
+    },
     { totalTasks: 5, completedTasks: 5, failedTasks: 0, avgCycleTime: 60000 },
     { lessonsLearned: 5, reusablePatterns: 3, memoryUpdates: 2 },
-    [], []
+    [],
+    []
   );
   assert(perfectScore === 100, `Perfect score is 100 (got ${perfectScore})`);
 
   // Degraded scenario
   const degradedScore = fh.calculateHealthScore(
-    { totalExecutions: 20, successfulExecutions: 12, failedExecutions: 8, retryCount: 6, avgDuration: 12000 },
+    {
+      totalExecutions: 20,
+      successfulExecutions: 12,
+      failedExecutions: 8,
+      retryCount: 6,
+      avgDuration: 12000
+    },
     { totalTasks: 10, completedTasks: 5, failedTasks: 4, avgCycleTime: 300000 },
     { lessonsLearned: 1, reusablePatterns: 0, memoryUpdates: 0 },
     [{ type: "high-retry-rate", severity: "warning" }],
@@ -192,31 +311,85 @@ async function runAll() {
   const recsForRetry = fh.generateRecommendations(
     [{ type: "high-retry-rate", severity: "warning", detail: "test", value: 0.3, threshold: 0.2 }],
     [],
-    { totalExecutions: 10, successfulExecutions: 7, failedExecutions: 3, retryCount: 3, avgDuration: 2000 },
+    {
+      totalExecutions: 10,
+      successfulExecutions: 7,
+      failedExecutions: 3,
+      retryCount: 3,
+      avgDuration: 2000
+    },
     { lessonsLearned: 2, reusablePatterns: 1, memoryUpdates: 1 }
   );
   assert(recsForRetry.length > 0, "Recommendations generated for retry bottleneck");
-  assert(recsForRetry.some(r => r.id === "REC-OPTIMIZE-PROMPT"), "REC-OPTIMIZE-PROMPT recommended");
-  assert(recsForRetry.some(r => r.id === "REC-ADD-VALIDATION"), "REC-ADD-VALIDATION recommended");
+  assert(
+    recsForRetry.some(r => r.id === "REC-OPTIMIZE-PROMPT"),
+    "REC-OPTIMIZE-PROMPT recommended"
+  );
+  assert(
+    recsForRetry.some(r => r.id === "REC-ADD-VALIDATION"),
+    "REC-ADD-VALIDATION recommended"
+  );
 
   const recsForBugs = fh.generateRecommendations(
     [],
-    [{ type: "recurring-bug-patterns", severity: "warning", detail: "test", value: 3, threshold: 3 }],
-    { totalExecutions: 10, successfulExecutions: 8, failedExecutions: 2, retryCount: 1, avgDuration: 2000 },
+    [
+      {
+        type: "recurring-bug-patterns",
+        severity: "warning",
+        detail: "test",
+        value: 3,
+        threshold: 3
+      }
+    ],
+    {
+      totalExecutions: 10,
+      successfulExecutions: 8,
+      failedExecutions: 2,
+      retryCount: 1,
+      avgDuration: 2000
+    },
     { lessonsLearned: 2, reusablePatterns: 1, memoryUpdates: 1 }
   );
-  assert(recsForBugs.some(r => r.id === "REC-ADD-BUG-TESTS"), "REC-ADD-BUG-TESTS recommended for bug patterns");
+  assert(
+    recsForBugs.some(r => r.id === "REC-ADD-BUG-TESTS"),
+    "REC-ADD-BUG-TESTS recommended for bug patterns"
+  );
 
   const recsForMemory = fh.generateRecommendations(
     [],
-    [{ type: "memory-conflict-churn", severity: "warning", detail: "test", value: 3, threshold: 2 }],
-    { totalExecutions: 10, successfulExecutions: 8, failedExecutions: 2, retryCount: 1, avgDuration: 2000 },
+    [
+      { type: "memory-conflict-churn", severity: "warning", detail: "test", value: 3, threshold: 2 }
+    ],
+    {
+      totalExecutions: 10,
+      successfulExecutions: 8,
+      failedExecutions: 2,
+      retryCount: 1,
+      avgDuration: 2000
+    },
     { lessonsLearned: 2, reusablePatterns: 1, memoryUpdates: 1 }
   );
-  assert(recsForMemory.some(r => r.id === "REC-INCREASE-MEMORY-THRESHOLD"), "REC-INCREASE-MEMORY-THRESHOLD recommended");
+  assert(
+    recsForMemory.some(r => r.id === "REC-INCREASE-MEMORY-THRESHOLD"),
+    "REC-INCREASE-MEMORY-THRESHOLD recommended"
+  );
 
-  const recsForNoIssues = fh.generateRecommendations([], [], { totalExecutions: 10, successfulExecutions: 10, failedExecutions: 0, retryCount: 0, avgDuration: 1000 }, { lessonsLearned: 3, reusablePatterns: 2, memoryUpdates: 1 });
-  assert(recsForNoIssues.some(r => r.id === "REC-NO-ISSUES"), "REC-NO-ISSUES recommended when no issues");
+  const recsForNoIssues = fh.generateRecommendations(
+    [],
+    [],
+    {
+      totalExecutions: 10,
+      successfulExecutions: 10,
+      failedExecutions: 0,
+      retryCount: 0,
+      avgDuration: 1000
+    },
+    { lessonsLearned: 3, reusablePatterns: 2, memoryUpdates: 1 }
+  );
+  assert(
+    recsForNoIssues.some(r => r.id === "REC-NO-ISSUES"),
+    "REC-NO-ISSUES recommended when no issues"
+  );
 
   // ---- Test 5: Full Health Report Generation ----
   console.log("\n--- Test 5: Full Health Report Generation ---");

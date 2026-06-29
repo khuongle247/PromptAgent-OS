@@ -15,7 +15,11 @@ function analyzeExecutionResults(rootDir, projectName, executionResult) {
   const newLessons = [];
 
   // Analyze success patterns
-  if (executionResult.ok && executionResult.role === "reviewer" && executionResult.output?.decision === "approved") {
+  if (
+    executionResult.ok &&
+    executionResult.role === "reviewer" &&
+    executionResult.output?.decision === "approved"
+  ) {
     const taskId = executionResult.taskId;
     const coderArtifact = readArtifact(projectDir, { role: "coder", taskId });
     const architectArtifact = readArtifact(projectDir, { role: "architect", taskId: taskId }); // Architect output often applies to multiple tasks
@@ -25,13 +29,15 @@ function analyzeExecutionResults(rootDir, projectName, executionResult) {
       type: "success-pattern",
       timestamp: new Date().toISOString(),
       author: "system",
-      description: `Task ${taskId} successfully completed and approved by reviewer.`, 
+      description: `Task ${taskId} successfully completed and approved by reviewer.`,
       importance: 4,
       references: [taskId],
       details: {
         taskTitle: executionResult.currentTask?.title,
         coderChanges: coderArtifact?.output?.filesChanged,
-        architectDecisions: architectArtifact?.output?.decisions.filter(d => d.relatedTasks?.includes(taskId)).map(d => d.title),
+        architectDecisions: architectArtifact?.output?.decisions
+          .filter(d => d.relatedTasks?.includes(taskId))
+          .map(d => d.title),
         promptEffectiveness: executionResult.prompt?.length || 0 // Placeholder for future prompt system integration
       }
     };
@@ -39,7 +45,11 @@ function analyzeExecutionResults(rootDir, projectName, executionResult) {
   }
 
   // Analyze failure patterns (e.g., from debugger output)
-  if (!executionResult.ok && executionResult.role === "debugger" && executionResult.output?.rootCauseAnalysis) {
+  if (
+    !executionResult.ok &&
+    executionResult.role === "debugger" &&
+    executionResult.output?.rootCauseAnalysis
+  ) {
     const taskId = executionResult.taskId;
     const bugRecord = {
       id: `BUG-${memory.bugs.length + 1}`,
@@ -56,25 +66,41 @@ function analyzeExecutionResults(rootDir, projectName, executionResult) {
   }
 
   // Update memory importance scores (simplified)
-  if (newLessons.length > 0 || memory.bugs.length > (readJsonSafe(path.join(projectDir, "memory", "memory.json"))?.bugs?.length || 0)) {
+  if (
+    newLessons.length > 0 ||
+    memory.bugs.length >
+      (readJsonSafe(path.join(projectDir, "memory", "memory.json"))?.bugs?.length || 0)
+  ) {
     // Re-evaluate importance for some memory records based on recent activity
     // This is a placeholder for a more sophisticated scoring algorithm
-    memory.decisions.forEach(d => { if (newLessons.some(l => l.references.includes(d.relatedTasks?.[0]))) d.importance = Math.min(5, d.importance + 1); });
-    memory.risks.forEach(r => { if (newLessons.some(l => l.references.includes(r.relatedTasks?.[0]))) r.importance = Math.min(5, r.importance + 1); });
+    memory.decisions.forEach(d => {
+      if (newLessons.some(l => l.references.includes(d.relatedTasks?.[0])))
+        d.importance = Math.min(5, d.importance + 1);
+    });
+    memory.risks.forEach(r => {
+      if (newLessons.some(l => l.references.includes(r.relatedTasks?.[0])))
+        r.importance = Math.min(5, r.importance + 1);
+    });
   }
 
   // Generate reusable lessons learned (placeholder for now)
-  const reusableLessons = newLessons.map(lesson => ({ 
-    category: lesson.type, 
-    summary: lesson.description, 
-    relatedMemoryId: lesson.id 
+  const reusableLessons = newLessons.map(lesson => ({
+    category: lesson.type,
+    summary: lesson.description,
+    relatedMemoryId: lesson.id
   }));
 
   // Add new lessons to memory (e.g., as 'conventions' or a new 'lessons' category if schema allows)
   // For now, we'll add them as decisions or conventions based on type
   newLessons.forEach(lesson => {
     if (lesson.type === "success-pattern") {
-      memory.conventions.push({ ...lesson, type: "convention", scope: "project", enforcement: "guideline", example: JSON.stringify(lesson.details) });
+      memory.conventions.push({
+        ...lesson,
+        type: "convention",
+        scope: "project",
+        enforcement: "guideline",
+        example: JSON.stringify(lesson.details)
+      });
     }
   });
 
@@ -97,12 +123,20 @@ function analyzeExecutionResults(rootDir, projectName, executionResult) {
   const importanceChanges = [];
   memory.decisions.forEach(d => {
     if (newLessons.some(l => l.references.includes(d.relatedTasks?.[0]))) {
-      importanceChanges.push({ memoryId: d.id || `MEM-${Date.now().toString(36)}`, oldImportance: d.importance - 1, newImportance: d.importance });
+      importanceChanges.push({
+        memoryId: d.id || `MEM-${Date.now().toString(36)}`,
+        oldImportance: d.importance - 1,
+        newImportance: d.importance
+      });
     }
   });
   memory.risks.forEach(r => {
     if (newLessons.some(l => l.references.includes(r.relatedTasks?.[0]))) {
-      importanceChanges.push({ memoryId: r.id || `MEM-${Date.now().toString(36)}`, oldImportance: r.importance - 1, newImportance: r.importance });
+      importanceChanges.push({
+        memoryId: r.id || `MEM-${Date.now().toString(36)}`,
+        oldImportance: r.importance - 1,
+        newImportance: r.importance
+      });
     }
   });
   importanceChanges.forEach(change => {

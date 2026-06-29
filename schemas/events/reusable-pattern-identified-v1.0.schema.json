@@ -3,13 +3,20 @@
   "title": "ReusablePatternIdentified Event Schema",
   "description": "Schema for event emitted when the KnowledgeIndexer identifies a recurring pattern.",
   "type": "object",
-  "required": ["patternId", "description", "count", "exampleReferences", "timestamp", "schemaVersion"],
+  "required": [
+    "patternId",
+    "description",
+    "count",
+    "exampleReferences",
+    "timestamp",
+    "schemaVersion"
+  ],
   "properties": {
-    "patternId": {"type": "string"},
-    "description": {"type": "string", "minLength": 10},
-    "count": {"type": "integer", "minimum": 2},
-    "exampleReferences": {"type": "array", "items": {"type": "string"}},
-    "timestamp": {"type": "string", "format": "date-time"},
-    "schemaVersion": {"type": "string", "pattern": "^\\d+\\.\\d+$"}
+    "patternId": { "type": "string" },
+    "description": { "type": "string", "minLength": 10 },
+    "count": { "type": "integer", "minimum": 2 },
+    "exampleReferences": { "type": "array", "items": { "type": "string" } },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "schemaVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
   }
 }

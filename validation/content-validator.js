@@ -7,18 +7,26 @@ const fs = require("fs");
 const path = require("path");
 
 const PLACEHOLDER_PATTERNS = [
-  /^Description:\s*$/mi,
-  /^Feature \d+$/mi,
-  /^## Section$/mi,
-  /^\[\s*\]|^-\s*$/mi,
+  /^Description:\s*$/im,
+  /^Feature \d+$/im,
+  /^## Section$/im,
+  /^\[\s*\]|^-\s*$/im,
   /^TBD/i,
   /^TODO/i,
-  /^[A-Za-z]+:\s*$/mi,
-  /^### Feature \d+$/mi
+  /^[A-Za-z]+:\s*$/im,
+  /^### Feature \d+$/im
 ];
 
 const REQUIRED_SECTIONS = {
-  "requirements.md": ["Product Name", "Problem Statement", "Target Users", "Goals", "Non Goals", "Success Metrics", "Constraints"],
+  "requirements.md": [
+    "Product Name",
+    "Problem Statement",
+    "Target Users",
+    "Goals",
+    "Non Goals",
+    "Success Metrics",
+    "Constraints"
+  ],
   "features.md": ["Core Features"],
   "architecture.md": ["Architecture Style", "Layers", "Folder Structure"],
   "tech-stack.md": ["Frontend", "Backend", "Database"]
@@ -40,7 +48,9 @@ function calculateSectionCompletion(content, requiredSections) {
     if (sectionMatch) {
       const afterHeader = content.slice(sectionMatch.index + sectionMatch[0].length).trim();
       const nextHeader = afterHeader.match(/\n#{1,3}\s+/);
-      const sectionContent = nextHeader ? afterHeader.slice(0, nextHeader.index).trim() : afterHeader;
+      const sectionContent = nextHeader
+        ? afterHeader.slice(0, nextHeader.index).trim()
+        : afterHeader;
       if (sectionContent.length > 20) found++;
     }
   }

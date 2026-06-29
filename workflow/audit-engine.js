@@ -22,7 +22,12 @@ function extractActor(payload, eventType) {
   if (payload.toAgent) return payload.toAgent;
   if (payload.actor) return payload.actor;
   if (eventType.startsWith("healing")) return "self-healing-engine";
-  if (eventType.startsWith("lesson") || eventType.startsWith("memory") || eventType.startsWith("reusable")) return "learning-loop-engine";
+  if (
+    eventType.startsWith("lesson") ||
+    eventType.startsWith("memory") ||
+    eventType.startsWith("reusable")
+  )
+    return "learning-loop-engine";
   if (eventType === "state-updated") return "state-manager";
   if (eventType === "task-status-updated") return "agent-orchestrator";
   if (eventType === "project-phase-bumped") return "agent-orchestrator";

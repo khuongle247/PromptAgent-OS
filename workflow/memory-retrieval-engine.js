@@ -7,7 +7,16 @@ function getProjectDir(rootDir, projectName) {
 
 function loadMemory(projectDir) {
   const memoryPath = path.join(projectDir, "memory", "memory.json");
-  return readJsonSafe(memoryPath) || { decisions: [], architecture: [], completedTasks: [], bugs: [], conventions: [], risks: [] };
+  return (
+    readJsonSafe(memoryPath) || {
+      decisions: [],
+      architecture: [],
+      completedTasks: [],
+      bugs: [],
+      conventions: [],
+      risks: []
+    }
+  );
 }
 
 function rankMemories(query, memories) {
@@ -47,13 +56,21 @@ function retrieveMemories(rootDir, projectName, query, options = {}) {
     filteredMemories.push(...memory.completedTasks.filter(t => t.module === options.taskType));
   }
   if (options.architectureArea) {
-    filteredMemories.push(...memory.architecture.filter(a => (a.context || "").toLowerCase().includes(options.architectureArea.toLowerCase())));
+    filteredMemories.push(
+      ...memory.architecture.filter(a =>
+        (a.context || "").toLowerCase().includes(options.architectureArea.toLowerCase())
+      )
+    );
   }
   if (options.riskCategory) {
     filteredMemories.push(...memory.risks.filter(r => r.type === options.riskCategory));
   }
   if (options.failurePattern) {
-    filteredMemories.push(...memory.bugs.filter(b => (b.rootCause || "").toLowerCase().includes(options.failurePattern.toLowerCase())));
+    filteredMemories.push(
+      ...memory.bugs.filter(b =>
+        (b.rootCause || "").toLowerCase().includes(options.failurePattern.toLowerCase())
+      )
+    );
   }
 
   const allMemories = [
@@ -62,7 +79,7 @@ function retrieveMemories(rootDir, projectName, query, options = {}) {
     ...memory.completedTasks,
     ...memory.bugs,
     ...memory.conventions,
-    ...memory.risks,
+    ...memory.risks
   ];
 
   if (filteredMemories.length === 0) {

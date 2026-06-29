@@ -42,7 +42,9 @@ class EventSchemaRegistry {
           }
           this.ajv.addSchema(schema, `${eventType}-${version}`); // Register with AJV for $ref resolution
         } else {
-          console.warn(`EventSchemaRegistry: Could not parse eventType and version from filename: ${file}`);
+          console.warn(
+            `EventSchemaRegistry: Could not parse eventType and version from filename: ${file}`
+          );
         }
       } catch (error) {
         console.error(`EventSchemaRegistry: Failed to load schema from ${file}: ${error.message}`);

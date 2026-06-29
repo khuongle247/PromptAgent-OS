@@ -3,18 +3,13 @@
 
   "type": "object",
 
-  "required": [
-    "tasks"
-  ],
+  "required": ["tasks"],
 
   "properties": {
-
     "tasks": {
-
       "type": "array",
 
       "items": {
-
         "type": "object",
 
         "required": [
@@ -28,7 +23,6 @@
         ],
 
         "properties": {
-
           "title": {
             "type": "string",
             "minLength": 5
@@ -46,11 +40,7 @@
 
           "priority": {
             "type": "string",
-            "enum": [
-              "P1",
-              "P2",
-              "P3"
-            ]
+            "enum": ["P1", "P2", "P3"]
           },
 
           "dependencies": {
@@ -85,11 +75,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "id",
-          "title",
-          "tasks"
-        ],
+        "required": ["id", "title", "tasks"],
         "properties": {
           "id": {
             "type": "string",

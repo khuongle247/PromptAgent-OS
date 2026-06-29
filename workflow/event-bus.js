@@ -11,10 +11,13 @@ class EventBus {
     this.middleware = []; // Array of middleware functions
     this.schemaRegistry = new EventSchemaRegistry(); // Initialize schema registry
     this.schemaRegistry.initialize(process.cwd(), path.join("schemas", "events"));
-    
+
     // Initialize and use the validation middleware
     const invalidEventLogPath = path.join(process.cwd(), "logs", "invalid-events.jsonl");
-    const validationMiddleware = createEventValidationMiddleware(this.schemaRegistry, invalidEventLogPath);
+    const validationMiddleware = createEventValidationMiddleware(
+      this.schemaRegistry,
+      invalidEventLogPath
+    );
     this.use(validationMiddleware);
   }
 
@@ -28,10 +31,12 @@ class EventBus {
 
     for (const middlewareFunc of this.middleware) {
       // Middleware can modify currentPayload or stop propagation
-      const result = await Promise.resolve(middlewareFunc(eventType, currentPayload, (nextEventType, nextPayload) => {
-        currentPayload = nextPayload; // Update payload if middleware modified it
-        eventType = nextEventType; // Update eventType if middleware modified it
-      }));
+      const result = await Promise.resolve(
+        middlewareFunc(eventType, currentPayload, (nextEventType, nextPayload) => {
+          currentPayload = nextPayload; // Update payload if middleware modified it
+          eventType = nextEventType; // Update eventType if middleware modified it
+        })
+      );
 
       if (result && result.stopPropagation) {
         stopPropagation = true;
@@ -75,10 +80,13 @@ class EventBus {
     this.subscribers.clear();
     this.middleware = [];
     // Re-initialize schema registry for a clean state in tests
-    this.schemaRegistry = new EventSchemaRegistry(); 
+    this.schemaRegistry = new EventSchemaRegistry();
     this.schemaRegistry.initialize(process.cwd(), path.join("schemas", "events"));
     const invalidEventLogPath = path.join(process.cwd(), "logs", "invalid-events.jsonl");
-    const validationMiddleware = createEventValidationMiddleware(this.schemaRegistry, invalidEventLogPath);
+    const validationMiddleware = createEventValidationMiddleware(
+      this.schemaRegistry,
+      invalidEventLogPath
+    );
     this.use(validationMiddleware);
   }
 }

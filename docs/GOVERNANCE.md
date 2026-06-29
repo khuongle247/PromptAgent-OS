@@ -3,7 +3,7 @@
 **Version:** 1.0.0-beta  
 **Status:** APPROVED  
 **Date:** June 27, 2026  
-**Author:** Chief Software Architect  
+**Author:** Chief Software Architect
 
 ---
 
@@ -30,9 +30,11 @@ $$\text{Version} = \text{MAJOR} . \text{MINOR} . \text{PATCH}$$
 Any modification that impacts directory layouts, changes event pathways, introduces third-party packages, or alters the frozen dependency boundaries **must** be proposed via an Architectural Decision Record (ADR).
 
 ### 3.1. ADR Directory & Lifespan
+
 All ADRs are stored under `schemas/adr.schema.json` compliant JSON structures or flat markdown files within a designated folder.
 
 ### 3.2. ADR Status Lifecycle
+
 An ADR moves through four deterministic states:
 
 ```
@@ -42,7 +44,9 @@ Proposed ───> Accepted ───> Implemented
 ```
 
 ### 3.3. Mandatory ADR Structure
+
 Every ADR must include:
+
 1. **Title & Context:** What is the technical problem and current background constraint?
 2. **Proposed Solution:** Architectural diagrams, changed require loops, and file actions.
 3. **Consequences:** Impact on runtime speed, test coverage requirements, and backward compatibility.
@@ -63,6 +67,7 @@ To merge any code modification into the `main` branch of PromptAgent, developers
 ```
 
 ### 4.1. Step-by-Step Code Review Requirements:
+
 - **Zero Warnings Linting:** Running `npm run lint` must return absolutely 0 errors and 0 warnings.
 - **Formatting Match:** Code must be fully formatted according to Prettier standards. This is enforced during CI via `npm run format:check`.
 - **Comprehensive Testing:** The full automated test suite must run and pass without failures:

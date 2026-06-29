@@ -17,13 +17,28 @@
     "taskId": { "type": "string", "pattern": "^TASK-[0-9]{3,}$" },
     "decision": { "type": "string", "enum": ["approved", "changes-requested", "rejected"] },
     "reviewItems": {
-      "type": "array", "minItems": 1,
+      "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["category", "severity", "description", "location", "actionable"],
         "properties": {
-          "category": { "type": "string", "enum": ["correctness", "security", "performance", "style", "test-coverage", "architecture-compliance", "acceptance-criteria"] },
-          "severity": { "type": "string", "enum": ["P0-blocker", "P1-critical", "P2-major", "P3-minor", "P4-suggestion"] },
+          "category": {
+            "type": "string",
+            "enum": [
+              "correctness",
+              "security",
+              "performance",
+              "style",
+              "test-coverage",
+              "architecture-compliance",
+              "acceptance-criteria"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["P0-blocker", "P1-critical", "P2-major", "P3-minor", "P4-suggestion"]
+          },
           "description": { "type": "string", "minLength": 10 },
           "location": { "type": "string" },
           "actionable": { "type": "boolean" },

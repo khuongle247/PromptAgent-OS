@@ -2,7 +2,14 @@ const path = require("path");
 
 const { executeAgent } = require("./agent-executor");
 const { writeArtifact, readArtifact, listArtifacts } = require("./artifact-store");
-const { loadState, saveState, setCurrentAgent, setAgentStatus, bumpPhase, getStatus } = require("./state-manager");
+const {
+  loadState,
+  saveState,
+  setCurrentAgent,
+  setAgentStatus,
+  bumpPhase,
+  getStatus
+} = require("./state-manager");
 const { evaluateTransition, getNextAgent } = require("./transition-engine");
 
 const DEFAULT_AGENT_LOOP = ["planner", "architect", "coder", "reviewer", "debugger"];
@@ -106,15 +113,16 @@ async function runStep(rootDir, projectDir, role, options = {}) {
 
   // Emit TaskStatusUpdated event (if task status changed)
   const currentTask = execution.currentTask;
-  if (currentTask && currentTask.status !== stateAfter.status) { // Simplified check
-     await eventBus.publish("task-status-updated", {
-        taskId: currentTask.id,
-        oldStatus: currentTask.status,
-        newStatus: stateAfter.status,
-        agent: role, // Agent responsible for the status change
-        timestamp: new Date().toISOString(),
-        schemaVersion: "1.0"
-     });
+  if (currentTask && currentTask.status !== stateAfter.status) {
+    // Simplified check
+    await eventBus.publish("task-status-updated", {
+      taskId: currentTask.id,
+      oldStatus: currentTask.status,
+      newStatus: stateAfter.status,
+      agent: role, // Agent responsible for the status change
+      timestamp: new Date().toISOString(),
+      schemaVersion: "1.0"
+    });
   }
 
   return buildResultEnvelope(role, execution, transition, stateAfter);
@@ -124,10 +132,14 @@ async function runLoop(rootDir, projectName, options = {}) {
   const projectDir = getProjectDir(rootDir, projectName);
   const state = ensureState(projectDir);
   const maxSteps = Math.max(1, Number(options.maxSteps || 10));
-  const sequence = Array.isArray(options.sequence) && options.sequence.length ? options.sequence : DEFAULT_AGENT_LOOP;
+  const sequence =
+    Array.isArray(options.sequence) && options.sequence.length
+      ? options.sequence
+      : DEFAULT_AGENT_LOOP;
   const results = [];
 
-  let currentAgent = state.currentAgent && state.currentAgent !== "none" ? state.currentAgent : sequence[0];
+  let currentAgent =
+    state.currentAgent && state.currentAgent !== "none" ? state.currentAgent : sequence[0];
   let currentState = state;
   let step = 0;
 
@@ -144,10 +156,16 @@ async function runLoop(rootDir, projectName, options = {}) {
 
     if (execution.transition.action === "finish") {
       currentAgent = null;
-      currentState = setAgentStatus(projectDir, currentAgent || "none", "approved", execution.transition.reason, {
-        phase: currentState.phase,
-        retryCount: 0
-      });
+      currentState = setAgentStatus(
+        projectDir,
+        currentAgent || "none",
+        "approved",
+        execution.transition.reason,
+        {
+          phase: currentState.phase,
+          retryCount: 0
+        }
+      );
       break;
     }
 
@@ -160,7 +178,8 @@ async function runLoop(rootDir, projectName, options = {}) {
     if (execution.transition.nextAgent) {
       currentAgent = execution.transition.nextAgent;
       const oldPhase = currentState.phase;
-      const nextPhase = currentState.phase + (execution.role === "reviewer" && execution.validation.valid ? 1 : 0);
+      const nextPhase =
+        currentState.phase + (execution.role === "reviewer" && execution.validation.valid ? 1 : 0);
       currentState = bumpPhase(projectDir, nextPhase, {
         currentAgent,
         status: currentState.status,

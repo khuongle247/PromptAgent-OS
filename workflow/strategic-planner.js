@@ -5,7 +5,6 @@ const { listArtifacts, readArtifact } = require("./artifact-store");
 const { loadState } = require("./state-manager");
 const { readJsonSafe, readTextSafe } = require("../scripts/validation/validation-utils");
 
-
 function getProjectDir(rootDir, projectName) {
   return path.join(rootDir, "projects", projectName);
 }
@@ -25,24 +24,30 @@ function extractGoalsFromMemory(memory) {
   const goals = [];
 
   if (Array.isArray(memory.importantDecisions)) {
-    goals.push(...memory.importantDecisions.map(d => ({
-      source: "decision",
-      text: String(d.title || d.description || d.name || d)
-    })));
+    goals.push(
+      ...memory.importantDecisions.map(d => ({
+        source: "decision",
+        text: String(d.title || d.description || d.name || d)
+      }))
+    );
   }
 
   if (Array.isArray(memory.risks)) {
-    goals.push(...memory.risks.map(r => ({
-      source: "risk-mitigation",
-      text: `Mitigate risk: ${String(r.description || r.title || r)}`
-    })));
+    goals.push(
+      ...memory.risks.map(r => ({
+        source: "risk-mitigation",
+        text: `Mitigate risk: ${String(r.description || r.title || r)}`
+      }))
+    );
   }
 
   if (Array.isArray(memory.recentTasks)) {
-    goals.push(...memory.recentTasks.map(t => ({
-      source: "task-completion",
-      text: String(t.title || t.description || t)
-    })));
+    goals.push(
+      ...memory.recentTasks.map(t => ({
+        source: "task-completion",
+        text: String(t.title || t.description || t)
+      }))
+    );
   }
 
   return goals.filter(goal => goal.text.trim().length >= 10);
@@ -388,7 +393,10 @@ function collectStrategicContext(rootDir, projectName) {
     requirements: readTextSafe(path.join(projectDir, "docs", "requirements.md")),
     architecture: readTextSafe(path.join(projectDir, "docs", "architecture.md")),
     artifacts: listArtifacts(projectDir),
-    completedTasks: readJsonSafe(path.join(projectDir, "tasks", "tasks.json"))?.tasks?.filter(t => t.status === "done") || [],
+    completedTasks:
+      readJsonSafe(path.join(projectDir, "tasks", "tasks.json"))?.tasks?.filter(
+        t => t.status === "done"
+      ) || [],
     state: loadState(projectDir),
     knowledgeGraph: buildKnowledgeGraph(projectDir)
   };
@@ -465,10 +473,13 @@ function planStrategically(rootDir, projectName, options = {}) {
       totalSubgoals: flatSubgoals.length,
       maxDepth: 5,
       riskCount: riskMap.reduce((sum, rm) => sum + rm.risks.length, 0),
-      topRisks: riskMap.flatMap(rm => rm.risks).sort((a, b) => {
-        const severityMap = { high: 3, medium: 2, low: 1 };
-        return (severityMap[b.severity] || 0) - (severityMap[a.severity] || 0);
-      }).slice(0, 3)
+      topRisks: riskMap
+        .flatMap(rm => rm.risks)
+        .sort((a, b) => {
+          const severityMap = { high: 3, medium: 2, low: 1 };
+          return (severityMap[b.severity] || 0) - (severityMap[a.severity] || 0);
+        })
+        .slice(0, 3)
     }
   };
 }

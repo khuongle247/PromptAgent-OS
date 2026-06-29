@@ -45,9 +45,10 @@ function persistAgentMetrics() {
     successfulExecutions: agentMetrics.successfulExecutions,
     failedExecutions: agentMetrics.failedExecutions,
     retryCount: agentMetrics.retryCount,
-    avgDuration: agentMetrics._durationCount > 0
-      ? Math.round(agentMetrics._durationSum / agentMetrics._durationCount)
-      : 0,
+    avgDuration:
+      agentMetrics._durationCount > 0
+        ? Math.round(agentMetrics._durationSum / agentMetrics._durationCount)
+        : 0,
     lastUpdated: new Date().toISOString()
   };
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
@@ -60,9 +61,10 @@ function persistTaskMetrics() {
     totalTasks: taskMetrics.totalTasks,
     completedTasks: taskMetrics.completedTasks,
     failedTasks: taskMetrics.failedTasks,
-    avgCycleTime: taskMetrics._cycleTimeCount > 0
-      ? Math.round(taskMetrics._cycleTimeSum / taskMetrics._cycleTimeCount)
-      : 0,
+    avgCycleTime:
+      taskMetrics._cycleTimeCount > 0
+        ? Math.round(taskMetrics._cycleTimeSum / taskMetrics._cycleTimeCount)
+        : 0,
     lastUpdated: new Date().toISOString()
   };
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
@@ -152,32 +154,32 @@ function initialize(eventBus) {
   ensureMetricsDir();
 
   // Subscribe to AgentExecuted
-  eventBus.subscribe("agent-executed", (payload) => {
+  eventBus.subscribe("agent-executed", payload => {
     handleAgentExecuted(payload);
   });
 
   // Subscribe to AgentTransitioned
-  eventBus.subscribe("agent-transitioned", (payload) => {
+  eventBus.subscribe("agent-transitioned", payload => {
     handleAgentTransitioned(payload);
   });
 
   // Subscribe to HealingCycleCompleted
-  eventBus.subscribe("healing-cycle-completed", (payload) => {
+  eventBus.subscribe("healing-cycle-completed", payload => {
     handleHealingCycleCompleted(payload);
   });
 
   // Subscribe to LessonLearned
-  eventBus.subscribe("lesson-learned", (payload) => {
+  eventBus.subscribe("lesson-learned", payload => {
     handleLessonLearned(payload);
   });
 
   // Subscribe to MemoryImportanceUpdated
-  eventBus.subscribe("memory-importance-updated", (payload) => {
+  eventBus.subscribe("memory-importance-updated", payload => {
     handleMemoryImportanceUpdated(payload);
   });
 
   // Subscribe to ReusablePatternIdentified
-  eventBus.subscribe("reusable-pattern-identified", (payload) => {
+  eventBus.subscribe("reusable-pattern-identified", payload => {
     handleReusablePatternIdentified(payload);
   });
 
@@ -191,9 +193,10 @@ function getAgentMetrics() {
     successfulExecutions: agentMetrics.successfulExecutions,
     failedExecutions: agentMetrics.failedExecutions,
     retryCount: agentMetrics.retryCount,
-    avgDuration: agentMetrics._durationCount > 0
-      ? Math.round(agentMetrics._durationSum / agentMetrics._durationCount)
-      : 0
+    avgDuration:
+      agentMetrics._durationCount > 0
+        ? Math.round(agentMetrics._durationSum / agentMetrics._durationCount)
+        : 0
   };
 }
 
@@ -202,9 +205,10 @@ function getTaskMetrics() {
     totalTasks: taskMetrics.totalTasks,
     completedTasks: taskMetrics.completedTasks,
     failedTasks: taskMetrics.failedTasks,
-    avgCycleTime: taskMetrics._cycleTimeCount > 0
-      ? Math.round(taskMetrics._cycleTimeSum / taskMetrics._cycleTimeCount)
-      : 0
+    avgCycleTime:
+      taskMetrics._cycleTimeCount > 0
+        ? Math.round(taskMetrics._cycleTimeSum / taskMetrics._cycleTimeCount)
+        : 0
   };
 }
 

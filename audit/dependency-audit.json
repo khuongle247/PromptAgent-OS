@@ -45,7 +45,15 @@
       "file": "scripts/task-utils-v2.js",
       "status": "ACTIVE",
       "importedBy": [],
-      "requiredBy": ["complete-task.js", "create-task.js", "generate-prompt-v3.js", "memory-manager-v2.js", "rollback-task.js", "select-task.js", "learning-loop-engine.js"],
+      "requiredBy": [
+        "complete-task.js",
+        "create-task.js",
+        "generate-prompt-v3.js",
+        "memory-manager-v2.js",
+        "rollback-task.js",
+        "select-task.js",
+        "learning-loop-engine.js"
+      ],
       "alternatives": [],
       "testCoverage": false,
       "productionUse": true,

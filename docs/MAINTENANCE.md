@@ -3,7 +3,7 @@
 **Version:** 1.0.0-beta  
 **Status:** APPROVED  
 **Date:** June 27, 2026  
-**Author:** Chief Software Architect  
+**Author:** Chief Software Architect
 
 ---
 
@@ -12,6 +12,7 @@
 PromptAgent v1.x is a production-hardened platform. This Playbook governs the daily maintenance operations, bug triage, feature development flows, and releasing workflows to sustain its high reliability.
 
 ### 1.1. Support Windows
+
 - **Active Support:** 12 months from v1.0.0 release. Covers active feature development, minor capability improvements, and major bug fixing.
 - **Security & Critical Bug Maintenance:** 24 months from v1.0.0 release. Covers emergency patches for core execution loop errors, memory leak corrections, and zero-day dependency remediation.
 
@@ -30,22 +31,29 @@ Any defect reported in production must be triaged and resolved following a stric
 ```
 
 ### Step 1: Reproduction & Triage
+
 1. Extract the defect details (e.g., specific schema violation, broken transition step, or parsing error).
 2. Create an isolated project directory under `projects/` replicating the failure conditions.
 3. Run `npm run validate-project` to verify workspace structure.
 
 ### Step 2: Write a Regression Test
-Before editing core files, write an automated test in the `tests/` directory that fails explicitly because of the bug. 
-- *Rule:* A bug is not considered "fixed" unless an automated test is checked in to prevent its recurrence.
+
+Before editing core files, write an automated test in the `tests/` directory that fails explicitly because of the bug.
+
+- _Rule:_ A bug is not considered "fixed" unless an automated test is checked in to prevent its recurrence.
 
 ### Step 3: Implement Code Modification
+
 Following the **Governance Guidelines**, modify code using the simplest possible fix. Bypassing schemas or hardcoding routing boundaries is strictly prohibited.
 
 ### Step 4: Verify & Merge
+
 Run the regression test along with the comprehensive suite:
+
 ```bash
 npm run test:all
 ```
+
 Ensure all tests are 100% green and no ESLint/Prettier warnings exist. Open a PR and request architect sign-off.
 
 ---
@@ -64,9 +72,10 @@ Adding non-breaking capabilities to the PromptAgent ecosystem follows this struc
 
 ## 4. STRICT TESTING REQUIREMENTS
 
-All submissions to the PromptAgent codebase are subject to a **100% Pass Threshold**. 
+All submissions to the PromptAgent codebase are subject to a **100% Pass Threshold**.
 
 ### 4.1. The Standard Test Suite Matrix:
+
 - **`tests/event-validation-test.js`:** Verifies schema structure and strict event bus interception middleware.
 - **`tests/phase7-integration-test.js`:** Runs deep integration steps over state progression pipelines.
 - **`tests/phase8-health-test.js`:** Assesses telemetry and health evaluation algorithms.
@@ -76,6 +85,7 @@ All submissions to the PromptAgent codebase are subject to a **100% Pass Thresho
 - **`tests/phase95-automation-test.js`:** Ensures automated pipeline runners are deterministic.
 
 To run the full test suite locally, execute:
+
 ```bash
 npm run test:all
 ```

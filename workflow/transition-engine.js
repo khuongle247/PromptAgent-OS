@@ -57,7 +57,9 @@ function nextAgentFromResult(agent, result) {
   }
 
   if (agent === "reviewer") {
-    const decision = String(result?.output?.decision || result?.rawOutput?.decision || "").toLowerCase();
+    const decision = String(
+      result?.output?.decision || result?.rawOutput?.decision || ""
+    ).toLowerCase();
 
     if (decision === "approved") {
       return config.onApproved;
@@ -125,16 +127,18 @@ function evaluateTransition(state, result) {
     };
   }
 
-  const nextAgent = currentAgent === "reviewer"
-    ? "debugger"
-    : (getAgentConfig(currentAgent)?.onFailure || "debugger");
+  const nextAgent =
+    currentAgent === "reviewer"
+      ? "debugger"
+      : getAgentConfig(currentAgent)?.onFailure || "debugger";
 
   if (shouldRetry(state, result)) {
     return {
       action: "retry",
       nextAgent: currentAgent,
       status: "failed",
-      reason: result?.validation?.errors?.[0] || result?.error || `${currentAgent} validation failed`
+      reason:
+        result?.validation?.errors?.[0] || result?.error || `${currentAgent} validation failed`
     };
   }
 
@@ -152,8 +156,14 @@ function advanceState(state, transition, overrides = {}) {
     ...overrides,
     currentAgent: transition.nextAgent || "none",
     status: transition.status || state.status,
-    lastError: transition.status === "failed" || transition.status === "blocked" ? transition.reason : null,
-    retryCount: transition.action === "retry" ? (state.retryCount || 0) + 1 : (transition.status === "approved" ? 0 : (overrides.retryCount ?? state.retryCount ?? 0)),
+    lastError:
+      transition.status === "failed" || transition.status === "blocked" ? transition.reason : null,
+    retryCount:
+      transition.action === "retry"
+        ? (state.retryCount || 0) + 1
+        : transition.status === "approved"
+          ? 0
+          : (overrides.retryCount ?? state.retryCount ?? 0),
     updatedAt: new Date().toISOString()
   };
 

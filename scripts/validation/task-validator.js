@@ -8,82 +8,36 @@ const {
   addWarning
 } = require("./validation-utils");
 
-function validateTasks(
-  rootDir,
-  projectDir,
-  report
-) {
+function validateTasks(rootDir, projectDir, report) {
+  const tasksFile = readJson(path.join(projectDir, "tasks", "tasks.json"));
 
-  const tasksFile =
-    readJson(
-      path.join(
-        projectDir,
-        "tasks",
-        "tasks.json"
-      )
-    );
+  const tasks = tasksFile.tasks || [];
 
-  const tasks =
-    tasksFile.tasks || [];
+  const schema = loadSchema(rootDir, "task.schema.json");
 
-  const schema =
-    loadSchema(
-      rootDir,
-      "task.schema.json"
-    );
+  const ids = new Set();
 
-  const ids =
-    new Set();
-
-  const titles =
-    new Set();
+  const titles = new Set();
 
   tasks.forEach(task => {
-
-    const result =
-      validateSchema(
-        task,
-        schema
-      );
+    const result = validateSchema(task, schema);
 
     if (!result.valid) {
-
-      result.errors.forEach(
-        error => {
-
-          addError(
-            report,
-            `${task.id}: ${error.instancePath} ${error.message}`
-          );
-        }
-      );
+      result.errors.forEach(error => {
+        addError(report, `${task.id}: ${error.instancePath} ${error.message}`);
+      });
     }
 
-    if (
-      ids.has(task.id)
-    ) {
-
-      addError(
-        report,
-        `Duplicate task id: ${task.id}`
-      );
+    if (ids.has(task.id)) {
+      addError(report, `Duplicate task id: ${task.id}`);
     }
 
     ids.add(task.id);
 
-    const title =
-      task.title
-        ?.trim()
-        .toLowerCase();
+    const title = task.title?.trim().toLowerCase();
 
-    if (
-      titles.has(title)
-    ) {
-
-      addWarning(
-        report,
-        `Duplicate title: ${task.title}`
-      );
+    if (titles.has(title)) {
+      addWarning(report, `Duplicate title: ${task.title}`);
     }
 
     titles.add(title);

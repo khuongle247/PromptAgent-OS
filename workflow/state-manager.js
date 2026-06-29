@@ -105,7 +105,7 @@ const eventBus = require("./event-bus"); // New import
 async function updateState(projectDir, patch = {}, transition) {
   const current = loadState(projectDir);
   const oldState = { ...current }; // Capture old state before merging
-  
+
   const merged = {
     ...current,
     ...patch,
@@ -126,15 +126,15 @@ async function updateState(projectDir, patch = {}, transition) {
   }
 
   const newState = saveState(projectDir, merged);
-  
+
   // Emit AgentStateUpdated event
   await eventBus.publish("state-updated", {
     agent: newState.currentAgent, // Agent whose state was updated
-    oldState: oldState, 
+    oldState: oldState,
     newState: newState,
     timestamp: new Date().toISOString(),
     schemaVersion: "1.0",
-    reason: transition?.reason || "State updated" 
+    reason: transition?.reason || "State updated"
   });
 
   return newState;
@@ -146,26 +146,34 @@ function resetState(projectDir, overrides = {}) {
 
 function incrementRetry(projectDir, reason, patch = {}) {
   const state = loadState(projectDir);
-  return updateState(projectDir, {
-    ...patch,
-    retryCount: (state.retryCount || 0) + 1,
-    lastError: reason || state.lastError,
-    status: "failed"
-  }, {
-    fromAgent: state.currentAgent,
-    toAgent: state.currentAgent,
-    fromStatus: state.status,
-    toStatus: "failed",
-    phase: state.phase,
-    reason: reason || "Retry incremented"
-  });
+  return updateState(
+    projectDir,
+    {
+      ...patch,
+      retryCount: (state.retryCount || 0) + 1,
+      lastError: reason || state.lastError,
+      status: "failed"
+    },
+    {
+      fromAgent: state.currentAgent,
+      toAgent: state.currentAgent,
+      fromStatus: state.status,
+      toStatus: "failed",
+      phase: state.phase,
+      reason: reason || "Retry incremented"
+    }
+  );
 }
 
 function setCurrentAgent(projectDir, currentAgent, patch = {}, transition) {
-  return updateState(projectDir, {
-    ...patch,
-    currentAgent
-  }, transition ? { ...transition, toAgent: currentAgent } : null);
+  return updateState(
+    projectDir,
+    {
+      ...patch,
+      currentAgent
+    },
+    transition ? { ...transition, toAgent: currentAgent } : null
+  );
 }
 
 function setAgentStatus(projectDir, currentAgent, status, reason, patch = {}) {
@@ -174,7 +182,10 @@ function setAgentStatus(projectDir, currentAgent, status, reason, patch = {}) {
     ...patch,
     currentAgent,
     status,
-    lastError: status === "failed" || status === "blocked" || status === "escalated" ? (reason || state.lastError) : null
+    lastError:
+      status === "failed" || status === "blocked" || status === "escalated"
+        ? reason || state.lastError
+        : null
   };
 
   if (status === "approved" || status === "idle") {

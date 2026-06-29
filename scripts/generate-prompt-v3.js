@@ -1,11 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const {
-  loadProject,
-  getCurrentTask,
-  loadTasks
-} = require("./task-utils-v2");
+const { loadProject, getCurrentTask, loadTasks } = require("./task-utils-v2");
 
 // =====================================
 // INPUT
@@ -13,13 +9,10 @@ const {
 
 const projectName = process.argv[2];
 
-const role =
-  process.argv[3] || "coder";
+const role = process.argv[3] || "coder";
 
 if (!projectName) {
-  console.log(
-    "Usage: node scripts/generate-prompt-v3.js ProjectName [planner|coder|reviewer]"
-  );
+  console.log("Usage: node scripts/generate-prompt-v3.js ProjectName [planner|coder|reviewer]");
 
   process.exit(1);
 }
@@ -28,69 +21,38 @@ if (!projectName) {
 // PATHS
 // =====================================
 
-const projectDir = path.join(
-  process.cwd(),
-  "projects",
-  projectName
-);
+const projectDir = path.join(process.cwd(), "projects", projectName);
 
 function readFile(relativePath) {
-
-  const filePath =
-    path.join(
-      projectDir,
-      relativePath
-    );
+  const filePath = path.join(projectDir, relativePath);
 
   if (!fs.existsSync(filePath)) {
     return "";
   }
 
-  return fs.readFileSync(
-    filePath,
-    "utf8"
-  );
+  return fs.readFileSync(filePath, "utf8");
 }
 
 function readJson(relativePath) {
-
-  const filePath =
-    path.join(
-      projectDir,
-      relativePath
-    );
+  const filePath = path.join(projectDir, relativePath);
 
   if (!fs.existsSync(filePath)) {
     return {};
   }
 
-  return JSON.parse(
-    fs.readFileSync(
-      filePath,
-      "utf8"
-    )
-  );
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
 // =====================================
 // VALIDATION
 // =====================================
 
-const validation =
-  readJson(
-    "validation-report.json"
-  );
+const validation = readJson("validation-report.json");
 
-if (
-  validation.status === "error"
-) {
-  console.log(
-    "\nProject validation failed."
-  );
+if (validation.status === "error") {
+  console.log("\nProject validation failed.");
 
-  console.log(
-    "Fix validation errors first."
-  );
+  console.log("Fix validation errors first.");
 
   process.exit(1);
 }
@@ -99,138 +61,69 @@ if (
 // PROJECT
 // =====================================
 
-const project =
-  loadProject(projectName);
+const project = loadProject(projectName);
 
-const currentTask =
-  getCurrentTask(
-    projectName
-  );
+const currentTask = getCurrentTask(projectName);
 
-const allTasks =
-  loadTasks(projectName);
+const allTasks = loadTasks(projectName);
 
 // =====================================
 // DOCS
 // =====================================
 
-const requirements =
-  readFile(
-    "docs/requirements.md"
-  );
+const requirements = readFile("docs/requirements.md");
 
-const features =
-  readFile(
-    "docs/features.md"
-  );
+const features = readFile("docs/features.md");
 
-const architecture =
-  readFile(
-    "docs/architecture.md"
-  );
+const architecture = readFile("docs/architecture.md");
 
-const api =
-  readFile(
-    "docs/api.md"
-  );
+const api = readFile("docs/api.md");
 
-const dataModel =
-  readFile(
-    "docs/data-model.md"
-  );
+const dataModel = readFile("docs/data-model.md");
 
 // =====================================
 // CONTEXT
 // =====================================
 
-const projectContext =
-  readFile(
-    "context/project-context.md"
-  );
+const projectContext = readFile("context/project-context.md");
 
-const techStack =
-  readFile(
-    "context/tech-stack.md"
-  );
+const techStack = readFile("context/tech-stack.md");
 
-const codingRules =
-  readFile(
-    "context/coding-rules.md"
-  );
+const codingRules = readFile("context/coding-rules.md");
 
-const architectureRules =
-  readFile(
-    "context/architecture-rules.md"
-  );
+const architectureRules = readFile("context/architecture-rules.md");
 
-const testingRules =
-  readFile(
-    "context/testing-rules.md"
-  );
+const testingRules = readFile("context/testing-rules.md");
 
-const securityRules =
-  readFile(
-    "context/security-rules.md"
-  );
+const securityRules = readFile("context/security-rules.md");
 
-const aiRules =
-  readFile(
-    "context/ai-rules.md"
-  );
+const aiRules = readFile("context/ai-rules.md");
 
 // =====================================
 // MEMORY
 // =====================================
 
-const memorySummary =
-  readJson(
-    "memory/memory-summary.json"
-  );
+const memorySummary = readJson("memory/memory-summary.json");
 
 // =====================================
 // ROLE PROMPT
 // =====================================
 
-const rolePromptPath =
-  path.join(
-    process.cwd(),
-    "prompts",
-    `${role}.md`
-  );
+const rolePromptPath = path.join(process.cwd(), "prompts", `${role}.md`);
 
 let rolePrompt = "";
 
-if (
-  fs.existsSync(
-    rolePromptPath
-  )
-) {
-  rolePrompt =
-    fs.readFileSync(
-      rolePromptPath,
-      "utf8"
-    );
+if (fs.existsSync(rolePromptPath)) {
+  rolePrompt = fs.readFileSync(rolePromptPath, "utf8");
 }
 
 // =====================================
 // TASK SUMMARY
 // =====================================
 
-const todoTasks =
-  (allTasks.tasks || [])
-    .filter(
-      t =>
-        t.status === "todo"
-    )
-    .length;
+const todoTasks = (allTasks.tasks || []).filter(t => t.status === "todo").length;
 
-const doneTasks =
-  (allTasks.tasks || [])
-    .filter(
-      t =>
-        t.status === "done"
-    )
-    .length;
+const doneTasks = (allTasks.tasks || []).filter(t => t.status === "done").length;
 
 // =====================================
 // BUILD PROMPT
@@ -268,13 +161,7 @@ ${(validation.warnings || []).join("\n")}
 
 # CURRENT TASK
 
-${currentTask
-  ? JSON.stringify(
-      currentTask,
-      null,
-      2
-    )
-  : "No task selected"}
+${currentTask ? JSON.stringify(currentTask, null, 2) : "No task selected"}
 
 ---
 
@@ -365,11 +252,7 @@ ${aiRules}
 
 # MEMORY SUMMARY
 
-${JSON.stringify(
-  memorySummary,
-  null,
-  2
-)}
+${JSON.stringify(memorySummary, null, 2)}
 
 ---
 
@@ -398,29 +281,16 @@ ${rolePrompt}
 // SAVE
 // =====================================
 
-const outputFile =
-  path.join(
-    projectDir,
-    "prompt-output.md"
-  );
+const outputFile = path.join(projectDir, "prompt-output.md");
 
-fs.writeFileSync(
-  outputFile,
-  prompt
-);
+fs.writeFileSync(outputFile, prompt);
 
 // =====================================
 // DONE
 // =====================================
 
-console.log(
-  "\nPrompt generated successfully\n"
-);
+console.log("\nPrompt generated successfully\n");
 
-console.log(
-  `Role : ${role}`
-);
+console.log(`Role : ${role}`);
 
-console.log(
-  `Output : ${outputFile}`
-);
+console.log(`Output : ${outputFile}`);

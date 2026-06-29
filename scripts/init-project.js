@@ -4,9 +4,7 @@ const path = require("path");
 const projectName = process.argv[2];
 
 if (!projectName) {
-  console.log(
-    "Usage: node scripts/init-project.js ProjectName"
-  );
+  console.log("Usage: node scripts/init-project.js ProjectName");
   process.exit(1);
 }
 
@@ -55,6 +53,4 @@ files.forEach(file => {
   }
 });
 
-console.log(
-  `Project '${projectName}' created successfully`
-);
+console.log(`Project '${projectName}' created successfully`);

@@ -1,46 +1,20 @@
 const path = require("path");
 
-const {
-  readJson,
-  addError
-} = require("./validation-utils");
+const { readJson, addError } = require("./validation-utils");
 
-function validateDependencies(
-  projectDir,
-  report
-) {
+function validateDependencies(projectDir, report) {
+  const tasksFile = readJson(path.join(projectDir, "tasks", "tasks.json"));
 
-  const tasksFile =
-    readJson(
-      path.join(
-        projectDir,
-        "tasks",
-        "tasks.json"
-      )
-    );
-
-  const tasks =
-    tasksFile.tasks || [];
+  const tasks = tasksFile.tasks || [];
 
   tasks.forEach(task => {
-
-    const deps =
-      task.dependencies || [];
+    const deps = task.dependencies || [];
 
     deps.forEach(dep => {
-
-      const exists =
-        tasks.some(
-          t =>
-            t.id === dep
-        );
+      const exists = tasks.some(t => t.id === dep);
 
       if (!exists) {
-
-        addError(
-          report,
-          `${task.id} depends on missing task ${dep}`
-        );
+        addError(report, `${task.id} depends on missing task ${dep}`);
       }
     });
   });
@@ -48,40 +22,26 @@ function validateDependencies(
   const graph = {};
 
   tasks.forEach(task => {
-
-    graph[task.id] =
-      task.dependencies || [];
+    graph[task.id] = task.dependencies || [];
   });
 
-  const visiting =
-    new Set();
+  const visiting = new Set();
 
-  const visited =
-    new Set();
+  const visited = new Set();
 
   function dfs(node) {
-
-    if (
-      visiting.has(node)
-    ) {
+    if (visiting.has(node)) {
       return true;
     }
 
-    if (
-      visited.has(node)
-    ) {
+    if (visited.has(node)) {
       return false;
     }
 
     visiting.add(node);
 
-    for (
-      const next of
-      graph[node] || []
-    ) {
-      if (
-        dfs(next)
-      ) {
+    for (const next of graph[node] || []) {
+      if (dfs(next)) {
         return true;
       }
     }
@@ -93,18 +53,10 @@ function validateDependencies(
     return false;
   }
 
-  const hasCycle =
-    Object.keys(graph)
-      .some(dfs);
+  const hasCycle = Object.keys(graph).some(dfs);
 
-  if (
-    hasCycle
-  ) {
-
-    addError(
-      report,
-      "Dependency cycle detected"
-    );
+  if (hasCycle) {
+    addError(report, "Dependency cycle detected");
   }
 }
 

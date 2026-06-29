@@ -160,9 +160,8 @@ function createCandidate(role, content, parentVersion = null) {
   bootstrapVersion(role);
 
   const meta = loadVersions(role);
-  const nextVersion = meta.versions.length > 0
-    ? Math.max(...meta.versions.map(v => v.version)) + 1
-    : 2;
+  const nextVersion =
+    meta.versions.length > 0 ? Math.max(...meta.versions.map(v => v.version)) + 1 : 2;
 
   // Write the prompt file
   const filePath = getVersionFilePath(role, nextVersion);
@@ -241,7 +240,11 @@ function updateVersionMetadata(role, version, updates) {
 
 // Bootstrap all roles on load
 AGENT_ROLES.forEach(role => {
-  try { bootstrapVersion(role); } catch (e) { /* ignore */ }
+  try {
+    bootstrapVersion(role);
+  } catch (e) {
+    /* ignore */
+  }
 });
 
 module.exports = {

@@ -36,7 +36,8 @@ function getLatestSnapshotPath(rootDir, projectName) {
   }
 
   const prefix = `state-`;
-  const files = fs.readdirSync(snapshotDir)
+  const files = fs
+    .readdirSync(snapshotDir)
     .filter(fileName => fileName.startsWith(prefix) && fileName.endsWith(".json"))
     .map(fileName => ({
       fileName,
@@ -85,10 +86,11 @@ function loadArtifactDetails(projectDir) {
 
   return artifacts.map(record => ({
     ...record,
-    output: readArtifact(projectDir, {
-      role: record.role,
-      taskId: record.taskId
-    })?.output || null
+    output:
+      readArtifact(projectDir, {
+        role: record.role,
+        taskId: record.taskId
+      })?.output || null
   }));
 }
 
@@ -227,7 +229,8 @@ function detectConflicts(state) {
     }
 
     if (task.status !== artifactStatus) {
-      const safe = artifactStatus === "done" || artifactStatus === "review" || artifactStatus === "blocked";
+      const safe =
+        artifactStatus === "done" || artifactStatus === "review" || artifactStatus === "blocked";
       conflicts.push({
         type: "task-artifact-status",
         entityId: task.id,
@@ -303,7 +306,8 @@ function reconcileTaskStatus(task, artifactStatus) {
 
 function reconcileState(state, options = {}) {
   const rootDir = options.rootDir || process.cwd();
-  const projectName = options.projectName || state.projectName || path.basename(state.projectDir || "");
+  const projectName =
+    options.projectName || state.projectName || path.basename(state.projectDir || "");
   const projectDir = state.projectDir || getProjectDir(rootDir, projectName);
   const conflicts = detectConflicts(state);
   const safeConflicts = conflicts.filter(conflict => conflict.safe);
@@ -328,9 +332,14 @@ function reconcileState(state, options = {}) {
   const latestExecutionStatus = latestArtifact ? deriveArtifactStatus(latestArtifact) : null;
   const reconciledAgentState = {
     ...agentState,
-    currentAgent: latestArtifact && latestExecutionStatus === "done" ? getNextAgentRole(latestArtifact.role) : agentState.currentAgent,
+    currentAgent:
+      latestArtifact && latestExecutionStatus === "done"
+        ? getNextAgentRole(latestArtifact.role)
+        : agentState.currentAgent,
     status: latestExecutionStatus === "done" ? "approved" : agentState.status,
-    lastError: unsafeConflicts.length ? (agentState.lastError || "Global state reconciliation detected unsafe conflicts.") : null
+    lastError: unsafeConflicts.length
+      ? agentState.lastError || "Global state reconciliation detected unsafe conflicts."
+      : null
   };
 
   const reconciled = {
@@ -358,11 +367,14 @@ function reconcileState(state, options = {}) {
     projectName
   });
 
-  const snapshotPath = options.saveSnapshot === false ? null : persistSnapshot(rootDir, projectName, {
-    ...reconciled,
-    conflicts,
-    drift
-  });
+  const snapshotPath =
+    options.saveSnapshot === false
+      ? null
+      : persistSnapshot(rootDir, projectName, {
+          ...reconciled,
+          conflicts,
+          drift
+        });
 
   let selfHealingTriggered = false;
   if (options.triggerHealing !== false && (drift.triggered || unsafeConflicts.length > 0)) {
@@ -406,16 +418,28 @@ function summarizeState(state) {
   const agents = state.agents || {};
 
   return {
-    tasks: tasks.map(task => ({ id: task.id, status: task.status, artifactStatus: task.artifactStatus || null })),
-    artifacts: artifacts.map(artifact => ({ role: artifact.role, taskId: artifact.taskId, status: deriveArtifactStatus(artifact) })),
+    tasks: tasks.map(task => ({
+      id: task.id,
+      status: task.status,
+      artifactStatus: task.artifactStatus || null
+    })),
+    artifacts: artifacts.map(artifact => ({
+      role: artifact.role,
+      taskId: artifact.taskId,
+      status: deriveArtifactStatus(artifact)
+    })),
     agent: agents.current || null,
     timestamp: state.timestamp
   };
 }
 
 function detectDrift(currentState, reconciledState, options = {}) {
-  const threshold = typeof options.threshold === "number" ? options.threshold : DEFAULT_DRIFT_THRESHOLD;
-  const lastSnapshotPath = getLatestSnapshotPath(options.snapshotRoot || process.cwd(), options.projectName);
+  const threshold =
+    typeof options.threshold === "number" ? options.threshold : DEFAULT_DRIFT_THRESHOLD;
+  const lastSnapshotPath = getLatestSnapshotPath(
+    options.snapshotRoot || process.cwd(),
+    options.projectName
+  );
   const lastSnapshot = lastSnapshotPath ? readJsonSafe(lastSnapshotPath) : null;
 
   if (!lastSnapshot) {
@@ -433,7 +457,10 @@ function detectDrift(currentState, reconciledState, options = {}) {
   const compared = [];
 
   compared.push([JSON.stringify(currentSummary.tasks), JSON.stringify(baselineSummary.tasks)]);
-  compared.push([JSON.stringify(currentSummary.artifacts), JSON.stringify(baselineSummary.artifacts)]);
+  compared.push([
+    JSON.stringify(currentSummary.artifacts),
+    JSON.stringify(baselineSummary.artifacts)
+  ]);
   compared.push([JSON.stringify(currentSummary.agent), JSON.stringify(baselineSummary.agent)]);
 
   const differences = compared.filter(([left, right]) => left !== right).length;
@@ -443,7 +470,10 @@ function detectDrift(currentState, reconciledState, options = {}) {
     score,
     threshold,
     triggered: score > threshold,
-    reason: score > threshold ? `Drift score ${score.toFixed(2)} exceeded threshold ${threshold.toFixed(2)}` : "Drift within acceptable range",
+    reason:
+      score > threshold
+        ? `Drift score ${score.toFixed(2)} exceeded threshold ${threshold.toFixed(2)}`
+        : "Drift within acceptable range",
     lastSnapshotPath,
     currentSummary,
     baselineSummary
@@ -473,7 +503,10 @@ function triggerSelfHealing(rootDir, projectName, options = {}) {
 
     healing.runSelfHealing(rootDir, projectName, {
       maxRetries: options.maxRetries || 3,
-      debuggerArtifact: options.latestArtifact && options.latestArtifact.role === "debugger" ? options.latestArtifact : null
+      debuggerArtifact:
+        options.latestArtifact && options.latestArtifact.role === "debugger"
+          ? options.latestArtifact
+          : null
     });
 
     return true;

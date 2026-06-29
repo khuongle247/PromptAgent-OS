@@ -25,12 +25,7 @@ function exists(filePath) {
 }
 
 function readJson(filePath) {
-  return JSON.parse(
-    fs.readFileSync(
-      filePath,
-      "utf8"
-    )
-  );
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
 function readJsonSafe(filePath) {
@@ -42,21 +37,11 @@ function readJsonSafe(filePath) {
 }
 
 function writeJson(filePath, data) {
-  fs.writeFileSync(
-    filePath,
-    JSON.stringify(
-      data,
-      null,
-      2
-    )
-  );
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
 function readText(filePath) {
-  return fs.readFileSync(
-    filePath,
-    "utf8"
-  );
+  return fs.readFileSync(filePath, "utf8");
 }
 
 function readTextSafe(filePath) {
@@ -78,22 +63,15 @@ function createReport(projectName) {
     score: 100,
     errors: [],
     warnings: [],
-    generatedAt:
-      new Date().toISOString()
+    generatedAt: new Date().toISOString()
   };
 }
 
-function addError(
-  report,
-  message
-) {
+function addError(report, message) {
   report.errors.push(message);
 }
 
-function addWarning(
-  report,
-  message
-) {
+function addWarning(report, message) {
   report.warnings.push(message);
 }
 
@@ -101,41 +79,24 @@ function addWarning(
 // SCHEMA
 // ======================================
 
-function loadSchema(
-  rootDir,
-  schemaName
-) {
-  const filePath =
-    path.join(
-      rootDir,
-      "schemas",
-      schemaName
-    );
+function loadSchema(rootDir, schemaName) {
+  const filePath = path.join(rootDir, "schemas", schemaName);
 
   return readJson(filePath);
 }
 
-function validateSchema(
-  data,
-  schema
-) {
+function validateSchema(data, schema) {
   if (!ajv) {
-    return validateSchemaFallback(
-      data,
-      schema
-    );
+    return validateSchemaFallback(data, schema);
   }
 
-  const validate =
-    ajv.compile(schema);
+  const validate = ajv.compile(schema);
 
-  const valid =
-    validate(data);
+  const valid = validate(data);
 
   return {
     valid,
-    errors:
-      validate.errors || []
+    errors: validate.errors || []
   };
 }
 
@@ -151,50 +112,26 @@ function getType(value) {
   return typeof value;
 }
 
-function createSchemaError(
-  instancePath,
-  message
-) {
+function createSchemaError(instancePath, message) {
   return {
     instancePath,
     message
   };
 }
 
-function validateNode(
-  value,
-  schema,
-  instancePath,
-  errors
-) {
+function validateNode(value, schema, instancePath, errors) {
   if (!schema) {
     return;
   }
 
-  if (
-    schema.type &&
-    getType(value) !== schema.type
-  ) {
-    errors.push(
-      createSchemaError(
-        instancePath,
-        `must be ${schema.type}`
-      )
-    );
+  if (schema.type && getType(value) !== schema.type) {
+    errors.push(createSchemaError(instancePath, `must be ${schema.type}`));
 
     return;
   }
 
-  if (
-    schema.enum &&
-    !schema.enum.includes(value)
-  ) {
-    errors.push(
-      createSchemaError(
-        instancePath,
-        "must be equal to one of the allowed values"
-      )
-    );
+  if (schema.enum && !schema.enum.includes(value)) {
+    errors.push(createSchemaError(instancePath, "must be equal to one of the allowed values"));
   }
 
   if (
@@ -203,132 +140,58 @@ function validateNode(
     value.length < schema.minLength
   ) {
     errors.push(
-      createSchemaError(
-        instancePath,
-        `must NOT have fewer than ${schema.minLength} characters`
-      )
+      createSchemaError(instancePath, `must NOT have fewer than ${schema.minLength} characters`)
     );
   }
 
-  if (
-    schema.minItems !== undefined &&
-    Array.isArray(value) &&
-    value.length < schema.minItems
-  ) {
+  if (schema.minItems !== undefined && Array.isArray(value) && value.length < schema.minItems) {
     errors.push(
-      createSchemaError(
-        instancePath,
-        `must NOT have fewer than ${schema.minItems} items`
-      )
+      createSchemaError(instancePath, `must NOT have fewer than ${schema.minItems} items`)
     );
   }
 
-  if (
-    schema.pattern &&
-    typeof value === "string" &&
-    !(new RegExp(schema.pattern).test(value))
-  ) {
-    errors.push(
-      createSchemaError(
-        instancePath,
-        `must match pattern "${schema.pattern}"`
-      )
-    );
+  if (schema.pattern && typeof value === "string" && !new RegExp(schema.pattern).test(value)) {
+    errors.push(createSchemaError(instancePath, `must match pattern "${schema.pattern}"`));
   }
 
-  if (
-    schema.minimum !== undefined &&
-    typeof value === "number" &&
-    value < schema.minimum
-  ) {
-    errors.push(
-      createSchemaError(
-        instancePath,
-        `must be >= ${schema.minimum}`
-      )
-    );
+  if (schema.minimum !== undefined && typeof value === "number" && value < schema.minimum) {
+    errors.push(createSchemaError(instancePath, `must be >= ${schema.minimum}`));
   }
 
-  if (
-    schema.maximum !== undefined &&
-    typeof value === "number" &&
-    value > schema.maximum
-  ) {
-    errors.push(
-      createSchemaError(
-        instancePath,
-        `must be <= ${schema.maximum}`
-      )
-    );
+  if (schema.maximum !== undefined && typeof value === "number" && value > schema.maximum) {
+    errors.push(createSchemaError(instancePath, `must be <= ${schema.maximum}`));
   }
 
-  if (
-    schema.required &&
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
+  if (schema.required && value && typeof value === "object" && !Array.isArray(value)) {
     schema.required.forEach(field => {
       if (value[field] === undefined) {
-        errors.push(
-          createSchemaError(
-            instancePath,
-            `must have required property '${field}'`
-          )
-        );
+        errors.push(createSchemaError(instancePath, `must have required property '${field}'`));
       }
     });
   }
 
-  if (
-    schema.properties &&
-    value &&
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
+  if (schema.properties && value && typeof value === "object" && !Array.isArray(value)) {
     Object.keys(schema.properties).forEach(key => {
       if (value[key] !== undefined) {
-        validateNode(
-          value[key],
-          schema.properties[key],
-          `${instancePath}/${key}`,
-          errors
-        );
+        validateNode(value[key], schema.properties[key], `${instancePath}/${key}`, errors);
       }
     });
   }
 
-  if (
-    schema.items &&
-    Array.isArray(value)
-  ) {
+  if (schema.items && Array.isArray(value)) {
     value.forEach((item, index) => {
-      validateNode(
-        item,
-        schema.items,
-        `${instancePath}/${index}`,
-        errors
-      );
+      validateNode(item, schema.items, `${instancePath}/${index}`, errors);
     });
   }
 }
 
-function validateSchemaFallback(
-  data,
-  schema
-) {
+function validateSchemaFallback(data, schema) {
   const errors = [];
 
-  validateNode(
-    data,
-    schema,
-    "",
-    errors
-  );
+  validateNode(data, schema, "", errors);
 
   return {
-    valid:
-      errors.length === 0,
+    valid: errors.length === 0,
     errors
   };
 }
@@ -337,28 +200,18 @@ function validateSchemaFallback(
 // REPORT FINALIZE
 // ======================================
 
-function finalizeReport(
-  report
-) {
-  report.score -=
-    report.errors.length * 10;
+function finalizeReport(report) {
+  report.score -= report.errors.length * 10;
 
-  report.score -=
-    report.warnings.length * 2;
+  report.score -= report.warnings.length * 2;
 
-  if (
-    report.score < 0
-  ) {
+  if (report.score < 0) {
     report.score = 0;
   }
 
-  if (
-    report.errors.length > 0
-  ) {
+  if (report.errors.length > 0) {
     report.status = "FAIL";
-  } else if (
-    report.warnings.length > 0
-  ) {
+  } else if (report.warnings.length > 0) {
     report.status = "WARNING";
   }
 

@@ -28,7 +28,9 @@ function validateSchemaValid(filePath) {
   try {
     loadJson(filePath);
     return true;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }
 
 function validateContentQuality(filePath, minLength) {
@@ -43,7 +45,9 @@ function validateCountMin(filePath, key, min) {
     const data = loadJson(filePath);
     const items = key ? data[key] || [] : data;
     return Array.isArray(items) && items.length >= min;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }
 
 function validatePhaseGate(rootDir, projectDir, phase) {
@@ -61,7 +65,9 @@ function validatePhaseGate(rootDir, projectDir, phase) {
       for (const criterion of prevGate.exitCriteria) {
         const result = evaluateCriterion(criterion, projectDir, rootDir);
         if (!result.passed) {
-          errors.push(`Phase ${phase - 1} exit criterion ${criterion.id} failed: ${criterion.description}${result.detail ? " - " + result.detail : ""}`);
+          errors.push(
+            `Phase ${phase - 1} exit criterion ${criterion.id} failed: ${criterion.description}${result.detail ? " - " + result.detail : ""}`
+          );
         }
       }
     }
@@ -72,7 +78,9 @@ function validatePhaseGate(rootDir, projectDir, phase) {
     for (const criterion of phaseGate.entryCriteria) {
       const result = evaluateCriterion(criterion, projectDir, rootDir);
       if (!result.passed) {
-        errors.push(`Entry criterion ${criterion.id} failed: ${criterion.description}${result.detail ? " - " + result.detail : ""}`);
+        errors.push(
+          `Entry criterion ${criterion.id} failed: ${criterion.description}${result.detail ? " - " + result.detail : ""}`
+        );
       }
     }
   }
@@ -101,10 +109,16 @@ function evaluateCriterion(criterion, projectDir, rootDir) {
     }
     case "content-quality": {
       const filePath = path.join(projectDir, params.path || "");
-      return { passed: validateContentQuality(filePath, params.minLength), detail: `min ${params.minLength || 50} chars` };
+      return {
+        passed: validateContentQuality(filePath, params.minLength),
+        detail: `min ${params.minLength || 50} chars`
+      };
     }
     case "count-min": {
-      return { passed: validateCountMin(path.join(projectDir, params.path || ""), params.key, params.min), detail: `min ${params.min} items` };
+      return {
+        passed: validateCountMin(path.join(projectDir, params.path || ""), params.key, params.min),
+        detail: `min ${params.min} items`
+      };
     }
     default:
       return { passed: true, detail: "Unknown validation type - skipped" };

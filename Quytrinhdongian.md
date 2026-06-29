@@ -1,15 +1,15 @@
-Bước 1: 
-    npm run init-project [projcet]
-Bước 2: 
-    Bổ sung các file md đã được tạo
+Bước 1:
+npm run init-project [projcet]
+Bước 2:
+Bổ sung các file md đã được tạo
 Bước 3:
-    node run.js [project]
-Bước 4: 
-    Sinh prompt và đưa cho AI agent 
-Bước 5: 
-    Đọc report, test be fe 
+node run.js [project]
+Bước 4:
+Sinh prompt và đưa cho AI agent
+Bước 5:
+Đọc report, test be fe
 Bước 6: Đưa ra quyết định
-    Có thể:
+Có thể:
 
         Approve
 
@@ -21,7 +21,7 @@ Bước 6: Đưa ra quyết định
 
         TASK-001
 
-        Reason  
+        Reason
 
         Header sai màu
 
@@ -30,9 +30,9 @@ Bước 6: Đưa ra quyết định
         Spacing chưa đúng
 
 Bước 7: Chạy lại node run.js [project]
-    PromptAgent sẽ:
-        đọc feedback
-        tạo prompt mới
-        AI sửa
-        review lại
-        validate lại
+PromptAgent sẽ:
+đọc feedback
+tạo prompt mới
+AI sửa
+review lại
+validate lại
